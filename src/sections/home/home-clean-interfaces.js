@@ -1,13 +1,13 @@
-import { m } from 'framer-motion';
+import Box from '@mui/material/Box';
+import Container from '@mui/material/Container';
+import Stack from '@mui/material/Stack';
 // @mui
 import { alpha } from '@mui/material/styles';
-import Box from '@mui/material/Box';
-import Stack from '@mui/material/Stack';
-import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
+import { m } from 'framer-motion';
+import { MotionViewport, varFade } from 'src/components/animate';
 // components
 import Image from 'src/components/image';
-import { MotionViewport, varFade } from 'src/components/animate';
 
 // ----------------------------------------------------------------------
 

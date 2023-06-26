@@ -1,17 +1,17 @@
-import { m } from 'framer-motion';
 // @mui
 import Box from '@mui/material/Box';
-import Stack from '@mui/material/Stack';
-import Container from '@mui/material/Container';
-import Typography from '@mui/material/Typography';
 import CardActionArea from '@mui/material/CardActionArea';
-// components
-import { primaryPresets } from 'src/theme/options/presets';
+import Container from '@mui/material/Container';
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
+import { m } from 'framer-motion';
+import { MotionViewport, varFade } from 'src/components/animate';
+import Iconify from 'src/components/iconify';
 // components
 import Image from 'src/components/image';
-import Iconify from 'src/components/iconify';
 import { useSettingsContext } from 'src/components/settings';
-import { MotionViewport, varFade } from 'src/components/animate';
+// components
+import { primaryPresets } from 'src/theme/options/presets';
 
 // ----------------------------------------------------------------------
 

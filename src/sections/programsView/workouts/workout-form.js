@@ -56,7 +56,6 @@ export function WorkoutNewEditForm({ currentWorkout, onClose, training_id }) {
 
   const {
     watch,
-    setValue,
     handleSubmit,
     formState: { isSubmitting },
   } = methods;

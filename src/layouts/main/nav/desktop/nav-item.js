@@ -1,14 +1,15 @@
-import PropTypes from 'prop-types';
-import { m } from 'framer-motion';
-import { forwardRef } from 'react';
 // @mui
 import Box from '@mui/material/Box';
-import Link from '@mui/material/Link';
 import CardActionArea from '@mui/material/CardActionArea';
-// routes
-import { RouterLink } from 'src/routes/components';
+import Link from '@mui/material/Link';
+import { m } from 'framer-motion';
+import PropTypes from 'prop-types';
+import { forwardRef } from 'react';
 // components
 import Iconify from 'src/components/iconify';
+// routes
+import { RouterLink } from 'src/routes/components';
+
 //
 import { ListItem } from './styles';
 
@@ -54,7 +55,7 @@ export const NavItem = forwardRef(
         {renderContent}
       </Link>
     );
-  }
+  },
 );
 
 NavItem.propTypes = {

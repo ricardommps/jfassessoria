@@ -1,17 +1,17 @@
-import { m } from 'framer-motion';
-// @mui
-import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
-import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
-// theme
-import { bgGradient } from 'src/theme/css';
-// routes
-import { paths } from 'src/routes/paths';
+import Stack from '@mui/material/Stack';
+// @mui
+import { useTheme } from '@mui/material/styles';
+import { m } from 'framer-motion';
+import { MotionViewport, varFade } from 'src/components/animate';
 // components
 import Iconify from 'src/components/iconify';
-import { MotionViewport, varFade } from 'src/components/animate';
+// routes
+import { paths } from 'src/routes/paths';
+// theme
+import { bgGradient } from 'src/theme/css';
 
 // ----------------------------------------------------------------------
 

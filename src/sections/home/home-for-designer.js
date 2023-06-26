@@ -1,20 +1,20 @@
-import { m } from 'framer-motion';
-// @mui
-import { useTheme, alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
-import Grid from '@mui/material/Unstable_Grid2';
+// @mui
+import { alpha, useTheme } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
-// hooks
-import { useResponsive } from 'src/hooks/use-responsive';
-// theme
-import { textGradient, bgGradient } from 'src/theme/css';
-// routes
-import { paths } from 'src/routes/paths';
+import Grid from '@mui/material/Unstable_Grid2';
+import { m } from 'framer-motion';
+import { MotionViewport, varFade } from 'src/components/animate';
 // components
 import Iconify from 'src/components/iconify';
-import { MotionViewport, varFade } from 'src/components/animate';
+// hooks
+import { useResponsive } from 'src/hooks/use-responsive';
+// routes
+import { paths } from 'src/routes/paths';
+// theme
+import { bgGradient, textGradient } from 'src/theme/css';
 
 // ----------------------------------------------------------------------
 
@@ -38,7 +38,7 @@ export default function HomeForDesigner() {
             mt: 3,
             mb: 5,
             ...textGradient(
-              `300deg, ${theme.palette.primary.main} 0%, ${theme.palette.warning.main} 100%`
+              `300deg, ${theme.palette.primary.main} 0%, ${theme.palette.warning.main} 100%`,
             ),
           }}
         >

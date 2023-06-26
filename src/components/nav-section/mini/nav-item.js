@@ -18,7 +18,7 @@ import { StyledIcon, StyledItem } from './styles';
 const NavItem = forwardRef(({ item, depth, open, active, externalLink, config, ...other }, ref) => {
   const theme = useTheme();
 
-  const { title, titleMini, path, icon, children, disabled, caption, roles } = item;
+  const { titleMini, path, icon, children, disabled, caption, roles } = item;
 
   const subItem = depth !== 1;
 

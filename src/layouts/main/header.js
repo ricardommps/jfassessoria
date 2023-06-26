@@ -1,30 +1,31 @@
 // @mui
-import { useTheme } from '@mui/material/styles';
+import AppBar from '@mui/material/AppBar';
+import Badge, { badgeClasses } from '@mui/material/Badge';
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Container from '@mui/material/Container';
 import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
-import AppBar from '@mui/material/AppBar';
-import Button from '@mui/material/Button';
+import { useTheme } from '@mui/material/styles';
 import Toolbar from '@mui/material/Toolbar';
-import Container from '@mui/material/Container';
-import Badge, { badgeClasses } from '@mui/material/Badge';
+import Label from 'src/components/label';
+// components
+import Logo from 'src/components/logo';
 // hooks
 import { useOffSetTop } from 'src/hooks/use-off-set-top';
 import { useResponsive } from 'src/hooks/use-responsive';
-// theme
-import { bgBlur } from 'src/theme/css';
 // routes
 import { paths } from 'src/routes/paths';
-// components
-import Logo from 'src/components/logo';
-import Label from 'src/components/label';
+// theme
+import { bgBlur } from 'src/theme/css';
+
+//
+import { HeaderShadow, LoginButton, SettingsButton } from '../_common';
 //
 import { HEADER } from '../config-layout';
 import { navConfig } from './config-navigation';
-import NavMobile from './nav/mobile';
 import NavDesktop from './nav/desktop';
-//
-import { SettingsButton, HeaderShadow, LoginButton } from '../_common';
+import NavMobile from './nav/mobile';
 
 // ----------------------------------------------------------------------
 

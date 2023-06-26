@@ -1,25 +1,25 @@
-import PropTypes from 'prop-types';
-import { useState, useCallback } from 'react';
-import { m } from 'framer-motion';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Container from '@mui/material/Container';
+import Divider from '@mui/material/Divider';
+import Stack from '@mui/material/Stack';
 // @mui
 import { alpha } from '@mui/material/styles';
-import Box from '@mui/material/Box';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
-import Button from '@mui/material/Button';
-import Divider from '@mui/material/Divider';
-import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
-import Stack from '@mui/material/Stack';
+import { m } from 'framer-motion';
+import PropTypes from 'prop-types';
+import { useCallback, useState } from 'react';
+// _mock
+import { _homePlans } from 'src/_mock';
+import { MotionViewport, varFade } from 'src/components/animate';
+import Iconify from 'src/components/iconify';
 // hooks
 import SvgColor from 'src/components/svg-color';
-import Iconify from 'src/components/iconify';
-import { varFade, MotionViewport } from 'src/components/animate';
 import { useResponsive } from 'src/hooks/use-responsive';
 // routes
 import { paths } from 'src/routes/paths';
-// _mock
-import { _homePlans } from 'src/_mock';
 
 // ----------------------------------------------------------------------
 
@@ -92,7 +92,7 @@ export default function HomePricing() {
                     plan={tab}
                     sx={{ borderLeft: (theme) => `dashed 1px ${theme.palette.divider}` }}
                   />
-                )
+                ),
             )}
           </Box>
         </>

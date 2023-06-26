@@ -61,7 +61,6 @@ export default function TrainingNewEditForm({ currentTraining, currentProgram, o
     },
     [setValue],
   );
-  console.log('----currentTraining---', currentTraining);
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
       <>

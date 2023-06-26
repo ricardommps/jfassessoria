@@ -2,7 +2,6 @@ import { CardContent } from '@mui/material';
 import Card from '@mui/material/Card';
 import Grid from '@mui/material/Unstable_Grid2';
 import PropTypes from 'prop-types';
-import { programsData } from 'src/_mock';
 import Scrollbar from 'src/components/scrollbar/scrollbar';
 import CardTitle from 'src/sections/programsView/components/card-title';
 import { hideScroll } from 'src/theme/css';
@@ -23,7 +22,6 @@ export function Actions({
   onCancel,
   handleGoBackTrainings,
 }) {
-  const { programs } = programsData;
   const getTitle = () => {
     switch (action) {
       case 'profile':

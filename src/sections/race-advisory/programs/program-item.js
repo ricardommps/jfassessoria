@@ -37,7 +37,6 @@ export default function ProgramItem({ onOpenTrainings }) {
   const [programsSelected, setProgramsSelected] = useState([]);
 
   const renderRefereceMonth = (refereceMonth) => {
-    console.log('--refereceMonth--', refereceMonth);
     if (refereceMonth) {
       return format(new Date(refereceMonth), 'MMMM-yyyy');
     }

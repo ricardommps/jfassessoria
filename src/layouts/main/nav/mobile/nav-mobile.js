@@ -1,19 +1,20 @@
 'use client';
 
-import PropTypes from 'prop-types';
-import { useEffect } from 'react';
-// @mui
-import List from '@mui/material/List';
 import Drawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
+// @mui
+import List from '@mui/material/List';
+import PropTypes from 'prop-types';
+import { useEffect } from 'react';
+// components
+import Logo from 'src/components/logo';
+import Scrollbar from 'src/components/scrollbar';
+import SvgColor from 'src/components/svg-color';
 // hooks
 import { useBoolean } from 'src/hooks/use-boolean';
 // routes
 import { usePathname } from 'src/routes/hook';
-// components
-import Logo from 'src/components/logo';
-import SvgColor from 'src/components/svg-color';
-import Scrollbar from 'src/components/scrollbar';
+
 //
 import NavList from './nav-list';
 
@@ -28,7 +29,6 @@ export default function NavMobile({ offsetTop, data }) {
     if (nav.value) {
       nav.onFalse();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
   return (

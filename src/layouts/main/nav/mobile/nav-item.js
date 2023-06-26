@@ -1,12 +1,13 @@
 // @mui
-import PropTypes from 'prop-types';
 import Link from '@mui/material/Link';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-// routes
-import { RouterLink } from 'src/routes/components';
+import PropTypes from 'prop-types';
 // components
 import Iconify from 'src/components/iconify';
+// routes
+import { RouterLink } from 'src/routes/components';
+
 //
 import { ListItem } from './styles';
 

@@ -1,47 +1,47 @@
-import { useState, useCallback } from 'react';
-import { m } from 'framer-motion';
+import Alert from '@mui/material/Alert';
+import AlertTitle from '@mui/material/AlertTitle';
+import Avatar from '@mui/material/Avatar';
+import AvatarGroup from '@mui/material/AvatarGroup';
+import Badge from '@mui/material/Badge';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import CardHeader from '@mui/material/CardHeader';
+import Checkbox from '@mui/material/Checkbox';
+import Chip from '@mui/material/Chip';
+import CircularProgress from '@mui/material/CircularProgress';
+import Container from '@mui/material/Container';
+import Fab from '@mui/material/Fab';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import IconButton from '@mui/material/IconButton';
+import MenuItem from '@mui/material/MenuItem';
+import Paper from '@mui/material/Paper';
+import Radio from '@mui/material/Radio';
+import Rating from '@mui/material/Rating';
+import Slider from '@mui/material/Slider';
+import Stack from '@mui/material/Stack';
 // @mui
 import { alpha } from '@mui/material/styles';
-import Box from '@mui/material/Box';
-import Fab from '@mui/material/Fab';
-import Tab from '@mui/material/Tab';
-import Chip from '@mui/material/Chip';
-import Tabs from '@mui/material/Tabs';
-import Radio from '@mui/material/Radio';
-import Paper from '@mui/material/Paper';
-import Stack from '@mui/material/Stack';
-import Badge from '@mui/material/Badge';
-import Alert from '@mui/material/Alert';
-import Rating from '@mui/material/Rating';
-import Button from '@mui/material/Button';
-import Avatar from '@mui/material/Avatar';
-import Slider from '@mui/material/Slider';
 import Switch from '@mui/material/Switch';
-import MenuItem from '@mui/material/MenuItem';
-import Checkbox from '@mui/material/Checkbox';
-import Container from '@mui/material/Container';
+import Tab from '@mui/material/Tab';
+import Tabs from '@mui/material/Tabs';
 import TextField from '@mui/material/TextField';
-import Grid from '@mui/material/Unstable_Grid2';
-import IconButton from '@mui/material/IconButton';
-import CardHeader from '@mui/material/CardHeader';
-import Typography from '@mui/material/Typography';
-import AlertTitle from '@mui/material/AlertTitle';
-import AvatarGroup from '@mui/material/AvatarGroup';
 import ToggleButton from '@mui/material/ToggleButton';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import CircularProgress from '@mui/material/CircularProgress';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import Typography from '@mui/material/Typography';
+import Grid from '@mui/material/Unstable_Grid2';
+import { m } from 'framer-motion';
+import { useCallback, useState } from 'react';
+// _mock
+import { _mock } from 'src/_mock';
+import { MotionViewport, varFade } from 'src/components/animate';
+import Iconify from 'src/components/iconify';
+import Image from 'src/components/image';
+// components
+import Label from 'src/components/label';
 // hooks
 import { useResponsive } from 'src/hooks/use-responsive';
 // routes
 import { paths } from 'src/routes/paths';
-// _mock
-import { _mock } from 'src/_mock';
-// components
-import Label from 'src/components/label';
-import Image from 'src/components/image';
-import Iconify from 'src/components/iconify';
-import { MotionViewport, varFade } from 'src/components/animate';
 
 // ----------------------------------------------------------------------
 
@@ -229,7 +229,6 @@ export default function HomeHugePackElements() {
           <Chip
             color="error"
             variant="soft"
-            onDelete={() => {}}
             avatar={<Avatar alt={_mock.fullName(2)} src={_mock.image.avatar(2)} />}
             label="Chip"
           />
@@ -296,7 +295,7 @@ export default function HomeHugePackElements() {
         </m.div>
 
         <m.div variants={varFade().in}>
-          <Alert severity="success" onClose={() => {}}>
+          <Alert severity="success">
             <AlertTitle>Success</AlertTitle>
             This is a success alert — <strong>check it out!</strong>
           </Alert>

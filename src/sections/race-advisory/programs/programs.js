@@ -17,13 +17,10 @@ export default function Programs({
   onOpenForm,
   onCloseForm,
   onOpenTrainings,
-  onCloseTrainings,
-  onSelectProgram,
   openTrainings,
   onCancel,
   handleGoBackTrainings,
 }) {
-  console.log('--Programs-currentProgram--', currentProgram);
   return (
     <Box sx={{ height: 'calc(100vh - 150px)', ...hideScroll.y }}>
       <Stack>

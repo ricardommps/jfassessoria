@@ -159,7 +159,7 @@ export default function ProgramNewEditForm({
       return currentAge ? 220 - currentAge : '';
     }
   };
-  console.log('---VALUES---', values);
+
   return (
     <>
       <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>

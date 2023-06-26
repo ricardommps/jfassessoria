@@ -1,19 +1,20 @@
 'use client';
 
-import PropTypes from 'prop-types';
-import { useEffect } from 'react';
 // @mui
 import Fade from '@mui/material/Fade';
-import Stack from '@mui/material/Stack';
 import Portal from '@mui/material/Portal';
+import Stack from '@mui/material/Stack';
+import PropTypes from 'prop-types';
+import { useEffect } from 'react';
 // hooks
 import { useBoolean } from 'src/hooks/use-boolean';
 // routes
 import { usePathname } from 'src/routes/hook';
 import { useActiveLink } from 'src/routes/hook/use-active-link';
+
 //
 import { NavItem, NavItemDashboard } from './nav-item';
-import { StyledSubheader, StyledMenu } from './styles';
+import { StyledMenu, StyledSubheader } from './styles';
 
 // ----------------------------------------------------------------------
 
@@ -32,7 +33,6 @@ export default function NavList({ item, offsetTop }) {
     if (nav.value) {
       nav.onFalse();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
   const handleOpenMenu = () => {
@@ -112,7 +112,7 @@ function NavSubList({ items, isDashboard, subheader, onClose }) {
             active={pathname === `${item.path}/`}
             onClick={onClose}
           />
-        )
+        ),
       )}
     </Stack>
   );
