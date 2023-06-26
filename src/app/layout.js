@@ -21,10 +21,9 @@ import { primaryFont } from 'src/theme/typography';
 // ----------------------------------------------------------------------
 
 export const metadata = {
-  title: 'Minimal UI Kit',
-  description:
-    'The starting point for your next project with Minimal UI Kit, built on the newest version of Material-UI ©, ready to be customized to your style',
-  keywords: 'react,material,kit,application,dashboard,admin,template',
+  title: 'Joana Foltz',
+  description: 'App de assessoria',
+  keywords: 'assessoria, corrida, personalS',
   themeColor: '#000000',
   manifest: '/manifest.json',
   icons: [
