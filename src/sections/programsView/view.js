@@ -12,7 +12,7 @@ import { useSettingsContext } from 'src/components/settings';
 import { useResponsive } from 'src/hooks/use-responsive';
 
 import Programs from './programs/programs';
-import { TopperMenu } from './trainings/styles';
+import { TopperMenu } from './styles';
 import Trainings from './trainings/trainings';
 import Workouts from './workouts/workouts';
 
