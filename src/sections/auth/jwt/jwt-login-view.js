@@ -6,9 +6,7 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import Alert from '@mui/material/Alert';
 import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
-import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
-import Typography from '@mui/material/Typography';
 import { useCallback, useState } from 'react';
 import { useForm } from 'react-hook-form';
 // auth
@@ -20,10 +18,8 @@ import Iconify from 'src/components/iconify';
 import { PATH_AFTER_LOGIN } from 'src/config-global';
 // hooks
 import { useBoolean } from 'src/hooks/use-boolean';
-import { RouterLink } from 'src/routes/components';
 import { useSearchParams } from 'src/routes/hook';
 // routes
-import { paths } from 'src/routes/paths';
 import * as Yup from 'yup';
 
 // ----------------------------------------------------------------------
@@ -75,20 +71,6 @@ export default function JwtLoginView() {
     [login, reset, returnTo],
   );
 
-  const renderHead = (
-    <Stack spacing={2} sx={{ mb: 5 }}>
-      <Typography variant="h4">Sign in to Minimal</Typography>
-
-      <Stack direction="row" spacing={0.5}>
-        <Typography variant="body2">New user?</Typography>
-
-        <Link component={RouterLink} href={paths.auth.jwt.register} variant="subtitle2">
-          Create an account
-        </Link>
-      </Stack>
-    </Stack>
-  );
-
   const renderForm = (
     <Stack spacing={2.5}>
       {!!errorMsg && <Alert severity="error">{errorMsg}</Alert>}
@@ -110,10 +92,6 @@ export default function JwtLoginView() {
         }}
       />
 
-      <Link variant="body2" color="inherit" underline="always" sx={{ alignSelf: 'flex-end' }}>
-        Forgot password?
-      </Link>
-
       <LoadingButton
         fullWidth
         color="inherit"
@@ -129,12 +107,6 @@ export default function JwtLoginView() {
 
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
-      {renderHead}
-
-      <Alert severity="info" sx={{ mb: 3 }}>
-        Use email : <strong>demo@minimals.cc</strong> / password :<strong> demo1234</strong>
-      </Alert>
-
       {renderForm}
     </FormProvider>
   );

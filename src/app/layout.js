@@ -13,6 +13,7 @@ import { SettingsDrawer, SettingsProvider } from 'src/components/settings';
 import SnackbarProvider from 'src/components/snackbar/snackbar-provider';
 // locales
 import { LocalizationProvider } from 'src/locales';
+import ReduxProvider from 'src/redux/redux-provider';
 // ----------------------------------------------------------------------
 // theme
 import ThemeProvider from 'src/theme';
@@ -56,28 +57,30 @@ export default function RootLayout({ children }) {
     <html lang="en" className={primaryFont.className}>
       <body>
         <AuthProvider>
-          <LocalizationProvider>
-            <SettingsProvider
-              defaultSettings={{
-                themeMode: 'dark', // 'light' | 'dark'
-                themeDirection: 'ltr', //  'rtl' | 'ltr'
-                themeContrast: 'default', // 'default' | 'bold'
-                themeLayout: 'vertical', // 'vertical' | 'horizontal' | 'mini'
-                themeColorPresets: 'default', // 'default' | 'cyan' | 'purple' | 'blue' | 'orange' | 'red'
-                themeStretch: false,
-              }}
-            >
-              <ThemeProvider>
-                <MotionLazy>
-                  <SnackbarProvider>
-                    <SettingsDrawer />
-                    <ProgressBar />
-                    <AuthConsumer>{children}</AuthConsumer>
-                  </SnackbarProvider>
-                </MotionLazy>
-              </ThemeProvider>
-            </SettingsProvider>
-          </LocalizationProvider>
+          <ReduxProvider>
+            <LocalizationProvider>
+              <SettingsProvider
+                defaultSettings={{
+                  themeMode: 'dark', // 'light' | 'dark'
+                  themeDirection: 'ltr', //  'rtl' | 'ltr'
+                  themeContrast: 'default', // 'default' | 'bold'
+                  themeLayout: 'vertical', // 'vertical' | 'horizontal' | 'mini'
+                  themeColorPresets: 'default', // 'default' | 'cyan' | 'purple' | 'blue' | 'orange' | 'red'
+                  themeStretch: false,
+                }}
+              >
+                <ThemeProvider>
+                  <MotionLazy>
+                    <SnackbarProvider>
+                      <SettingsDrawer />
+                      <ProgressBar />
+                      <AuthConsumer>{children}</AuthConsumer>
+                    </SnackbarProvider>
+                  </MotionLazy>
+                </ThemeProvider>
+              </SettingsProvider>
+            </LocalizationProvider>
+          </ReduxProvider>
         </AuthProvider>
       </body>
     </html>

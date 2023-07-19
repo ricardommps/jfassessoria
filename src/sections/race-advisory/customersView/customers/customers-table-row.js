@@ -16,9 +16,9 @@ export default function CustomersTableRow({
   row,
   selected,
   onSelectRow,
-  handleSelectCurrentCustomer,
+  handleEditCustomer,
+  handleOpenProgram,
 }) {
-  const { name, avatarUrl, premium_expires_date, programs, status, email } = row;
   const popover = usePopover();
 
   return (
@@ -31,7 +31,7 @@ export default function CustomersTableRow({
 
         <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
           <Avatar
-            src={avatarUrl || ''}
+            src={row?.avatarUrl || ''}
             sx={{
               width: 48,
               height: 48,
@@ -41,8 +41,8 @@ export default function CustomersTableRow({
             }}
           />
           <ListItemText
-            primary={name}
-            secondary={email}
+            primary={row.name}
+            secondary={row.email}
             primaryTypographyProps={{ typography: 'body2' }}
             secondaryTypographyProps={{ component: 'span', color: 'text.disabled' }}
           />
@@ -50,8 +50,14 @@ export default function CustomersTableRow({
 
         <TableCell sx={{ whiteSpace: 'nowrap' }}>
           <ListItemText
-            primary={format(new Date(premium_expires_date), 'dd MMM yyyy')}
-            secondary={format(new Date(premium_expires_date), 'p')}
+            primary={
+              row?.premium_expires_date
+                ? format(new Date(row.premium_expires_date), 'dd MMM yyyy')
+                : ''
+            }
+            secondary={
+              row?.premium_expires_date ? format(new Date(row.premium_expires_date), 'p') : ''
+            }
             primaryTypographyProps={{ typography: 'body2', noWrap: true }}
             secondaryTypographyProps={{
               mt: 0.5,
@@ -61,7 +67,9 @@ export default function CustomersTableRow({
           />
         </TableCell>
 
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{programs.length}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>
+          {row?.programs ? row?.programs.length : ''}
+        </TableCell>
 
         <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
           <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>
@@ -77,7 +85,7 @@ export default function CustomersTableRow({
       >
         <MenuItem
           onClick={() => {
-            handleSelectCurrentCustomer(row, 'profile');
+            handleEditCustomer(row);
             popover.onClose();
           }}
         >
@@ -87,17 +95,7 @@ export default function CustomersTableRow({
 
         <MenuItem
           onClick={() => {
-            handleSelectCurrentCustomer(row, 'anamnese');
-            popover.onClose();
-          }}
-        >
-          <SvgColor src="/assets/icons/custom/icon-anamnese.svg" sx={{ mr: 1 }} />
-          Anamnese
-        </MenuItem>
-
-        <MenuItem
-          onClick={() => {
-            handleSelectCurrentCustomer(row, 'program');
+            handleOpenProgram(row);
             popover.onClose();
           }}
         >
@@ -113,5 +111,6 @@ CustomersTableRow.propTypes = {
   onSelectRow: PropTypes.func,
   row: PropTypes.object,
   selected: PropTypes.bool,
-  handleSelectCurrentCustomer: PropTypes.func,
+  handleEditCustomer: PropTypes.func,
+  handleOpenProgram: PropTypes.func,
 };

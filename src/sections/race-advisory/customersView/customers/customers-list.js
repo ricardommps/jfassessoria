@@ -5,8 +5,7 @@ import TableContainer from '@mui/material/TableContainer';
 import Tooltip from '@mui/material/Tooltip';
 import isEqual from 'lodash/isEqual';
 import PropTypes from 'prop-types';
-import { useCallback, useState } from 'react';
-import { customersData } from 'src/_mock';
+import { useCallback, useEffect, useState } from 'react';
 import Iconify from 'src/components/iconify/iconify';
 import Scrollbar from 'src/components/scrollbar/scrollbar';
 import {
@@ -36,13 +35,18 @@ const defaultFilters = {
   status: 'all',
 };
 
-export function CustomersList({ handleSelectCurrentCustomer }) {
-  const { customers } = customersData;
+export function CustomersList({ customers, handleEditCustomer, handleOpenProgram }) {
   const table = useTable();
 
-  const tableData = customers;
+  const [tableData, setTableData] = useState([]);
 
   const [filters, setFilters] = useState(defaultFilters);
+
+  useEffect(() => {
+    if (customers?.length) {
+      setTableData(customers);
+    }
+  }, [customers]);
 
   const dataFiltered = applyFilter({
     inputData: tableData,
@@ -113,7 +117,8 @@ export function CustomersList({ handleSelectCurrentCustomer }) {
                     row={row}
                     selected={table.selected.includes(row.id)}
                     onSelectRow={() => table.onSelectRow(row.id)}
-                    handleSelectCurrentCustomer={handleSelectCurrentCustomer}
+                    handleEditCustomer={handleEditCustomer}
+                    handleOpenProgram={handleOpenProgram}
                   />
                 ))}
 
@@ -132,5 +137,7 @@ export function CustomersList({ handleSelectCurrentCustomer }) {
 }
 
 CustomersList.propTypes = {
-  handleSelectCurrentCustomer: PropTypes.func,
+  customers: PropTypes.array,
+  handleEditCustomer: PropTypes.func,
+  handleOpenProgram: PropTypes.func,
 };
