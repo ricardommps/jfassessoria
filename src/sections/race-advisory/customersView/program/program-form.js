@@ -81,7 +81,7 @@ export default function ProgramNewEditForm({
       dateTest: program?.dateTest || '',
       customerId: customerId || null,
       active: false,
-      refereceMonth: program?.refereceMonth ? dayjs(program?.refereceMonth).toDate() : '',
+      referenceMonth: program?.referenceMonth ? dayjs(program?.referenceMonth).toDate() : '',
     }),
     [],
   );
@@ -269,7 +269,7 @@ export default function ProgramNewEditForm({
                   Informções adicionais
                 </Typography>
                 <Stack mt={1}>
-                  <ReferenceMonthDate name={'refereceMonth'} />
+                  <ReferenceMonthDate name={'referenceMonth'} />
                   <RHFTextField name="test" label="Teste realizado" variant="standard" />
                   <TestDate />
                 </Stack>

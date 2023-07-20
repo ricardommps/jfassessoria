@@ -20,9 +20,9 @@ import {
 
 export default function ProgramItem({ onSelectedProgram }) {
   const { programs } = useProgram();
-  const renderRefereceMonth = (refereceMonth) => {
-    if (refereceMonth) {
-      return format(new Date(refereceMonth), 'MMMM-yyyy');
+  const renderreferenceMonth = (referenceMonth) => {
+    if (referenceMonth) {
+      return format(new Date(referenceMonth), 'MMMM-yyyy');
     }
 
     return '';
@@ -54,7 +54,9 @@ export default function ProgramItem({ onSelectedProgram }) {
               <BasecInfoColumn1>
                 <BasecInfoTitle>{program.name}</BasecInfoTitle>
                 <BasecInfoSubTitle>{program.goal}</BasecInfoSubTitle>
-                <BasecInfoSubTitle>{renderRefereceMonth(program.referenceMonth)}</BasecInfoSubTitle>
+                <BasecInfoSubTitle>
+                  {renderreferenceMonth(program.referenceMonth)}
+                </BasecInfoSubTitle>
               </BasecInfoColumn1>
               <BasecInfoColumn2>
                 <BasecInfoTitle>PV: {program.pv}</BasecInfoTitle>

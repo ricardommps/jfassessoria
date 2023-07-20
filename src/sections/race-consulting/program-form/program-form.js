@@ -8,7 +8,6 @@ import MenuItem from '@mui/material/MenuItem';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { format } from 'date-fns';
-import dayjs from 'dayjs';
 import PropTypes from 'prop-types';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -77,7 +76,7 @@ export default function ProgramForm({ handleClear }) {
       dateTest: program?.dateTest || '',
       customerId: program?.customerId || customer.id,
       active: false,
-      refereceMonth: program?.refereceMonth ? dayjs(program?.refereceMonth).toDate() : '',
+      referenceMonth: program?.referenceMonth || null,
     }),
     [],
   );
@@ -250,9 +249,9 @@ export default function ProgramForm({ handleClear }) {
               Informções adicionais
             </Typography>
             <Stack mt={1}>
-              <ReferenceMonthDate name={'refereceMonth'} />
+              <ReferenceMonthDate value={values.referenceMonth} />
               <RHFTextField name="test" label="Teste realizado" variant="standard" />
-              <TestDate />
+              <TestDate value={values.dateTest} />
             </Stack>
           </Box>
           {values.vlan && values.difficultyLevel && (

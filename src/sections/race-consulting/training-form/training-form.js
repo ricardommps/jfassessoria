@@ -28,7 +28,7 @@ export default function TrainingForm({ handleCancel }) {
       programId: training?.programId || program.id,
       name: training?.name || '',
       description: training?.description || '',
-      cover_path: training?.cover_path || '',
+      coverPath: training?.coverPath || '',
       datePublished: training?.datePublished || '',
       published: training?.published || false,
     }),

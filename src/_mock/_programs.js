@@ -502,7 +502,7 @@ export const runnerProgramsData = {
       pace: '4.6',
       test: 'xxxx',
       dateTest: '2023-06-27T03:00:00.000Z',
-      refereceMonth: '2023-05-01T03:00:00.000Z',
+      referenceMonth: '2023-05-01T03:00:00.000Z',
       goal: 'Correr',
       customers: [
         {
@@ -525,7 +525,7 @@ export const runnerProgramsData = {
       pace: '7.5',
       test: 'xxxx',
       dateTest: '2023-01-04T03:00:00.000Z',
-      refereceMonth: '2023-04-01T03:00:00.000Z',
+      referenceMonth: '2023-04-01T03:00:00.000Z',
       goal: 'Correr',
       customers: [
         {
@@ -548,7 +548,7 @@ export const runnerProgramsData = {
       pace: '7.5',
       test: 'xxxx',
       dateTest: '2023-01-04T03:00:00.000Z',
-      refereceMonth: '2023-03-01T03:00:00.000Z',
+      referenceMonth: '2023-03-01T03:00:00.000Z',
       goal: 'Correr',
       customers: [
         {

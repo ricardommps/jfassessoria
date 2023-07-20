@@ -36,9 +36,9 @@ export default function ProgramItem({ onOpenTrainings }) {
   const [infoProps, setInfoProps] = useState(null);
   const [programsSelected, setProgramsSelected] = useState([]);
 
-  const renderRefereceMonth = (refereceMonth) => {
-    if (refereceMonth) {
-      return format(new Date(refereceMonth), 'MMMM-yyyy');
+  const renderreferenceMonth = (referenceMonth) => {
+    if (referenceMonth) {
+      return format(new Date(referenceMonth), 'MMMM-yyyy');
     }
 
     return '';
@@ -176,7 +176,7 @@ export default function ProgramItem({ onOpenTrainings }) {
             <BasecInfoColumn1>
               <BasecInfoTitle>{program.name}</BasecInfoTitle>
               <BasecInfoSubTitle>{program.goal}</BasecInfoSubTitle>
-              <BasecInfoSubTitle>{renderRefereceMonth(program.refereceMonth)}</BasecInfoSubTitle>
+              <BasecInfoSubTitle>{renderreferenceMonth(program.referenceMonth)}</BasecInfoSubTitle>
             </BasecInfoColumn1>
             <BasecInfoColumn2>
               <BasecInfoTitle>PV: {program.pv}</BasecInfoTitle>

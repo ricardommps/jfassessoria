@@ -66,8 +66,8 @@ export default function ProgramNewEditForm({
       pace: currentProgram?.pace || '',
       test: currentProgram?.test || '',
       dateTest: currentProgram?.dateTest || '',
-      refereceMonth: currentProgram?.refereceMonth
-        ? dayjs(currentProgram?.refereceMonth).toDate()
+      referenceMonth: currentProgram?.referenceMonth
+        ? dayjs(currentProgram?.referenceMonth).toDate()
         : '',
       customers: currentProgram?.customers || {
         customer_id: currentCustomer?.id,
@@ -165,7 +165,7 @@ export default function ProgramNewEditForm({
       <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
         <>
           <Box rowGap={3} columnGap={2} display="grid" pt={2}>
-            <ReferenceMonthDate name={'refereceMonth'} />
+            <ReferenceMonthDate name={'referenceMonth'} />
             <RHFTextField name="name" label="Titulo *" variant="standard" />
             <RHFTextField name="goal" label="Objetivo" variant="standard" />
             <RHFSelect name="difficulty_level" label="Nível de dificuldade *" variant="standard">

@@ -6,6 +6,7 @@ import Typography from '@mui/material/Typography';
 import { useEffect } from 'react';
 import Iconify from 'src/components/iconify/iconify';
 import Scrollbar from 'src/components/scrollbar/scrollbar';
+import { useSettingsContext } from 'src/components/settings';
 import useCustomer from 'src/hooks/use-customer';
 import useProgram from 'src/hooks/use-program';
 import useTraining from 'src/hooks/use-training';
@@ -13,9 +14,12 @@ import useTraining from 'src/hooks/use-training';
 import { CustomersList } from './customer-list';
 
 export default function Customer() {
+  const settings = useSettingsContext();
   const { customers, onListCustomers, onCustomerById } = useCustomer();
   const { onListPrograms, onClearPrograms, onClearProgram } = useProgram();
   const { onShowTraining, onClearTrainings } = useTraining();
+
+  const isNavMini = settings.themeLayout === 'mini';
 
   const handleOpenProgram = (customerId) => {
     onCustomerById(customerId);
@@ -46,7 +50,7 @@ export default function Customer() {
         <Stack p={2}>
           <Typography variant="h3">Alunos</Typography>
         </Stack>
-        <Stack spacing={2} sx={{ width: '60vw', py: 3, height: '67vh' }}>
+        <Stack spacing={2} sx={{ width: isNavMini ? '60vw' : '50vw', py: 3, height: '67vh' }}>
           <Scrollbar>
             <Button variant="contained" startIcon={<Iconify icon="mingcute:add-line" />}>
               Novo

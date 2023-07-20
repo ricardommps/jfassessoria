@@ -1,6 +1,7 @@
 // @mui
 import Box from '@mui/material/Box';
 import PropTypes from 'prop-types';
+import NotMobile from 'src/components/NotMobile';
 // components
 import { useSettingsContext } from 'src/components/settings';
 // hooks
@@ -20,6 +21,7 @@ export default function DashboardLayout({ children }) {
   const settings = useSettingsContext();
 
   const lgUp = useResponsive('up', 'lg');
+  const mdUp = useResponsive('up', 'md');
 
   const nav = useBoolean();
 
@@ -32,6 +34,10 @@ export default function DashboardLayout({ children }) {
   const renderHorizontal = <NavHorizontal />;
 
   const renderNavVertical = <NavVertical openNav={nav.value} onCloseNav={nav.onFalse} />;
+
+  if (!mdUp) {
+    return <NotMobile />;
+  }
 
   if (isHorizontal) {
     return (

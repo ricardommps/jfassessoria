@@ -29,9 +29,9 @@ export default function ProgramItem({ onSelectedProgram }) {
   const handleCopyProgram = (program) => {
     setProgramsSelected(program);
   };
-  const renderRefereceMonth = (refereceMonth) => {
-    if (refereceMonth) {
-      return format(new Date(refereceMonth), 'MMMM-yyyy');
+  const renderreferenceMonth = (referenceMonth) => {
+    if (referenceMonth) {
+      return format(new Date(referenceMonth), 'MMMM-yyyy');
     }
 
     return '';
@@ -51,7 +51,7 @@ export default function ProgramItem({ onSelectedProgram }) {
       );
     }
   };
-  console.log('==programsSelected===', programsSelected);
+
   return (
     <>
       {programs &&
@@ -69,22 +69,25 @@ export default function ProgramItem({ onSelectedProgram }) {
               <BasecInfoColumn1>
                 <BasecInfoTitle>{program.name}</BasecInfoTitle>
                 <BasecInfoSubTitle>{program.goal}</BasecInfoSubTitle>
-                <BasecInfoSubTitle>{renderRefereceMonth(program.referenceMonth)}</BasecInfoSubTitle>
-                <BasecInfoSubTitle>{renderRefereceMonth(program.referenceMonth)}</BasecInfoSubTitle>
+                <BasecInfoSubTitle>
+                  {renderreferenceMonth(program.referenceMonth)}
+                </BasecInfoSubTitle>
               </BasecInfoColumn1>
               <BasecInfoColumn2>
                 <BasecInfoTitle>PV: {program.pv}</BasecInfoTitle>
                 <BasecInfoSubTitle>Pace: {program.pace} </BasecInfoSubTitle>
               </BasecInfoColumn2>
-              <BasecColumnAction>
-                <InputAdornment position="end" sx={{ mr: 1 }}>
-                  <ButtonIcon onClick={() => handleCopyProgram(program)}>
-                    <Tooltip title="Clonar treino" placement="top">
-                      <ContentCopyIcon sx={{ fontSize: '22px', width: '22px', height: '30px' }} />
-                    </Tooltip>
-                  </ButtonIcon>
-                </InputAdornment>
-              </BasecColumnAction>
+              {false && (
+                <BasecColumnAction>
+                  <InputAdornment position="end" sx={{ mr: 1 }}>
+                    <ButtonIcon onClick={() => handleCopyProgram(program)}>
+                      <Tooltip title="Clonar treino" placement="top">
+                        <ContentCopyIcon sx={{ fontSize: '22px', width: '22px', height: '30px' }} />
+                      </Tooltip>
+                    </ButtonIcon>
+                  </InputAdornment>
+                </BasecColumnAction>
+              )}
             </ListItem>
             {program.difficultyLevel && (
               <BaseHeader>{renderDifficultyLevel(program.difficultyLevel)}</BaseHeader>

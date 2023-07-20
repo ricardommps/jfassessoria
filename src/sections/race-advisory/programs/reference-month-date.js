@@ -4,7 +4,7 @@ export default function ReferenceMonthDate() {
   const { control } = useFormContext();
   return (
     <Controller
-      name="refereceMonth"
+      name="referenceMonth"
       control={control}
       render={({ field }) => (
         <DatePicker
