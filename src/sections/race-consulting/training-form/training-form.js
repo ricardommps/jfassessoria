@@ -29,7 +29,7 @@ export default function TrainingForm({ handleCancel }) {
       name: training?.name || '',
       description: training?.description || '',
       coverPath: training?.coverPath || '',
-      datePublished: training?.datePublished || '',
+      datePublished: training?.datePublished || null,
       published: training?.published || false,
     }),
     [],
@@ -55,7 +55,10 @@ export default function TrainingForm({ handleCancel }) {
     async (data) => {
       try {
         if (training) {
-          onUpdateTraining(data, training.id);
+          const payload = Object.assign({}, data);
+          delete payload.id;
+          delete payload.programId;
+          onUpdateTraining(payload, training.id);
           reset({ ...defaultValues });
         } else {
           onCreateTraining(data);

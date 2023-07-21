@@ -73,7 +73,11 @@ export default function CustomerForm() {
     async (data) => {
       try {
         if (customer) {
-          onUpdateCustomer(data, customer.id);
+          const payload = Object.assign({}, data);
+          delete payload.id;
+          delete payload.typeUser;
+          delete payload.programs;
+          onUpdateCustomer(payload, customer.id);
         } else {
           onCreateCustomer(data);
         }

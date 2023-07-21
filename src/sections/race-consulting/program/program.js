@@ -24,6 +24,9 @@ export default function Program() {
     updateProgramSuccess,
     onClearProgram,
     programCreate,
+    cloneProgramSuccess,
+    cloneProgramStatus,
+    onCloneProgram,
   } = useProgram();
 
   const { onShowTraining, onListTrainings, onClearTrainings } = useTraining();
@@ -71,6 +74,19 @@ export default function Program() {
     }
   }, [programCreate]);
 
+  useEffect(() => {
+    if (cloneProgramSuccess) {
+      setNewProduct(false);
+      onListPrograms(customer.id);
+      onListCustomers();
+      enqueueSnackbar('Programa clonado com sucesso!', {
+        autoHideDuration: 3000,
+        variant: 'success',
+      });
+      handleClear();
+    }
+  }, [cloneProgramSuccess]);
+
   return (
     <Paper
       sx={{
@@ -99,7 +115,11 @@ export default function Program() {
                   Novo
                 </Button>
                 <Stack spacing={2} sx={{ px: 2, py: 2.5, position: 'relative' }}>
-                  <ProgramasList onSelectedProgram={onSelectedProgram} />
+                  <ProgramasList
+                    onSelectedProgram={onSelectedProgram}
+                    onCloneProgram={onCloneProgram}
+                    cloneProgramStatus={cloneProgramStatus}
+                  />
                 </Stack>
               </>
             )}

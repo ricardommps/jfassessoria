@@ -19,6 +19,7 @@ export default function TestDate({ value }) {
             textField: {
               variant: 'standard',
               fullWidth: true,
+              error: false,
             },
           }}
         />

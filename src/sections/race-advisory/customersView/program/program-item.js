@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import useProgram from 'src/hooks/use-program';
 
 import {
-  ActionsHeader,
   Advanced,
   BasecInfoColumn1,
   BasecInfoColumn2,
@@ -14,7 +13,6 @@ import {
   BaseHeader,
   Beginner,
   CheckboxAction,
-  Container,
   ListItem,
 } from './styles';
 

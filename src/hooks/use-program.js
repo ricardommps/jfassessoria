@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import {
   clearProgram,
   clearPrograms,
+  cloneProgram,
   createProgram,
   getProgramById,
   getPrograms,
@@ -10,8 +11,16 @@ import {
 import { useDispatch, useSelector } from 'src/redux/store';
 export default function useProgram() {
   const dispatch = useDispatch();
-  const { programs, programsStatus, programCreate, program, programStatus, updateProgramSuccess } =
-    useSelector((state) => state.program);
+  const {
+    programs,
+    programsStatus,
+    programCreate,
+    program,
+    programStatus,
+    updateProgramSuccess,
+    cloneProgramSuccess,
+    cloneProgramStatus,
+  } = useSelector((state) => state.program);
   const onListPrograms = useCallback(
     (customerId) => {
       dispatch(getPrograms(customerId));
@@ -48,6 +57,13 @@ export default function useProgram() {
     dispatch(clearPrograms());
   }, [dispatch]);
 
+  const onCloneProgram = useCallback(
+    (newProgram) => {
+      dispatch(cloneProgram(newProgram));
+    },
+    [dispatch],
+  );
+
   return {
     programs,
     programsStatus,
@@ -61,5 +77,8 @@ export default function useProgram() {
     onProgramById,
     onUpdateProgram,
     onClearPrograms,
+    cloneProgramSuccess,
+    cloneProgramStatus,
+    onCloneProgram,
   };
 }

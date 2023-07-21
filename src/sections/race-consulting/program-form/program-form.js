@@ -73,7 +73,7 @@ export default function ProgramForm({ handleClear }) {
       pv: program?.pv || '',
       pace: program?.pace || '',
       test: program?.test || '',
-      dateTest: program?.dateTest || '',
+      dateTest: program?.dateTest || null,
       customerId: program?.customerId || customer.id,
       active: false,
       referenceMonth: program?.referenceMonth || null,
@@ -162,7 +162,12 @@ export default function ProgramForm({ handleClear }) {
     async (data) => {
       try {
         if (program) {
-          onUpdateProgram(data, program.id);
+          const payload = Object.assign({}, data);
+          delete payload.id;
+          delete payload.programId;
+          delete payload.createdAt;
+          delete payload.updatedAt;
+          onUpdateProgram(payload, program.id);
           reset({ ...defaultValues });
         } else {
           onCreateProgram(data);

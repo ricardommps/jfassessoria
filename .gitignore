@@ -40,3 +40,5 @@ yarn-error.log*
 
 _static
 .unimportedrc.json
+
+.env

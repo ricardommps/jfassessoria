@@ -1,11 +1,12 @@
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import { Stack } from '@mui/material';
 import Checkbox from '@mui/material/Checkbox';
 import InputAdornment from '@mui/material/InputAdornment';
+import Skeleton from '@mui/material/Skeleton';
+import Stack from '@mui/material/Stack';
 import Tooltip from '@mui/material/Tooltip';
 import format from 'date-fns/format';
 import PropTypes from 'prop-types';
-import { useState } from 'react';
+import { useCallback } from 'react';
 import { ButtonIcon } from 'src/components/button-icon/button-icon';
 import useProgram from 'src/hooks/use-program';
 
@@ -22,13 +23,23 @@ import {
   ListItem,
 } from './styles';
 
-export default function ProgramItem({ onSelectedProgram }) {
+export default function ProgramItem({ onSelectedProgram, onCloneProgram, cloneProgramStatus }) {
   const { programs } = useProgram();
-  const [programsSelected, setProgramsSelected] = useState([]);
 
-  const handleCopyProgram = (program) => {
-    setProgramsSelected(program);
-  };
+  const handleCopyProgram = useCallback((program, e) => {
+    e.stopPropagation();
+    const payload = Object.assign({}, program);
+    delete payload.id;
+    payload.name = `[COPY]${payload.name}`;
+    const newTrainings = payload.trainings.map((obj) => {
+      const newTraining = { ...obj, name: `[COPY]${obj.name}` };
+      delete newTraining.id;
+      return { ...newTraining };
+    });
+    payload.trainings = [...newTrainings];
+    onCloneProgram(payload);
+  }, []);
+
   const renderreferenceMonth = (referenceMonth) => {
     if (referenceMonth) {
       return format(new Date(referenceMonth), 'MMMM-yyyy');
@@ -59,38 +70,75 @@ export default function ProgramItem({ onSelectedProgram }) {
           <Stack
             key={program.id}
             onClick={() => {
-              onSelectedProgram(program.id);
+              cloneProgramStatus.loading ? null : onSelectedProgram(program.id);
             }}
           >
             <ListItem>
               <CheckboxAction>
-                <Checkbox />
+                {cloneProgramStatus.loading ? (
+                  <Stack pt={2}>
+                    <Skeleton variant="rectangular" width={20} height={20} />
+                  </Stack>
+                ) : (
+                  <Checkbox />
+                )}
               </CheckboxAction>
+
               <BasecInfoColumn1>
-                <BasecInfoTitle>{program.name}</BasecInfoTitle>
-                <BasecInfoSubTitle>{program.goal}</BasecInfoSubTitle>
+                <BasecInfoTitle>
+                  {cloneProgramStatus.loading ? <Skeleton variant="text" /> : <>{program.name}</>}
+                </BasecInfoTitle>
                 <BasecInfoSubTitle>
-                  {renderreferenceMonth(program.referenceMonth)}
+                  {cloneProgramStatus.loading ? <Skeleton variant="text" /> : <>{program.goal}</>}
+                </BasecInfoSubTitle>
+                <BasecInfoSubTitle>
+                  {cloneProgramStatus.loading ? (
+                    <Skeleton variant="text" />
+                  ) : (
+                    <>{renderreferenceMonth(program.referenceMonth)}</>
+                  )}
                 </BasecInfoSubTitle>
               </BasecInfoColumn1>
               <BasecInfoColumn2>
-                <BasecInfoTitle>PV: {program.pv}</BasecInfoTitle>
-                <BasecInfoSubTitle>Pace: {program.pace} </BasecInfoSubTitle>
+                <BasecInfoTitle>
+                  {cloneProgramStatus.loading ? <Skeleton variant="text" /> : <>PV: {program.pv}</>}
+                </BasecInfoTitle>
+                <BasecInfoSubTitle>
+                  {cloneProgramStatus.loading ? (
+                    <Skeleton variant="text" />
+                  ) : (
+                    <>Pace: {program.pace}</>
+                  )}
+                </BasecInfoSubTitle>
               </BasecInfoColumn2>
-              {false && (
-                <BasecColumnAction>
-                  <InputAdornment position="end" sx={{ mr: 1 }}>
-                    <ButtonIcon onClick={() => handleCopyProgram(program)}>
-                      <Tooltip title="Clonar treino" placement="top">
+              <BasecColumnAction>
+                <InputAdornment position="end" sx={{ mr: 1 }}>
+                  <ButtonIcon
+                    onClick={(event) =>
+                      cloneProgramStatus.loading ? null : handleCopyProgram(program, event)
+                    }
+                  >
+                    <Tooltip title="Clonar treino" placement="top">
+                      {cloneProgramStatus.loading ? (
+                        <Stack pt={2}>
+                          <Skeleton variant="rectangular" width={20} height={20} />
+                        </Stack>
+                      ) : (
                         <ContentCopyIcon sx={{ fontSize: '22px', width: '22px', height: '30px' }} />
-                      </Tooltip>
-                    </ButtonIcon>
-                  </InputAdornment>
-                </BasecColumnAction>
-              )}
+                      )}
+                    </Tooltip>
+                  </ButtonIcon>
+                </InputAdornment>
+              </BasecColumnAction>
             </ListItem>
             {program.difficultyLevel && (
-              <BaseHeader>{renderDifficultyLevel(program.difficultyLevel)}</BaseHeader>
+              <BaseHeader>
+                {cloneProgramStatus.loading ? (
+                  <Skeleton variant="text" />
+                ) : (
+                  <> {renderDifficultyLevel(program.difficultyLevel)}</>
+                )}
+              </BaseHeader>
             )}
             <Stack sx={{ p: 1 }} />
           </Stack>

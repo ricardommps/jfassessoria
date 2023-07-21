@@ -16,6 +16,11 @@ const initialState = {
     error: null,
   },
   updateProgramSuccess: null,
+  cloneProgramSuccess: null,
+  cloneProgramStatus: {
+    loading: false,
+    error: null,
+  },
 };
 
 const slice = createSlice({
@@ -86,6 +91,24 @@ const slice = createSlice({
       state.programs = null;
       state.program = null;
     },
+
+    cloneProgramStart(state) {
+      state.cloneProgramStatus.loading = true;
+      state.cloneProgramStatus.error = null;
+      state.cloneProgramSuccess = null;
+    },
+    cloneProgramFailure(state, action) {
+      state.cloneProgramStatus.loading = false;
+      state.cloneProgramStatus.error = action.payload;
+      state.cloneProgramSuccess = null;
+    },
+    cloneProgramSuccess(state, action) {
+      const program = action.payload;
+      state.cloneProgramSuccess = program;
+
+      state.cloneProgramStatus.loading = false;
+      state.cloneProgramStatus.error = null;
+    },
   },
 });
 
@@ -139,6 +162,19 @@ export function updateProgram(programUpadate, programId) {
       dispatch(slice.actions.updateProgramSuccess(response.data));
     } catch (error) {
       console.error(error);
+    }
+  };
+}
+
+export function cloneProgram(cloneProgram) {
+  return async (dispatch) => {
+    dispatch(slice.actions.cloneProgramSuccess());
+    try {
+      const data = { ...cloneProgram };
+      const response = await axios.post(API_ENDPOINTS.program.clone, data);
+      dispatch(slice.actions.cloneProgramSuccess(response.data));
+    } catch (error) {
+      dispatch(slice.actions.cloneProgramFailure(error));
     }
   };
 }
