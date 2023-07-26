@@ -6,6 +6,7 @@ import {
   createProgram,
   getProgramById,
   getPrograms,
+  sendProgram,
   updateProgram,
 } from 'src/redux/slices/program';
 import { useDispatch, useSelector } from 'src/redux/store';
@@ -20,6 +21,8 @@ export default function useProgram() {
     updateProgramSuccess,
     cloneProgramSuccess,
     cloneProgramStatus,
+    sendProgramSuccess,
+    sendProgramStatus,
   } = useSelector((state) => state.program);
   const onListPrograms = useCallback(
     (customerId) => {
@@ -64,6 +67,13 @@ export default function useProgram() {
     [dispatch],
   );
 
+  const onSendProgram = useCallback(
+    (newProgram) => {
+      dispatch(sendProgram(newProgram));
+    },
+    [dispatch],
+  );
+
   return {
     programs,
     programsStatus,
@@ -80,5 +90,8 @@ export default function useProgram() {
     cloneProgramSuccess,
     cloneProgramStatus,
     onCloneProgram,
+    onSendProgram,
+    sendProgramSuccess,
+    sendProgramStatus,
   };
 }

@@ -21,6 +21,11 @@ const initialState = {
     loading: false,
     error: null,
   },
+  sendProgramSuccess: false,
+  sendProgramStatus: {
+    loading: false,
+    error: null,
+  },
 };
 
 const slice = createSlice({
@@ -109,6 +114,23 @@ const slice = createSlice({
       state.cloneProgramStatus.loading = false;
       state.cloneProgramStatus.error = null;
     },
+
+    sendProgramStart(state) {
+      state.sendProgramStatus.loading = true;
+      state.sendProgramStatus.error = null;
+      state.sendProgramSuccess = null;
+    },
+    sendProgramFailure(state, action) {
+      state.sendProgramStatus.loading = false;
+      state.sendProgramStatus.error = action.payload;
+      state.sendProgramSuccess = null;
+    },
+    sendProgramSuccess(state, action) {
+      state.sendProgramSuccess = action.payload;
+
+      state.sendProgramStatus.loading = false;
+      state.sendProgramStatus.error = null;
+    },
   },
 });
 
@@ -168,13 +190,26 @@ export function updateProgram(programUpadate, programId) {
 
 export function cloneProgram(cloneProgram) {
   return async (dispatch) => {
-    dispatch(slice.actions.cloneProgramSuccess());
+    dispatch(slice.actions.cloneProgramStart());
     try {
       const data = { ...cloneProgram };
       const response = await axios.post(API_ENDPOINTS.program.clone, data);
       dispatch(slice.actions.cloneProgramSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.cloneProgramFailure(error));
+    }
+  };
+}
+
+export function sendProgram(sendPayload) {
+  return async (dispatch) => {
+    dispatch(slice.actions.sendProgramStart());
+    try {
+      const data = { ...sendPayload };
+      const response = await axios.post(API_ENDPOINTS.program.send, data);
+      dispatch(slice.actions.sendProgramSuccess(response.data));
+    } catch (error) {
+      dispatch(slice.actions.sendProgramFailure(error));
     }
   };
 }

@@ -1,4 +1,5 @@
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import NearMeIcon from '@mui/icons-material/NearMe';
 import Checkbox from '@mui/material/Checkbox';
 import InputAdornment from '@mui/material/InputAdornment';
 import Skeleton from '@mui/material/Skeleton';
@@ -23,8 +24,16 @@ import {
   ListItem,
 } from './styles';
 
-export default function ProgramItem({ onSelectedProgram, onCloneProgram, cloneProgramStatus }) {
+export default function ProgramItem({
+  onSelectedProgram,
+  onCloneProgram,
+  cloneProgramStatus,
+  handleOpenSend,
+  sendProgramStatus,
+}) {
   const { programs } = useProgram();
+
+  const loadingAction = cloneProgramStatus.loading || sendProgramStatus.loading;
 
   const handleCopyProgram = useCallback((program, e) => {
     e.stopPropagation();
@@ -70,12 +79,12 @@ export default function ProgramItem({ onSelectedProgram, onCloneProgram, clonePr
           <Stack
             key={program.id}
             onClick={() => {
-              cloneProgramStatus.loading ? null : onSelectedProgram(program.id);
+              loadingAction ? null : onSelectedProgram(program.id);
             }}
           >
             <ListItem>
               <CheckboxAction>
-                {cloneProgramStatus.loading ? (
+                {loadingAction ? (
                   <Stack pt={2}>
                     <Skeleton variant="rectangular" width={20} height={20} />
                   </Stack>
@@ -86,13 +95,13 @@ export default function ProgramItem({ onSelectedProgram, onCloneProgram, clonePr
 
               <BasecInfoColumn1>
                 <BasecInfoTitle>
-                  {cloneProgramStatus.loading ? <Skeleton variant="text" /> : <>{program.name}</>}
+                  {loadingAction ? <Skeleton variant="text" /> : <>{program.name}</>}
                 </BasecInfoTitle>
                 <BasecInfoSubTitle>
-                  {cloneProgramStatus.loading ? <Skeleton variant="text" /> : <>{program.goal}</>}
+                  {loadingAction ? <Skeleton variant="text" /> : <>{program.goal}</>}
                 </BasecInfoSubTitle>
                 <BasecInfoSubTitle>
-                  {cloneProgramStatus.loading ? (
+                  {loadingAction ? (
                     <Skeleton variant="text" />
                   ) : (
                     <>{renderreferenceMonth(program.referenceMonth)}</>
@@ -101,25 +110,19 @@ export default function ProgramItem({ onSelectedProgram, onCloneProgram, clonePr
               </BasecInfoColumn1>
               <BasecInfoColumn2>
                 <BasecInfoTitle>
-                  {cloneProgramStatus.loading ? <Skeleton variant="text" /> : <>PV: {program.pv}</>}
+                  {loadingAction ? <Skeleton variant="text" /> : <>PV: {program.pv}</>}
                 </BasecInfoTitle>
                 <BasecInfoSubTitle>
-                  {cloneProgramStatus.loading ? (
-                    <Skeleton variant="text" />
-                  ) : (
-                    <>Pace: {program.pace}</>
-                  )}
+                  {loadingAction ? <Skeleton variant="text" /> : <>Pace: {program.pace}</>}
                 </BasecInfoSubTitle>
               </BasecInfoColumn2>
               <BasecColumnAction>
                 <InputAdornment position="end" sx={{ mr: 1 }}>
                   <ButtonIcon
-                    onClick={(event) =>
-                      cloneProgramStatus.loading ? null : handleCopyProgram(program, event)
-                    }
+                    onClick={(event) => (loadingAction ? null : handleCopyProgram(program, event))}
                   >
-                    <Tooltip title="Clonar treino" placement="top">
-                      {cloneProgramStatus.loading ? (
+                    <Tooltip title="Clonar programa" placement="top">
+                      {loadingAction ? (
                         <Stack pt={2}>
                           <Skeleton variant="rectangular" width={20} height={20} />
                         </Stack>
@@ -128,12 +131,25 @@ export default function ProgramItem({ onSelectedProgram, onCloneProgram, clonePr
                       )}
                     </Tooltip>
                   </ButtonIcon>
+                  <ButtonIcon
+                    onClick={(event) => (loadingAction ? null : handleOpenSend(program, event))}
+                  >
+                    <Tooltip title="Enviar programa" placement="top">
+                      {loadingAction ? (
+                        <Stack pt={2}>
+                          <Skeleton variant="rectangular" width={20} height={20} />
+                        </Stack>
+                      ) : (
+                        <NearMeIcon sx={{ fontSize: '22px', width: '22px', height: '30px' }} />
+                      )}
+                    </Tooltip>
+                  </ButtonIcon>
                 </InputAdornment>
               </BasecColumnAction>
             </ListItem>
             {program.difficultyLevel && (
               <BaseHeader>
-                {cloneProgramStatus.loading ? (
+                {loadingAction ? (
                   <Skeleton variant="text" />
                 ) : (
                   <> {renderDifficultyLevel(program.difficultyLevel)}</>

@@ -1,37 +1,19 @@
 // @mui
 import Box from '@mui/material/Box';
-import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
 import { alpha, useTheme } from '@mui/material/styles';
-import Tooltip from '@mui/material/Tooltip';
-import Typography from '@mui/material/Typography';
 import PropTypes from 'prop-types';
 // auth
-import { useAuthContext } from 'src/auth/hooks';
 // components
 import Logo from 'src/components/logo';
 // hooks
 import { useResponsive } from 'src/hooks/use-responsive';
-import { RouterLink } from 'src/routes/components';
-// routes
-import { paths } from 'src/routes/paths';
 // theme
 import { bgGradient } from 'src/theme/css';
 
 // ----------------------------------------------------------------------
 
-const METHODS = [
-  {
-    id: 'jwt',
-    label: 'Jwt',
-    path: paths.auth.jwt.login,
-    icon: '/assets/icons/auth/ic_jwt.svg',
-  },
-];
-
-export default function AuthClassicLayout({ children, image, title }) {
-  const { method } = useAuthContext();
-
+export default function AuthClassicLayout({ children, image }) {
   const theme = useTheme();
 
   const upMd = useResponsive('up', 'md');

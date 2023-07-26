@@ -34,6 +34,7 @@ export const API_ENDPOINTS = {
     details: '/api/v2/program',
     register: '/api/v2/program',
     clone: '/api/v2/program/clone',
+    send: '/api/v2/program/sendProgram',
   },
   training: {
     list: '/api/v2/training/program',

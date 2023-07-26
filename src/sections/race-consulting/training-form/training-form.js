@@ -16,6 +16,8 @@ import FormProvider from 'src/components/hook-form/form-provider';
 import useProgram from 'src/hooks/use-program';
 import useTraining from 'src/hooks/use-training';
 import * as Yup from 'yup';
+
+import VideosForm from './videos-form';
 export default function TrainingForm({ handleCancel }) {
   const { training, onUpdateTraining, onCreateTraining } = useTraining();
   const { program } = useProgram();
@@ -31,6 +33,7 @@ export default function TrainingForm({ handleCancel }) {
       coverPath: training?.coverPath || '',
       datePublished: training?.datePublished || null,
       published: training?.published || false,
+      videos: training?.videos || null,
     }),
     [],
   );
@@ -118,6 +121,9 @@ export default function TrainingForm({ handleCancel }) {
               />
             </Stack>
             <RHFTextField name="description" label="Description" multiline rows={6} />
+            <Stack>
+              <VideosForm />
+            </Stack>
             <Stack alignItems="flex-start" sx={{ mb: 1 }}>
               <FormControlLabel
                 control={

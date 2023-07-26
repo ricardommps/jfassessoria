@@ -1,20 +1,13 @@
 import { Stack } from '@mui/material';
 import Checkbox from '@mui/material/Checkbox';
 import { format } from 'date-fns';
-import PropTypes from 'prop-types';
 import useTraining from 'src/hooks/use-training';
 
 import {
-  ActionsHeader,
-  Advanced,
   BasecInfoColumn1,
-  BasecInfoColumn2,
   BasecInfoSubTitle,
   BasecInfoTitle,
-  BaseHeader,
-  Beginner,
   CheckboxAction,
-  Container,
   ListItem,
 } from './styles';
 
