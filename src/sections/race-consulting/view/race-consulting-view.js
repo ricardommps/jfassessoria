@@ -37,7 +37,7 @@ export default function RaceConsultingView() {
       setTimeout(() => {
         const element = document.getElementById('training');
         element.scrollIntoView({ behavior: 'smooth' });
-      }, 100);
+      }, 500);
     }
   }, [showTraining]);
 
