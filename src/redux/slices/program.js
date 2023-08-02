@@ -2,6 +2,12 @@ import { createSlice } from '@reduxjs/toolkit';
 import axios, { API_ENDPOINTS } from 'src/utils/axios';
 
 const initialState = {
+  allPrograms: null,
+  allProgramsStatus: {
+    loading: false,
+    empty: false,
+    error: null,
+  },
   programs: null,
   programsStatus: {
     loading: false,
@@ -26,12 +32,37 @@ const initialState = {
     loading: false,
     error: null,
   },
+  viewPdf: false,
+  viewPdfStatus: {
+    loading: false,
+    error: null,
+  },
 };
 
 const slice = createSlice({
   name: 'program',
   initialState,
   reducers: {
+    getAllProgramsStart(state) {
+      state.allPrograms = null;
+      state.allProgramsStatus.empty = false;
+      state.allProgramsStatus.error = null;
+      state.allProgramsStatus.loading = true;
+    },
+    getAllProgramsFailure(state, action) {
+      state.allProgramsStatus.loading = false;
+      state.allProgramsStatus.empty = false;
+      state.allProgramsStatus.error = action.payload;
+      state.allPrograms = null;
+    },
+    getAllProgramsSuccess(state, action) {
+      const programs = action.payload;
+      state.allPrograms = programs;
+
+      state.allProgramsStatus.loading = false;
+      state.allProgramsStatus.empty = !programs.length;
+      state.allProgramsStatus.error = null;
+    },
     getProgramsStart(state) {
       state.programsStatus.loading = true;
       state.programsStatus.empty = false;
@@ -39,11 +70,16 @@ const slice = createSlice({
       state.programCreate = null;
       state.program = null;
       state.updateProgramSuccess = null;
+      state.allPrograms = null;
+      state.allProgramsStatus.empty = false;
+      state.allProgramsStatus.error = null;
+      state.allProgramsStatus.loading = false;
     },
     getProgramsFailure(state, action) {
       state.programsStatus.loading = false;
       state.programsStatus.empty = false;
       state.programsStatus.error = action.payload;
+      state.programs = null;
     },
     getProgramsSuccess(state, action) {
       const programs = action.payload;
@@ -131,10 +167,39 @@ const slice = createSlice({
       state.sendProgramStatus.loading = false;
       state.sendProgramStatus.error = null;
     },
+    getViewPdfStart(state) {
+      state.viewPdf = null;
+      state.viewPdfStatus.error = null;
+      state.viewPdfStatus.loading = true;
+    },
+    getViewPdfFailure(state, action) {
+      state.viewPdfStatus.loading = false;
+      state.viewPdfStatus.error = action.payload;
+      state.viewPdf = null;
+    },
+    getViewPdfSuccess(state, action) {
+      const viewPdf = action.payload;
+      state.viewPdf = viewPdf;
+
+      state.viewPdfStatus.loading = false;
+      state.viewPdfStatus.error = null;
+    },
   },
 });
 
 export default slice.reducer;
+
+export function getAllPrograms() {
+  return async (dispatch) => {
+    dispatch(slice.actions.getAllProgramsStart());
+    try {
+      const response = await axios.get(`${API_ENDPOINTS.program.all}`);
+      dispatch(slice.actions.getAllProgramsSuccess(response.data));
+    } catch (error) {
+      dispatch(slice.actions.getAllProgramsFailure(error));
+    }
+  };
+}
 
 export function getPrograms(customerId) {
   return async (dispatch) => {
@@ -223,5 +288,17 @@ export function clearProgram() {
 export function clearPrograms() {
   return async (dispatch) => {
     dispatch(slice.actions.clearPrograms());
+  };
+}
+
+export function getViewPdf(programId) {
+  return async (dispatch) => {
+    dispatch(slice.actions.getViewPdfStart());
+    try {
+      const response = await axios.get(`${API_ENDPOINTS.program.viewPdf}/${programId}`);
+      dispatch(slice.actions.getViewPdfSuccess(response.data));
+    } catch (error) {
+      dispatch(slice.actions.getViewPdfFailure(error));
+    }
   };
 }

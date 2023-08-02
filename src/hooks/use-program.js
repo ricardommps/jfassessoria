@@ -4,8 +4,10 @@ import {
   clearPrograms,
   cloneProgram,
   createProgram,
+  getAllPrograms,
   getProgramById,
   getPrograms,
+  getViewPdf,
   sendProgram,
   updateProgram,
 } from 'src/redux/slices/program';
@@ -13,6 +15,8 @@ import { useDispatch, useSelector } from 'src/redux/store';
 export default function useProgram() {
   const dispatch = useDispatch();
   const {
+    allPrograms,
+    allProgramsStatus,
     programs,
     programsStatus,
     programCreate,
@@ -23,13 +27,20 @@ export default function useProgram() {
     cloneProgramStatus,
     sendProgramSuccess,
     sendProgramStatus,
+    viewPdf,
+    viewPdfStatus,
   } = useSelector((state) => state.program);
+
   const onListPrograms = useCallback(
     (customerId) => {
       dispatch(getPrograms(customerId));
     },
     [dispatch],
   );
+
+  const onListAllPrograms = useCallback(() => {
+    dispatch(getAllPrograms());
+  }, [dispatch]);
 
   const onCreateProgram = useCallback(
     (newProgram) => {
@@ -74,13 +85,23 @@ export default function useProgram() {
     [dispatch],
   );
 
+  const onViewPdf = useCallback(
+    (programId) => {
+      dispatch(getViewPdf(programId));
+    },
+    [dispatch],
+  );
+
   return {
+    allPrograms,
+    allProgramsStatus,
     programs,
     programsStatus,
     programCreate,
     program,
     programStatus,
     updateProgramSuccess,
+    onListAllPrograms,
     onListPrograms,
     onClearProgram,
     onCreateProgram,
@@ -93,5 +114,8 @@ export default function useProgram() {
     onSendProgram,
     sendProgramSuccess,
     sendProgramStatus,
+    onViewPdf,
+    viewPdf,
+    viewPdfStatus,
   };
 }

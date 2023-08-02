@@ -7,7 +7,7 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import useCustomer from 'src/hooks/use-customer';
 
-export default function CustomerList({ onSelectCustomer }) {
+export default function CustomerList({ onSelectCustomer, currentCustomerId }) {
   const { customers } = useCustomer();
   return (
     <>
@@ -20,6 +20,7 @@ export default function CustomerList({ onSelectCustomer }) {
                 key={customer.id}
                 secondaryAction={
                   <Checkbox
+                    disabled={customer.id === currentCustomerId}
                     onChange={() => onSelectCustomer(customer.id)}
                     edge="end"
                     inputProps={{ 'aria-labelledby': labelId }}
@@ -27,7 +28,7 @@ export default function CustomerList({ onSelectCustomer }) {
                 }
                 disablePadding
               >
-                <ListItemButton>
+                <ListItemButton disabled={customer.id === currentCustomerId}>
                   <ListItemText
                     id={labelId}
                     primary={customer.name}

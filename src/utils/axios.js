@@ -31,15 +31,17 @@ export const API_ENDPOINTS = {
   customer: '/api/v2/customer',
   program: {
     list: '/api/v2/program/customer',
-    details: '/api/v2/program',
     register: '/api/v2/program',
     clone: '/api/v2/program/clone',
     send: '/api/v2/program/sendProgram',
+    all: 'api/v2/program',
+    viewPdf: 'api/v2/program/viewPdf',
   },
   training: {
     list: '/api/v2/training/program',
     details: '/api/v2/training',
     register: '/api/v2/training',
+    send: '/api/v2/training/sendTraining',
   },
   mail: {
     list: '/api/mail/list',

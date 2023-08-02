@@ -13,10 +13,15 @@ import useTraining from 'src/hooks/use-training';
 
 import { CustomersList } from './customer-list';
 
-export default function Customer() {
+export default function Customer({
+  handleOpenNewCustomer,
+  customerForm,
+  setCustomerForm,
+  programs,
+}) {
   const settings = useSettingsContext();
   const { customers, onListCustomers, onCustomerById } = useCustomer();
-  const { onListPrograms, onClearPrograms, onClearProgram } = useProgram();
+  const { onListPrograms, onClearPrograms, onClearProgram, cloneProgramSuccess } = useProgram();
   const { onShowTraining, onClearTrainings } = useTraining();
 
   const isNavMini = settings.themeLayout === 'mini';
@@ -24,6 +29,7 @@ export default function Customer() {
   const handleOpenProgram = (customerId) => {
     onCustomerById(customerId);
     onListPrograms(customerId);
+    setCustomerForm(false);
   };
 
   const handleOpenCustomer = (id) => {
@@ -32,11 +38,35 @@ export default function Customer() {
     onClearProgram();
     onShowTraining(false);
     onClearTrainings();
+    setCustomerForm(true);
   };
 
   useEffect(() => {
     onListCustomers();
   }, []);
+
+  useEffect(() => {
+    if (cloneProgramSuccess) {
+      onListCustomers();
+    }
+  }, [cloneProgramSuccess]);
+
+  const getWidth = () => {
+    if (customerForm || programs) {
+      if (isNavMini) {
+        return '60vw';
+      }
+      return '50vw';
+    }
+
+    if (!customerForm || !programs) {
+      if (isNavMini) {
+        return '87vw';
+      }
+      return '77vw';
+    }
+    return '50vw';
+  };
 
   return (
     <Paper
@@ -50,9 +80,13 @@ export default function Customer() {
         <Stack p={2}>
           <Typography variant="h3">Alunos</Typography>
         </Stack>
-        <Stack spacing={2} sx={{ width: isNavMini ? '60vw' : '50vw', py: 3, height: '67vh' }}>
+        <Stack spacing={2} sx={{ width: getWidth(), py: 3, height: '67vh' }}>
           <Scrollbar>
-            <Button variant="contained" startIcon={<Iconify icon="mingcute:add-line" />}>
+            <Button
+              variant="contained"
+              startIcon={<Iconify icon="mingcute:add-line" />}
+              onClick={handleOpenNewCustomer}
+            >
               Novo
             </Button>
             <Card sx={{ backgroundColor: 'rgba(22, 28, 36, 0.8)', mt: 3 }}>

@@ -1,11 +1,13 @@
 import { useCallback } from 'react';
 import {
+  callCloneTraining,
   callShowTraining,
   clearTraining,
   clearTrainings,
   createTraining,
   getTrainingById,
   getTrainings,
+  sendTraining,
   updateTraining,
 } from 'src/redux/slices/training';
 import { useDispatch, useSelector } from 'src/redux/store';
@@ -19,6 +21,10 @@ export default function useTraining() {
     trainingStatus,
     updateTrainingSuccess,
     showTraining,
+    cloneTraining,
+    cloneTrainingStatus,
+    sendTrainingSuccess,
+    sendTrainingStatus,
   } = useSelector((state) => state.training);
   const onListTrainings = useCallback(
     (programId) => {
@@ -30,6 +36,13 @@ export default function useTraining() {
   const onCreateTraining = useCallback(
     (newTraining) => {
       dispatch(createTraining(newTraining));
+    },
+    [dispatch],
+  );
+
+  const onCloneTraining = useCallback(
+    (newTraining) => {
+      dispatch(callCloneTraining(newTraining));
     },
     [dispatch],
   );
@@ -63,12 +76,21 @@ export default function useTraining() {
     [dispatch],
   );
 
+  const onSendTraining = useCallback(
+    (newTraining) => {
+      dispatch(sendTraining(newTraining));
+    },
+    [dispatch],
+  );
+
   return {
     trainings,
     trainingsStatus,
     trainingCreate,
     training,
     trainingStatus,
+    cloneTraining,
+    cloneTrainingStatus,
     updateTrainingSuccess,
     onListTrainings,
     onClearTraining,
@@ -78,5 +100,9 @@ export default function useTraining() {
     onClearTrainings,
     onShowTraining,
     showTraining,
+    onCloneTraining,
+    onSendTraining,
+    sendTrainingSuccess,
+    sendTrainingStatus,
   };
 }

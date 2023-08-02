@@ -9,6 +9,11 @@ const initialState = {
     error: null,
   },
   trainingCreate: null,
+  cloneTraining: null,
+  cloneTrainingStatus: {
+    loading: false,
+    error: null,
+  },
   training: null,
   trainingStatus: {
     loading: false,
@@ -17,6 +22,11 @@ const initialState = {
   },
   showTraining: false,
   updateTrainingSuccess: null,
+  sendTrainingSuccess: false,
+  sendTrainingStatus: {
+    loading: false,
+    error: null,
+  },
 };
 
 const slice = createSlice({
@@ -30,6 +40,9 @@ const slice = createSlice({
       state.trainingCreate = null;
       state.training = null;
       state.updateTrainingSuccess = null;
+      state.cloneTrainingStatus.loading = false;
+      state.cloneTrainingStatus.error = null;
+      state.cloneTraining = null;
     },
     getTrainingsFailure(state, action) {
       state.trainingsStatus.loading = false;
@@ -90,6 +103,37 @@ const slice = createSlice({
 
     showTraining(state, action) {
       state.showTraining = action.payload;
+    },
+    cloneTrainingStart(state) {
+      state.cloneTrainingStatus.loading = true;
+      state.cloneTrainingStatus.error = null;
+      state.cloneTraining = null;
+    },
+    cloneTrainingStartFailure(state, action) {
+      state.cloneTrainingStatus.loading = false;
+      state.cloneTrainingStatus.error = action.payload;
+      state.cloneTraining = null;
+    },
+    cloneTrainingStartSuccess(state, action) {
+      state.cloneTrainingStatus.loading = false;
+      state.cloneTrainingStatus.error = null;
+      state.cloneTraining = action.payload;
+    },
+    sendTrainingStart(state) {
+      state.sendTrainingStatus.loading = true;
+      state.sendTrainingStatus.error = null;
+      state.sendTrainingSuccess = null;
+    },
+    sendTrainingFailure(state, action) {
+      state.sendTrainingStatus.loading = false;
+      state.sendTrainingStatus.error = action.payload;
+      state.sendTrainingSuccess = null;
+    },
+    sendTrainingSuccess(state, action) {
+      state.sendTrainingSuccess = action.payload;
+
+      state.sendTrainingStatus.loading = false;
+      state.sendTrainingStatus.error = null;
     },
   },
 });
@@ -163,5 +207,32 @@ export function clearTrainings() {
 export function callShowTraining(status) {
   return async (dispatch) => {
     dispatch(slice.actions.showTraining(status));
+  };
+}
+
+export function callCloneTraining(trainingData) {
+  return async (dispatch) => {
+    dispatch(slice.actions.cloneTrainingStart());
+    try {
+      const data = { ...trainingData };
+      const response = await axios.post(API_ENDPOINTS.training.register, data);
+      dispatch(slice.actions.cloneTrainingStartSuccess(response.data));
+    } catch (error) {
+      console.error(error);
+      dispatch(slice.actions.cloneTrainingStartFailure(error));
+    }
+  };
+}
+
+export function sendTraining(sendPayload) {
+  return async (dispatch) => {
+    dispatch(slice.actions.sendTrainingStart());
+    try {
+      const data = { ...sendPayload };
+      const response = await axios.post(API_ENDPOINTS.training.send, data);
+      dispatch(slice.actions.sendTrainingSuccess(response.data));
+    } catch (error) {
+      dispatch(slice.actions.sendTrainingFailure(error));
+    }
   };
 }

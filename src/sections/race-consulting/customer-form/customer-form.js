@@ -25,7 +25,7 @@ export const GENDER_OPTIONS = [
   { label: 'Criança', value: 'Kids' },
 ];
 
-export default function CustomerForm() {
+export default function CustomerForm({ handleCloseNewCustomer }) {
   const {
     customer,
     customerStatus,
@@ -98,6 +98,7 @@ export default function CustomerForm() {
   const handleCancel = () => {
     reset({ ...defaultValues });
     onClearCustome();
+    handleCloseNewCustomer();
   };
 
   useEffect(() => {

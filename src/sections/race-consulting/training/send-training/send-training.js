@@ -8,16 +8,15 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Iconify from 'src/components/iconify/iconify';
 
-import CustomerList from './customer-list';
-
-export default function SendProgram({
+import ProgramsList from './programs-list';
+export default function SendTraining({
   open,
   onClose,
-  program,
-  onSelectCustomer,
-  handleSendProgram,
-  sendProgramStatus,
-  customersIdSelected,
+  training,
+  onSelectProgram,
+  handleSendTraining,
+  sendTrainingStatus,
+  programsIdSelected,
   ...other
 }) {
   return (
@@ -31,23 +30,23 @@ export default function SendProgram({
         <Stack alignItems="center" direction="column">
           <Stack alignItems="center" pb={2}>
             <Iconify icon="eva:people-outline" width={30} />
-            <Typography>Selecione alunos para este programa</Typography>
-            <Typography sx={{ fontWeight: 800 }}>{program?.name}</Typography>
+            <Typography>Selecione programas para este treino</Typography>
+            <Typography sx={{ fontWeight: 800 }}>{training.name}</Typography>
           </Stack>
         </Stack>
       </DialogTitle>
       <DialogContent dividers>
-        <CustomerList onSelectCustomer={onSelectCustomer} currentCustomerId={program.customerId} />
+        <ProgramsList onSelectProgram={onSelectProgram} />
       </DialogContent>
       <DialogActions>
         <Button autoFocus onClick={onClose}>
           Cancelar
         </Button>
         <LoadingButton
-          onClick={handleSendProgram}
+          onClick={handleSendTraining}
           variant="contained"
-          loading={sendProgramStatus.loading}
-          disabled={customersIdSelected.length === 0}
+          loading={sendTrainingStatus.loading}
+          disabled={programsIdSelected.length === 0}
         >
           Enviar
         </LoadingButton>

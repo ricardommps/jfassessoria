@@ -1,13 +1,17 @@
+import CloseIcon from '@mui/icons-material/Close';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
+import IconButton from '@mui/material/IconButton';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { enqueueSnackbar } from 'notistack';
 import { useCallback, useEffect, useState } from 'react';
+import { ConfirmDialog } from 'src/components/confirm-dialog';
 import Iconify from 'src/components/iconify/iconify';
 import Scrollbar from 'src/components/scrollbar/scrollbar';
+import { useBoolean } from 'src/hooks/use-boolean';
 import useCustomer from 'src/hooks/use-customer';
 import useProgram from 'src/hooks/use-program';
 import useTraining from 'src/hooks/use-training';
@@ -17,6 +21,7 @@ import ProgramasList from './programs-list';
 import SendProgram from './send-program/send-program';
 export default function Program() {
   const { customer, onListCustomers } = useCustomer();
+  const confirm = useBoolean();
   const {
     onProgramById,
     programStatus,
@@ -31,18 +36,22 @@ export default function Program() {
     onSendProgram,
     sendProgramSuccess,
     sendProgramStatus,
+    onClearPrograms,
   } = useProgram();
 
   const { onShowTraining, onListTrainings, onClearTrainings } = useTraining();
 
   const [newProduct, setNewProduct] = useState(false);
-
   const [openSend, setOpenSend] = useState({
     open: false,
     program: null,
   });
-
   const [customersIdSelected, setCustomersIdSelected] = useState([]);
+  const [action, setAction] = useState({
+    title: null,
+    message: null,
+    program: null,
+  });
 
   const handleSelectCustomer = useCallback(
     (inputValue) => {
@@ -56,6 +65,17 @@ export default function Program() {
   );
 
   const handleSendProgram = useCallback(() => {
+    confirm.onTrue();
+    setAction({
+      title: 'Enviar',
+      message: 'Tem certeza que deseja enviar esse programa para outros alunos?',
+      program: openSend.program,
+    });
+  }, []);
+
+  const onConfirmSendProgram = () => {
+    confirm.onFalse();
+    setAction(null);
     const payload = Object.assign({}, openSend.program);
     delete payload.id;
     delete payload.customerId;
@@ -68,7 +88,7 @@ export default function Program() {
     });
     payload.trainings = [...newTrainings];
     onSendProgram(payload);
-  }, [customersIdSelected, openSend]);
+  };
 
   const handleOpenSend = (program, event) => {
     event.stopPropagation();
@@ -81,7 +101,7 @@ export default function Program() {
   const handleCloseSend = () => {
     setOpenSend({
       open: false,
-      programName: null,
+      program: null,
     });
   };
 
@@ -96,6 +116,11 @@ export default function Program() {
   const handleNewProduct = () => {
     setNewProduct(true);
     onClearProgram();
+  };
+
+  const handleCloseProgram = () => {
+    onClearPrograms();
+    handleClear();
   };
 
   const handleClear = () => {
@@ -148,7 +173,7 @@ export default function Program() {
       onListCustomers();
       enqueueSnackbar(
         sendProgramSuccess.status === 200
-          ? 'Programa clonado com sucesso!'
+          ? 'Programa enviado com sucesso!'
           : 'Falha ao enviar programa',
         {
           autoHideDuration: 3000,
@@ -169,11 +194,18 @@ export default function Program() {
         }}
       >
         <Stack>
-          <Stack p={2}>
-            <Typography variant="h3">Programas de Corrida</Typography>
-            <Typography variant="h6" component="div">
-              {customer?.name}
-            </Typography>
+          <Stack p={2} direction="row">
+            <Stack direction="column" flexGrow={'1'}>
+              <Typography variant="h3">Programas de Corrida</Typography>
+              <Typography variant="h6" component="div">
+                {customer?.name}
+              </Typography>
+            </Stack>
+            <Stack pt={2}>
+              <IconButton aria-label="close" onClick={handleCloseProgram}>
+                <CloseIcon />
+              </IconButton>
+            </Stack>
           </Stack>
           <Stack spacing={3} sx={{ width: '25vw', py: 1, height: 'calc(100vh - 340px)' }}>
             <Scrollbar>
@@ -234,8 +266,20 @@ export default function Program() {
           onSelectCustomer={handleSelectCustomer}
           handleSendProgram={handleSendProgram}
           sendProgramStatus={sendProgramStatus}
+          customersIdSelected={customersIdSelected}
         />
       )}
+      <ConfirmDialog
+        open={confirm.value}
+        onClose={confirm.onFalse}
+        title={action?.title}
+        content={action?.message}
+        action={
+          <Button variant="contained" color="error" onClick={onConfirmSendProgram}>
+            Confirmar
+          </Button>
+        }
+      />
     </>
   );
 }

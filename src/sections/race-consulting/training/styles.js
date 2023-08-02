@@ -133,3 +133,12 @@ export const StyledDialogActions = styled('div')(() => ({
   minHeight: '52px',
   alignItems: 'center',
 }));
+
+export const BasecColumnAction = styled('div')(() => ({
+  float: 'left',
+  width: '168px',
+  height: '60px',
+  display: 'flex',
+  justifyContent: 'center',
+  flexDirection: 'column',
+}));
