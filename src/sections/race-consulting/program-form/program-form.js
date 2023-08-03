@@ -14,12 +14,15 @@ import { useForm } from 'react-hook-form';
 import { RHFSelect, RHFTextField } from 'src/components/hook-form';
 import FormProvider from 'src/components/hook-form/form-provider';
 import Iconify from 'src/components/iconify/iconify';
+import { useBoolean } from 'src/hooks/use-boolean';
 import useCustomer from 'src/hooks/use-customer';
 import useProgram from 'src/hooks/use-program';
 import { extrapolation } from 'src/utils/extrapolation';
 import { fPercent } from 'src/utils/format-number';
+import { runningPace } from 'src/utils/running-pace';
 import * as Yup from 'yup';
 
+import DialogTablePaceSpeed from './dialog-table-pace-speed';
 import { ExtrapolativeValidity } from './extrapolative-validity';
 import ReferenceMonthDate from './reference-month-date';
 import { ResultadoPv } from './resultado-pv';
@@ -51,6 +54,8 @@ export default function ProgramForm({ handleClear }) {
 
   const { customer } = useCustomer();
 
+  const openTable = useBoolean();
+
   const [currentExtrapolation, setCurrentExtrapolation] = useState(null);
   const [showEstrapolativeTable, setShowEstrapolativeTable] = useState(false);
   const [showResultPv, setShowResulPv] = useState(false);
@@ -72,7 +77,7 @@ export default function ProgramForm({ handleClear }) {
       paceVla: program?.paceVla || '',
       pv: program?.pv || '',
       pace: program?.pace || '',
-      test: program?.test || '',
+      test: program?.test || null,
       dateTest: program?.dateTest || null,
       customerId: program?.customerId || customer.id,
       active: false,
@@ -80,7 +85,6 @@ export default function ProgramForm({ handleClear }) {
     }),
     [],
   );
-
   const methods = useForm({
     resolver: yupResolver(NewProgramSchema),
     defaultValues,
@@ -101,7 +105,7 @@ export default function ProgramForm({ handleClear }) {
       const resultValue = fPercent(values.pv, 80);
       if (resultValue > 0) {
         setValue('vlan', resultValue.toString());
-        const resultValueRound = parseInt(resultValue);
+        const resultValueRound = parseFloat(Math.ceil(resultValue * 2) / 2).toFixed(2);
         const getPace = 60 / resultValueRound;
         setValue('paceVlan', getPace.toFixed(1));
       }
@@ -114,7 +118,7 @@ export default function ProgramForm({ handleClear }) {
       const resultValue = fPercent(values.pv, percent);
       if (resultValue > 0) {
         setValue('vla', resultValue.toString());
-        const resultValueRound = parseInt(resultValue);
+        const resultValueRound = parseFloat(Math.ceil(resultValue * 2) / 2).toFixed(2);
         const getPace = 60 / resultValueRound;
         setValue('paceVla', getPace.toFixed(1));
       }
@@ -275,6 +279,14 @@ export default function ProgramForm({ handleClear }) {
               </IconButton>
             </Stack>
           )}
+          {currentExtrapolation && values.vlan && values.difficultyLevel && (
+            <Stack spacing={1.5} direction="row" mt={3}>
+              <Typography>Tabela Pace/Km</Typography>
+              <IconButton sx={{ padding: 0 }} onClick={openTable.onTrue}>
+                <Iconify icon="eva:info-outline" />
+              </IconButton>
+            </Stack>
+          )}
           <Stack alignItems="flex-end" sx={{ mt: 3 }} spacing={2}>
             <LoadingButton type="submit" variant="contained" loading={isSubmitting} fullWidth>
               Salvar
@@ -331,6 +343,15 @@ export default function ProgramForm({ handleClear }) {
           pace={values.pace}
           VO2={currentExtrapolation?.VO2}
           fc={getFcValue()}
+        />
+      )}
+      {openTable.value && (
+        <DialogTablePaceSpeed
+          open={openTable.value}
+          onClose={openTable.onFalse}
+          pace={values.pace}
+          paceVla={values.paceVla}
+          paceVlan={values.paceVlan}
         />
       )}
     </>

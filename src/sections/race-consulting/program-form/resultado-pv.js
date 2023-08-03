@@ -116,7 +116,7 @@ export function ResultadoPv({ open, onClose, vla, paceVla, vlan, paceVlan, pace,
             </Stack>
             <Stack direction="row" spacing={0}>
               <ListItemText
-                primary={'Pace - Vla: '}
+                primary={'Pace - Vlan: '}
                 primaryTypographyProps={{
                   typography: 'subtitle1',
                 }}
