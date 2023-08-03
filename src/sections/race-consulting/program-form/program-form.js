@@ -140,7 +140,8 @@ export default function ProgramForm({ handleClear }) {
   };
 
   const handleChangePv = (event) => {
-    const getPace = 60 / parseInt(event.target.value);
+    const resultValueRound = parseFloat(Math.ceil(parseInt(event.target.value) * 2) / 2).toFixed(2);
+    const getPace = 60 / resultValueRound;
     setValue('pace', getPace.toFixed(1));
     setValue('pv', event.target.value);
   };
