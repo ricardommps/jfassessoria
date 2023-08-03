@@ -106,7 +106,8 @@ export default function ProgramForm({ handleClear }) {
         setValue('vlan', resultValue.toString());
         const resultValueRound = parseFloat(Math.ceil(resultValue * 2) / 2).toFixed(2);
         const getPace = 60 / resultValueRound;
-        setValue('paceVlan', getPace.toFixed(1));
+        const result = parseFloat(Math.ceil(getPace * 2) / 2).toFixed(2);
+        setValue('paceVlan', result);
       }
     }
   };
@@ -119,7 +120,8 @@ export default function ProgramForm({ handleClear }) {
         setValue('vla', resultValue.toString());
         const resultValueRound = parseFloat(Math.ceil(resultValue * 2) / 2).toFixed(2);
         const getPace = 60 / resultValueRound;
-        setValue('paceVla', getPace.toFixed(1));
+        const result = parseFloat(Math.ceil(getPace * 2) / 2).toFixed(2);
+        setValue('paceVla', result);
       }
     }
   };
@@ -142,7 +144,8 @@ export default function ProgramForm({ handleClear }) {
   const handleChangePv = (event) => {
     const resultValueRound = parseFloat(Math.ceil(parseInt(event.target.value) * 2) / 2).toFixed(2);
     const getPace = 60 / resultValueRound;
-    setValue('pace', getPace.toFixed(1));
+    const result = parseFloat(Math.ceil(getPace * 2) / 2).toFixed(2);
+    setValue('pace', result);
     setValue('pv', event.target.value);
   };
 
