@@ -53,7 +53,6 @@ export default function ProgramForm({ handleClear }) {
   const { program, onUpdateProgram, onCreateProgram } = useProgram();
 
   const { customer } = useCustomer();
-
   const openTable = useBoolean();
 
   const [currentExtrapolation, setCurrentExtrapolation] = useState(null);
