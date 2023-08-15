@@ -48,6 +48,7 @@ export default function SendProgram({
           variant="contained"
           loading={sendProgramStatus.loading}
           disabled={customersIdSelected.length === 0}
+          color="success"
         >
           Enviar
         </LoadingButton>

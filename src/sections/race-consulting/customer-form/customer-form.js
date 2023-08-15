@@ -1,4 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup';
+import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
 import LoadingButton from '@mui/lab/LoadingButton';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -7,6 +8,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
+import Switch from '@mui/material/Switch';
 import Typography from '@mui/material/Typography';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
@@ -25,7 +27,7 @@ export const GENDER_OPTIONS = [
   { label: 'Criança', value: 'Kids' },
 ];
 
-export default function CustomerForm({ handleCloseNewCustomer }) {
+export default function CustomerForm({ handleCloseNewCustomer, isMobile = false }) {
   const {
     customer,
     customerStatus,
@@ -49,6 +51,7 @@ export default function CustomerForm({ handleCloseNewCustomer }) {
       isStrength: customer?.isStrength || false,
       gender: customer?.gender || 'Women',
       birthDate: customer?.birthDate || null,
+      active: customer?.active || false,
     }),
     [customer],
   );
@@ -101,6 +104,13 @@ export default function CustomerForm({ handleCloseNewCustomer }) {
     handleCloseNewCustomer();
   };
 
+  const handleChangeActive = useCallback(
+    (event) => {
+      setValue('active', event.target.checked);
+    },
+    [setValue],
+  );
+
   useEffect(() => {
     if (customerCreate) {
       onListCustomers();
@@ -134,6 +144,13 @@ export default function CustomerForm({ handleCloseNewCustomer }) {
       }}
     >
       <Stack>
+        {isMobile && (
+          <Stack justifyContent={'flex-start'} alignItems={'flex-start'}>
+            <Button onClick={handleCancel} startIcon={<ArrowCircleLeftIcon />}>
+              Voltar
+            </Button>
+          </Stack>
+        )}
         <Stack p={2}>
           <Typography variant="h3">Formulário</Typography>
           <Typography sx={{ fontSize: '1.5em', fontWeight: 'bold', color: '#f7951e' }}>
@@ -147,7 +164,7 @@ export default function CustomerForm({ handleCloseNewCustomer }) {
           </Typography>
         </Stack>
 
-        <Stack spacing={2} sx={{ width: '25vw', py: 1, height: '60vh' }}>
+        <Stack spacing={2} sx={{ width: !isMobile ? '25vw' : '84vw', py: 1, height: '60vh' }}>
           <Scrollbar>
             {customerStatus?.loading && (
               <Box
@@ -236,6 +253,17 @@ export default function CustomerForm({ handleCloseNewCustomer }) {
                       )}
                     />
                   </Stack>
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={Boolean(values.active)}
+                        color="primary"
+                        onChange={handleChangeActive}
+                      />
+                    }
+                    label="Aluno ativo"
+                    labelPlacement="end"
+                  />
                   <Stack alignItems="flex-end" sx={{ mt: 3 }} spacing={2}>
                     <LoadingButton
                       type="submit"

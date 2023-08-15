@@ -26,6 +26,10 @@ export function SettingsProvider({ children, defaultSettings }) {
     }
   }, [isArabic]);
 
+  useEffect(() => {
+    onReset();
+  }, []);
+
   const onUpdate = useCallback(
     (name, value) => {
       setSettings((prevState) => ({

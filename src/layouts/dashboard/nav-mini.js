@@ -9,7 +9,7 @@ import { useMockedUser } from 'src/hooks/use-mocked-user';
 // theme
 import { hideScroll } from 'src/theme/css';
 
-import { NavToggleButton } from '../_common';
+// import { NavToggleButton } from '../_common';
 //
 import { NAV } from '../config-layout';
 import { useNavData } from './config-navigation';
@@ -29,12 +29,12 @@ export default function NavMini() {
         width: { lg: NAV.W_MINI },
       }}
     >
-      <NavToggleButton
+      {/*  <NavToggleButton
         sx={{
           top: 22,
           left: NAV.W_MINI - 12,
         }}
-      />
+      /> */}
 
       <Stack
         sx={{

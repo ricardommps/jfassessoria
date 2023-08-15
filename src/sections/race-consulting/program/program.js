@@ -1,3 +1,4 @@
+import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
 import CloseIcon from '@mui/icons-material/Close';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -7,7 +8,8 @@ import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { enqueueSnackbar } from 'notistack';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
+import { useUpdateEffect } from 'react-use';
 import { ConfirmDialog } from 'src/components/confirm-dialog';
 import Iconify from 'src/components/iconify/iconify';
 import Scrollbar from 'src/components/scrollbar/scrollbar';
@@ -19,7 +21,7 @@ import useTraining from 'src/hooks/use-training';
 import ProgramForm from '../program-form/program-form';
 import ProgramasList from './programs-list';
 import SendProgram from './send-program/send-program';
-export default function Program() {
+export default function Program({ isMobile = false }) {
   const { customer, onListCustomers } = useCustomer();
   const confirm = useBoolean();
   const {
@@ -32,11 +34,11 @@ export default function Program() {
     programCreate,
     cloneProgramSuccess,
     cloneProgramStatus,
-    onCloneProgram,
     onSendProgram,
     sendProgramSuccess,
     sendProgramStatus,
     onClearPrograms,
+    deleteProgram,
   } = useProgram();
 
   const { onShowTraining, onListTrainings, onClearTrainings } = useTraining();
@@ -88,6 +90,7 @@ export default function Program() {
     });
     payload.trainings = [...newTrainings];
     onSendProgram(payload);
+    setCustomersIdSelected([]);
   };
 
   const handleOpenSend = (program, event) => {
@@ -99,6 +102,7 @@ export default function Program() {
   };
 
   const handleCloseSend = () => {
+    setCustomersIdSelected([]);
     setOpenSend({
       open: false,
       program: null,
@@ -131,7 +135,7 @@ export default function Program() {
     setOpenSend(null);
     setCustomersIdSelected([]);
   };
-  useEffect(() => {
+  useUpdateEffect(() => {
     if (updateProgramSuccess) {
       onListPrograms(customer.id);
       onListCustomers();
@@ -140,7 +144,7 @@ export default function Program() {
     }
   }, [updateProgramSuccess]);
 
-  useEffect(() => {
+  useUpdateEffect(() => {
     if (programCreate) {
       setNewProduct(false);
       onListPrograms(customer.id);
@@ -153,7 +157,7 @@ export default function Program() {
     }
   }, [programCreate]);
 
-  useEffect(() => {
+  useUpdateEffect(() => {
     if (cloneProgramSuccess) {
       setNewProduct(false);
       onListPrograms(customer.id);
@@ -166,7 +170,7 @@ export default function Program() {
     }
   }, [cloneProgramSuccess]);
 
-  useEffect(() => {
+  useUpdateEffect(() => {
     if (sendProgramSuccess) {
       setNewProduct(false);
       onListPrograms(customer.id);
@@ -184,6 +188,19 @@ export default function Program() {
     }
   }, [sendProgramSuccess]);
 
+  useUpdateEffect(() => {
+    if (deleteProgram) {
+      setNewProduct(false);
+      onListPrograms(customer.id);
+      onListCustomers();
+      enqueueSnackbar('Programa deletado com sucesso!', {
+        autoHideDuration: 3000,
+        variant: 'success',
+      });
+      handleClear();
+    }
+  }, [deleteProgram]);
+
   return (
     <>
       <Paper
@@ -193,6 +210,13 @@ export default function Program() {
           bgcolor: 'background.neutral',
         }}
       >
+        {isMobile && (
+          <Stack justifyContent={'flex-start'} alignItems={'flex-start'}>
+            <Button onClick={handleCloseProgram} startIcon={<ArrowCircleLeftIcon />}>
+              Voltar
+            </Button>
+          </Stack>
+        )}
         <Stack>
           <Stack p={2} direction="row">
             <Stack direction="column" flexGrow={'1'}>
@@ -201,13 +225,18 @@ export default function Program() {
                 {customer?.name}
               </Typography>
             </Stack>
-            <Stack pt={2}>
-              <IconButton aria-label="close" onClick={handleCloseProgram}>
-                <CloseIcon />
-              </IconButton>
-            </Stack>
+            {!isMobile && (
+              <Stack pt={2}>
+                <IconButton aria-label="close" onClick={handleCloseProgram}>
+                  <CloseIcon />
+                </IconButton>
+              </Stack>
+            )}
           </Stack>
-          <Stack spacing={3} sx={{ width: '25vw', py: 1, height: 'calc(100vh - 340px)' }}>
+          <Stack
+            spacing={3}
+            sx={{ width: !isMobile ? '25vw' : '90vw', py: 1, height: 'calc(100vh - 340px)' }}
+          >
             <Scrollbar>
               {!program && !newProduct && (
                 <>
@@ -219,10 +248,17 @@ export default function Program() {
                   >
                     Novo
                   </Button>
-                  <Stack spacing={2} sx={{ px: 2, py: 2.5, position: 'relative' }}>
+                  <Stack
+                    spacing={2}
+                    sx={{
+                      px: 0,
+                      py: 2.5,
+                      position: 'relative',
+                      width: !isMobile ? '24vw' : '83vw',
+                    }}
+                  >
                     <ProgramasList
                       onSelectedProgram={onSelectedProgram}
-                      onCloneProgram={onCloneProgram}
                       cloneProgramStatus={cloneProgramStatus}
                       sendProgramStatus={sendProgramStatus}
                       handleOpenSend={handleOpenSend}

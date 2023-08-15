@@ -1,6 +1,6 @@
 // @mui
 import Avatar from '@mui/material/Avatar';
-import Checkbox from '@mui/material/Checkbox';
+import Chip from '@mui/material/Chip';
 import IconButton from '@mui/material/IconButton';
 import ListItemText from '@mui/material/ListItemText';
 import MenuItem from '@mui/material/MenuItem';
@@ -12,22 +12,15 @@ import CustomPopover, { usePopover } from 'src/components/custom-popover';
 import Iconify from 'src/components/iconify';
 import SvgColor from 'src/components/svg-color/svg-color';
 
-export default function CustomerTableRow({
-  row,
-  selected,
-  onSelectRow,
-  handleOpenCustomer,
-  handleOpenProgram,
-}) {
+export default function CustomerTableRow({ row, selected, handleOpenCustomer, handleOpenProgram }) {
   const popover = usePopover();
 
   return (
     <>
       <TableRow hover selected={selected}>
-        <TableCell padding="checkbox">
-          <Checkbox checked={selected} onClick={onSelectRow} />
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>
+          <Chip label={row.active ? 'Ativo' : 'Inativo'} color={row.active ? 'primary' : 'error'} />
         </TableCell>
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{status === 2 ? 'Ativo' : 'Inativo'}</TableCell>
 
         <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
           <Avatar
@@ -92,16 +85,17 @@ export default function CustomerTableRow({
           <SvgColor src="/assets/icons/navbar/ic_user.svg" sx={{ mr: 1 }} />
           Cadastro
         </MenuItem>
-
-        <MenuItem
-          onClick={() => {
-            handleOpenProgram(row.id);
-            popover.onClose();
-          }}
-        >
-          <SvgColor src="/assets/icons/navbar/icon_runner.svg" sx={{ mr: 1 }} />
-          Programas
-        </MenuItem>
+        {row.active && (
+          <MenuItem
+            onClick={() => {
+              handleOpenProgram(row.id);
+              popover.onClose();
+            }}
+          >
+            <SvgColor src="/assets/icons/navbar/icon_runner.svg" sx={{ mr: 1 }} />
+            Programas
+          </MenuItem>
+        )}
       </CustomPopover>
     </>
   );

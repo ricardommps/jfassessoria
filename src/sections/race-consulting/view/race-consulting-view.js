@@ -5,14 +5,17 @@ import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
 import useCustomer from 'src/hooks/use-customer';
 import useProgram from 'src/hooks/use-program';
+import { useResponsive } from 'src/hooks/use-responsive';
 import useTraining from 'src/hooks/use-training';
 import { hideScroll } from 'src/theme/css';
 
-import Customer from '../customer/customer';
+import CustomerDesktop from '../customer/desktop/customer-desktop';
+import CustomerMobile from '../customer/mobile/customer-mobile';
 import CustomerForm from '../customer-form/customer-form';
 import Program from '../program/program';
 import Training from '../training/training';
 export default function RaceConsultingView() {
+  const mdUp = useResponsive('up', 'md');
   const { programs, onClearPrograms, onClearProgram } = useProgram();
   const { onShowTraining, onClearTrainings, showTraining } = useTraining();
   const { onClearCustome } = useCustomer();
@@ -62,17 +65,36 @@ export default function RaceConsultingView() {
           ...hideScroll.x,
         }}
       >
-        <Customer
-          handleOpenNewCustomer={handleOpenNewCustomer}
-          customerForm={customerForm}
-          setCustomerForm={setCustomerForm}
-          programs={programs}
-        />
-        {!programs && customerForm && (
-          <CustomerForm handleCloseNewCustomer={handleCloseNewCustomer} />
+        {mdUp && (
+          <>
+            <CustomerDesktop
+              handleOpenNewCustomer={handleOpenNewCustomer}
+              customerForm={customerForm}
+              setCustomerForm={setCustomerForm}
+              programs={programs}
+            />
+            {!programs && customerForm && (
+              <CustomerForm handleCloseNewCustomer={handleCloseNewCustomer} />
+            )}
+            {programs && <Program />}
+            {showTraining && <Training />}
+          </>
         )}
-        {programs && <Program />}
-        {showTraining && <Training />}
+        {!mdUp && (
+          <>
+            {!customerForm && !programs && (
+              <CustomerMobile
+                customerForm={customerForm}
+                handleOpenNewCustomer={handleOpenNewCustomer}
+                setCustomerForm={setCustomerForm}
+              />
+            )}
+            {customerForm && !programs && (
+              <CustomerForm handleCloseNewCustomer={handleCloseNewCustomer} isMobile />
+            )}
+            {programs && <Program isMobile />}
+          </>
+        )}
       </Stack>
     </Container>
   );

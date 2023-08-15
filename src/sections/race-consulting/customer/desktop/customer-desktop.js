@@ -1,3 +1,4 @@
+import Backdrop from '@mui/material/Backdrop';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import Paper from '@mui/material/Paper';
@@ -9,20 +10,17 @@ import Scrollbar from 'src/components/scrollbar/scrollbar';
 import { useSettingsContext } from 'src/components/settings';
 import useCustomer from 'src/hooks/use-customer';
 import useProgram from 'src/hooks/use-program';
-import { useResponsive } from 'src/hooks/use-responsive';
 import useTraining from 'src/hooks/use-training';
 
-import { CustomersList } from './desktop/customer-list';
-import CustomerCard from './mobile/customer-card';
+import { CustomersList } from './customer-list';
 
-export default function Customer({
+export default function CustomerDesktop({
   handleOpenNewCustomer,
   customerForm,
   setCustomerForm,
   programs,
 }) {
   const settings = useSettingsContext();
-  const mdUp = useResponsive('up', 'md');
   const { customers, onListCustomers, onCustomerById } = useCustomer();
   const { onListPrograms, onClearPrograms, onClearProgram, cloneProgramSuccess } = useProgram();
   const { onShowTraining, onClearTrainings } = useTraining();
@@ -64,7 +62,7 @@ export default function Customer({
 
     if (!customerForm || !programs) {
       if (isNavMini) {
-        return '87vw';
+        return '84vw';
       }
       return '77vw';
     }
@@ -79,7 +77,13 @@ export default function Customer({
         bgcolor: 'background.neutral',
       }}
     >
-      <Stack>
+      <Stack sx={{ position: 'relative' }}>
+        <Backdrop
+          sx={{ position: 'absolute', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={!!programs}
+        >
+          <div />
+        </Backdrop>
         <Stack p={2}>
           <Typography variant="h3">Alunos</Typography>
         </Stack>
@@ -93,14 +97,11 @@ export default function Customer({
               Novo
             </Button>
             <Card sx={{ backgroundColor: 'rgba(22, 28, 36, 0.8)', mt: 3 }}>
-              {mdUp && (
-                <CustomersList
-                  customers={customers}
-                  handleOpenProgram={handleOpenProgram}
-                  handleOpenCustomer={handleOpenCustomer}
-                />
-              )}
-              {!mdUp && <CustomerCard customers={customers} />}
+              <CustomersList
+                customers={customers}
+                handleOpenProgram={handleOpenProgram}
+                handleOpenCustomer={handleOpenCustomer}
+              />
             </Card>
           </Scrollbar>
         </Stack>

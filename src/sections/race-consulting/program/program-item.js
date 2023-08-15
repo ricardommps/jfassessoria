@@ -1,20 +1,25 @@
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 import NearMeIcon from '@mui/icons-material/NearMe';
 import PrintIcon from '@mui/icons-material/Print';
-import { Typography } from '@mui/material';
+import Alert from '@mui/material/Alert';
+import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import InputAdornment from '@mui/material/InputAdornment';
-import Skeleton from '@mui/material/Skeleton';
+import FormControl from '@mui/material/FormControl';
+import IconButton from '@mui/material/IconButton';
+import MenuItem from '@mui/material/MenuItem';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
-import Tooltip from '@mui/material/Tooltip';
+import Typography from '@mui/material/Typography';
 import format from 'date-fns/format';
-import PropTypes from 'prop-types';
-import { useCallback, useEffect, useState } from 'react';
-import { ButtonIcon } from 'src/components/button-icon/button-icon';
+import { ptBR } from 'date-fns/locale';
+import { useCallback, useState } from 'react';
 import { ConfirmDialog } from 'src/components/confirm-dialog';
+import { usePopover } from 'src/components/custom-popover';
+import CustomPopover from 'src/components/custom-popover/custom-popover';
+import Iconify from 'src/components/iconify/iconify';
 import { useBoolean } from 'src/hooks/use-boolean';
-import useProgram from 'src/hooks/use-program';
 
 import PreviewPdf from './preview-pdf';
 import {
@@ -26,91 +31,35 @@ import {
   BasecInfoTitle,
   BaseHeader,
   Beginner,
+  BootstrapInput,
   ListItem,
 } from './styles';
 
 export default function ProgramItem({
-  onSelectedProgram,
+  program,
   onCloneProgram,
+  onSelectedProgram,
+  onSendProgram,
+  onDeleteProgram,
   cloneProgramStatus,
-  handleOpenSend,
   sendProgramStatus,
 }) {
-  const { programs } = useProgram();
   const confirm = useBoolean();
   const view = useBoolean();
   const notification = useBoolean();
+  const deleteProgram = useBoolean();
 
-  const [action, setAction] = useState({
-    title: null,
-    message: null,
-    program: null,
-  });
-  const [programId, setProgramProgramId] = useState(null);
+  const popover = usePopover();
+
   const [notificationPdf, setNotificationPdf] = useState(null);
+
+  const [programName, setProgramName] = useState('');
 
   const loadingAction = cloneProgramStatus.loading || sendProgramStatus.loading;
 
-  const handleNotificationPdf = (event) => {
-    setNotificationPdf(event.target.value);
-  };
-
-  const handleOpenNotification = (e, program) => {
-    e.stopPropagation();
-    notification.onTrue();
-    setProgramProgramId(program);
-  };
-
-  const handleCloseNotification = () => {
-    notification.onFalse();
-    setProgramProgramId(null);
-  };
-
-  const handleConfirmNotification = () => {
-    view.onTrue();
-    notification.onFalse();
-  };
-
-  const handleCopyProgram = useCallback((program, e) => {
-    e.stopPropagation();
-    confirm.onTrue();
-    setAction({
-      title: 'Clonar',
-      message: 'Tem certeza que deseja copiar esse programa?',
-      program: program,
-    });
-  }, []);
-
-  const handleClosePreviewPdf = () => {
-    view.onFalse();
-    setProgramProgramId(null);
-    setNotificationPdf(null);
-  };
-
-  const onCloneConfirm = () => {
-    confirm.onFalse();
-    setAction(null);
-    const payload = Object.assign({}, action.program);
-    delete payload.id;
-    payload.name = `[COPY]${payload.name}`;
-    payload.active = false;
-    const newTrainings = payload.trainings.map((obj) => {
-      const newTraining = {
-        ...obj,
-        name: `[COPY]${obj.name}`,
-        datePublished: null,
-        published: false,
-      };
-      delete newTraining.id;
-      return { ...newTraining };
-    });
-    payload.trainings = [...newTrainings];
-    onCloneProgram(payload);
-  };
-
   const renderreferenceMonth = (referenceMonth) => {
     if (referenceMonth) {
-      return format(new Date(referenceMonth), 'MMMM-yyyy');
+      return format(new Date(referenceMonth), 'MMMM/yyyy', { locale: ptBR });
     }
 
     return '';
@@ -129,6 +78,24 @@ export default function ProgramItem({
         </span>
       );
     }
+  };
+
+  const handleChangeProgramName = (event) => {
+    setProgramName(event.target.value);
+  };
+
+  const handleOpenNotification = (e) => {
+    e.stopPropagation();
+    notification.onTrue();
+  };
+
+  const handleNotificationPdf = (event) => {
+    setNotificationPdf(event.target.value);
+  };
+
+  const handleConfirmNotification = () => {
+    view.onTrue();
+    notification.onFalse();
   };
 
   const notificationContent = () => {
@@ -151,112 +118,185 @@ export default function ProgramItem({
     );
   };
 
+  const handleCloneProgram = useCallback(async () => {
+    try {
+      const payload = Object.assign({}, program);
+      delete payload.id;
+      payload.name = `[COPY]${payload.name}`;
+      payload.active = false;
+      const newTrainings = payload.trainings.map((obj) => {
+        const newTraining = {
+          ...obj,
+          name: `[COPY]${obj.name}`,
+          datePublished: null,
+          published: false,
+        };
+        delete newTraining.id;
+        return { ...newTraining };
+      });
+      payload.trainings = [...newTrainings];
+      onCloneProgram(payload);
+    } catch (error) {
+      console.error(error);
+    }
+  }, []);
+
   return (
     <>
-      {programs &&
-        programs.map((program) => (
-          <Stack
-            key={program.id}
-            onClick={() => {
-              loadingAction ? null : onSelectedProgram(program.id);
+      <Stack>
+        <ListItem sx={{ padding: '2px 8px' }} active={program.active}>
+          <BasecInfoColumn1>
+            <BasecInfoTitle>{program.name}</BasecInfoTitle>
+            <BasecInfoSubTitle>{program.goal}</BasecInfoSubTitle>
+            <BasecInfoSubTitle>{renderreferenceMonth(program.referenceMonth)}</BasecInfoSubTitle>
+          </BasecInfoColumn1>
+          <BasecInfoColumn2>
+            <BasecInfoTitle>PV: {program.pv}</BasecInfoTitle>
+            <BasecInfoSubTitle>Pace: {program.pace}</BasecInfoSubTitle>
+          </BasecInfoColumn2>
+          <BasecColumnAction>
+            <IconButton
+              color={popover.open ? 'inherit' : 'default'}
+              onClick={popover.onOpen}
+              disabled={loadingAction}
+            >
+              <Iconify icon="eva:more-vertical-fill" />
+            </IconButton>
+          </BasecColumnAction>
+        </ListItem>
+        {program.difficultyLevel && (
+          <BaseHeader>{renderDifficultyLevel(program.difficultyLevel)}</BaseHeader>
+        )}
+        <Stack sx={{ p: 1 }} />
+      </Stack>
+      <CustomPopover
+        open={popover.open}
+        onClose={popover.onClose}
+        sx={{
+          ml: 1.5,
+          width: 160,
+        }}
+      >
+        <MenuItem
+          onClick={() => {
+            onSelectedProgram(program.id);
+          }}
+          sx={{ color: 'warning.main' }}
+        >
+          <EditIcon sx={{ fontSize: '22px', width: '22px', height: '30px' }} />
+          Editar
+        </MenuItem>
+
+        <MenuItem
+          onClick={() => {
+            confirm.onTrue();
+            popover.onClose();
+          }}
+          sx={{ color: 'warning.main' }}
+        >
+          <ContentCopyIcon sx={{ fontSize: '22px', width: '22px', height: '30px' }} />
+          Copiar
+        </MenuItem>
+
+        <MenuItem
+          onClick={(e) => {
+            onSendProgram(program, e);
+            popover.onClose();
+          }}
+          sx={{ color: 'warning.main' }}
+        >
+          <NearMeIcon sx={{ fontSize: '22px', width: '22px', height: '30px' }} />
+          Enviar
+        </MenuItem>
+        {program.trainings.length > 0 && program.trainings.some((it) => it.published) && (
+          <MenuItem
+            onClick={(e) => {
+              handleOpenNotification(e);
+              popover.onClose();
             }}
+            sx={{ color: 'warning.main' }}
           >
-            <ListItem sx={{ padding: '2px 8px' }}>
-              <BasecInfoColumn1>
-                <BasecInfoTitle>
-                  {loadingAction ? <Skeleton variant="text" /> : <>{program.name}</>}
-                </BasecInfoTitle>
-                <BasecInfoSubTitle>
-                  {loadingAction ? <Skeleton variant="text" /> : <>{program.goal}</>}
-                </BasecInfoSubTitle>
-                <BasecInfoSubTitle>
-                  {loadingAction ? (
-                    <Skeleton variant="text" />
-                  ) : (
-                    <>{renderreferenceMonth(program.referenceMonth)}</>
-                  )}
-                </BasecInfoSubTitle>
-              </BasecInfoColumn1>
-              <BasecInfoColumn2>
-                <BasecInfoTitle>
-                  {loadingAction ? <Skeleton variant="text" /> : <>PV: {program.pv}</>}
-                </BasecInfoTitle>
-                <BasecInfoSubTitle>
-                  {loadingAction ? <Skeleton variant="text" /> : <>Pace: {program.pace}</>}
-                </BasecInfoSubTitle>
-              </BasecInfoColumn2>
-              <BasecColumnAction>
-                <InputAdornment position="end" sx={{ mr: 1 }}>
-                  <ButtonIcon
-                    onClick={(event) => (loadingAction ? null : handleCopyProgram(program, event))}
-                  >
-                    <Tooltip title="Clonar programa" placement="top">
-                      {loadingAction ? (
-                        <Stack pt={2}>
-                          <Skeleton variant="rectangular" width={20} height={20} />
-                        </Stack>
-                      ) : (
-                        <ContentCopyIcon sx={{ fontSize: '22px', width: '22px', height: '30px' }} />
-                      )}
-                    </Tooltip>
-                  </ButtonIcon>
-                  <ButtonIcon
-                    onClick={(event) => (loadingAction ? null : handleOpenSend(program, event))}
-                  >
-                    <Tooltip title="Enviar programa" placement="top">
-                      {loadingAction ? (
-                        <Stack pt={2}>
-                          <Skeleton variant="rectangular" width={20} height={20} />
-                        </Stack>
-                      ) : (
-                        <NearMeIcon sx={{ fontSize: '22px', width: '22px', height: '30px' }} />
-                      )}
-                    </Tooltip>
-                  </ButtonIcon>
-                  <ButtonIcon
-                    onClick={(event) =>
-                      loadingAction ? null : handleOpenNotification(event, program.id)
-                    }
-                  >
-                    <Tooltip title="Gerar pdf" placement="top">
-                      {loadingAction ? (
-                        <Stack pt={2}>
-                          <Skeleton variant="rectangular" width={20} height={20} />
-                        </Stack>
-                      ) : (
-                        <PrintIcon sx={{ fontSize: '22px', width: '22px', height: '30px' }} />
-                      )}
-                    </Tooltip>
-                  </ButtonIcon>
-                </InputAdornment>
-              </BasecColumnAction>
-            </ListItem>
-            {program.difficultyLevel && (
-              <BaseHeader>
-                {loadingAction ? (
-                  <Skeleton variant="text" />
-                ) : (
-                  <> {renderDifficultyLevel(program.difficultyLevel)}</>
-                )}
-              </BaseHeader>
-            )}
-            <Stack sx={{ p: 1 }} />
-          </Stack>
-        ))}
+            <PrintIcon sx={{ fontSize: '22px', width: '22px', height: '30px' }} />
+            Pdf
+          </MenuItem>
+        )}
+        <MenuItem
+          onClick={() => {
+            deleteProgram.onTrue();
+            popover.onClose();
+          }}
+          sx={{ color: 'error.main' }}
+        >
+          <DeleteIcon sx={{ fontSize: '22px', width: '22px', height: '30px' }} />
+          Deletar
+        </MenuItem>
+      </CustomPopover>
       <ConfirmDialog
         open={confirm.value}
         onClose={confirm.onFalse}
-        title={action?.title}
-        content={action?.message}
+        title="Copiar"
+        content={
+          <>
+            Tem certeza que deseja copiar o programa<strong> {program.name} </strong>?
+          </>
+        }
         action={
-          <Button variant="contained" color="error" onClick={onCloneConfirm}>
+          <Button
+            variant="contained"
+            color="success"
+            onClick={() => {
+              handleCloneProgram();
+              confirm.onFalse();
+            }}
+          >
             Confirmar
           </Button>
         }
       />
+
+      <ConfirmDialog
+        open={deleteProgram.value}
+        onClose={deleteProgram.onFalse}
+        title={`DELERAR ${program.name}`}
+        content={
+          <>
+            <Typography>
+              Este programa será excluído definitivamente, juntamente com todos os seus treinos.
+            </Typography>
+            <Alert variant="filled" severity="error" sx={{ margin: '15px 0' }}>
+              Aviso: esta ação não é reversível. Por favor, tenha certeza.
+            </Alert>
+            <FormControl variant="standard" sx={{ width: '100%' }}>
+              <Typography>
+                Digite o nome do programa{' '}
+                <Box component="span" fontWeight="bold" color="#FF5630">
+                  {program.name}
+                </Box>{' '}
+                para continuar:
+              </Typography>
+              <BootstrapInput onChange={handleChangeProgramName} />
+            </FormControl>
+          </>
+        }
+        action={
+          <Button
+            variant="contained"
+            color="error"
+            onClick={() => {
+              setProgramName(null);
+              onDeleteProgram(program.id);
+              deleteProgram.onFalse();
+            }}
+            disabled={program.name !== programName}
+          >
+            DELETAR
+          </Button>
+        }
+      />
+
       <ConfirmDialog
         open={notification.value}
-        onClose={handleCloseNotification}
+        onClose={notification.onFalse}
         title={'Avisos'}
         content={notificationContent()}
         action={
@@ -268,15 +308,11 @@ export default function ProgramItem({
       {view.value && (
         <PreviewPdf
           open={view.value}
-          onClose={handleClosePreviewPdf}
-          programId={programId}
+          onClose={view.onFalse}
+          programId={program.id}
           notificationPdf={notificationPdf}
         />
       )}
     </>
   );
 }
-
-ProgramItem.propTypes = {
-  onSelectedProgram: PropTypes.func,
-};

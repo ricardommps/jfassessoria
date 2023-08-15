@@ -1,5 +1,4 @@
-import { Document, Font, Image, Line, Page, StyleSheet, Text, View } from '@react-pdf/renderer';
-import { format } from 'date-fns';
+import { Document, Font, Image, Page, StyleSheet, Text, View } from '@react-pdf/renderer';
 import { useMemo } from 'react';
 import { fDate } from 'src/utils/format-time';
 
@@ -12,74 +11,194 @@ const useStyles = () =>
   useMemo(
     () =>
       StyleSheet.create({
-        col4: { width: '25%' },
-        col8: { width: '75%' },
-        col6: { width: '50%' },
-        mb4: { marginBottom: 4 },
-        mb8: { marginBottom: 8 },
-        mb40: { marginBottom: 40 },
-        h3: { fontSize: 16, fontWeight: 700 },
-        h4: { fontSize: 13, fontWeight: 700 },
-        body1: { fontSize: 10 },
-        body2: { fontSize: 9 },
-        subtitle1: { fontSize: 10, fontWeight: 700 },
-        subtitle2: { fontSize: 9, fontWeight: 700 },
-        alignRight: { textAlign: 'right' },
-        page: {
-          fontSize: 9,
-          lineHeight: 1.6,
-          fontFamily: 'Roboto',
-          backgroundColor: '#FFFFFF',
-          textTransform: 'capitalize',
-          padding: '40px 24px 120px 24px',
-        },
-        footer: {
-          left: 0,
-          right: 0,
-          bottom: 0,
-          padding: 24,
-          margin: 'auto',
-          borderTopWidth: 1,
-          borderStyle: 'solid',
-          position: 'absolute',
-          borderColor: '#DFE3E8',
-        },
-        gridContainer: {
+        ml5: { marginLeft: 5 },
+        body1: { fontSize: 12, fontWeight: 'bold', marginBottom: 5 },
+        header: {
+          borderTopWidth: 4,
+          borderTopColor: '#0084B4',
+          color: '#898989',
+          padding: 20,
+          display: 'flex',
           flexDirection: 'row',
-          justifyContent: 'space-between',
+        },
+        headerLeft: {
+          textAlign: 'left',
+          flex: 1,
+          alignSelf: 'center',
+          fontSize: 32,
+          fontWeight: 900,
+          lineHeight: 1,
+          color: '#0084B4',
+          fontFamily: 'Roboto',
+        },
+        headerRight: {
+          textAlign: 'right',
+          fontSize: 12,
+          flex: 1,
+          fontFamily: 'Roboto',
+        },
+        ribbon: {
+          backgroundColor: '#0084B4',
+          display: 'flex',
+          flexDirection: 'row',
+          textAlign: 'center',
+          color: '#FFF',
+          marginBottom: 10,
+        },
+        ribbonLabel: {
+          fontSize: 14,
+          fontFamily: 'Roboto',
+          paddingLeft: 15,
+          paddingTop: 2,
+          paddingBottom: 2,
         },
         table: {
+          paddingHorizontal: 20,
           display: 'flex',
+          marginBottom: 20,
+          flex: 1,
+        },
+        tableRowA: {
+          backgroundColor: '#EDEDED',
+          display: 'flex',
+          flexDirection: 'row',
+          padding: 10,
+        },
+        tableRowB: {
+          padding: 10,
+          display: 'flex',
+          flexDirection: 'row',
+        },
+        tableHeadingA: {
+          width: '20%',
+          fontSize: 14,
+          color: '#0084B4',
+          fontFamily: 'Roboto',
+        },
+        tableHeadingB: {
+          width: '30%',
+          fontSize: 14,
+          textAlign: 'right',
+          color: '#0084B4',
+          fontFamily: 'Roboto',
+        },
+        tableHeadingC: {
+          width: '50%',
+          textAlign: 'left',
+          fontSize: 14,
+          color: '#0084B4',
+          fontFamily: 'Roboto',
+        },
+        serviceName: {
+          fontSize: 10,
+          width: '20%',
+          fontFamily: 'Roboto',
+        },
+        serviceDescription: {
+          fontSize: 10,
+          textAlign: 'right',
+          width: '50%',
+          fontFamily: 'Roboto',
+        },
+        serviceAmount: {
+          fontSize: 10,
+          width: '30%',
+          textAlign: 'left',
+          fontFamily: 'Roboto',
+        },
+        tableExtrapolation: {
+          display: 'table',
           width: 'auto',
         },
-        tableRow: {
-          padding: '8px 0',
+        tableRowExtrapolation: {
           flexDirection: 'row',
-          borderBottomWidth: 1,
+        },
+        firstTableColHeaderExtrapolation: {
+          width: '20%',
           borderStyle: 'solid',
-          borderColor: '#DFE3E8',
+          borderColor: '#000',
+          borderBottomColor: '#000',
+          borderWidth: 1,
         },
-        noBorder: {
-          paddingTop: 8,
-          paddingBottom: 0,
-          borderBottomWidth: 0,
+        tableCellHeaderExtrapolation: {
+          textAlign: 'center',
+          margin: 4,
+          fontSize: 9,
+          fontWeight: 'bold',
         },
-        tableCell_1: {
-          width: '15%',
+        tableColHeaderExtrapolation: {
+          width: '20%',
+          borderStyle: 'solid',
+          borderColor: '#000',
+          borderBottomColor: '#000',
+          borderWidth: 1,
+          borderLeftWidth: 0,
         },
-        tableCell_2: {
-          width: '30%',
-          paddingRight: 16,
+        tableColStyleExtrapolation: {
+          width: '20%',
+          borderStyle: 'solid',
+          borderColor: '#000',
+          borderWidth: 1,
+          borderLeftWidth: 0,
+          borderTopWidth: 0,
         },
-        tableCell_3: {
-          width: '50%',
+        tableCellExtrapolation: {
+          textAlign: 'center',
+          margin: 5,
+          fontSize: 9,
+        },
+        alertMessage: {
+          marginTop: 10,
+          backgroundColor: 'rgb(255, 244, 229)',
+          display: 'flex',
+          flexDirection: 'row',
+          textAlign: 'center',
+          color: 'rgb(102, 60, 0)',
+        },
+        alertMessagLabel: {
+          fontSize: 14,
+          fontFamily: 'Roboto',
+          paddingLeft: 15,
+          paddingTop: 2,
+          paddingBottom: 2,
+        },
+        footer: {
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          padding: 20,
+          borderTopColor: '#EDEDED',
+          borderTopWidth: 1,
+          textAlign: 'center',
+          fontSize: 10,
+          fontFamily: 'Roboto',
+        },
+        tableTop: {
+          backgroundColor: '#0084B4',
+          display: 'flex',
+          flexDirection: 'row',
+          marginTop: 5,
+          padding: 5,
+          marginBottom: 0,
+          textAlign: 'center',
+          justifyContent: 'center',
+          alignItems: 'center',
+          color: '#FFF',
+        },
+        tableTopLabel: {
+          fontSize: 14,
+          fontFamily: 'Roboto',
         },
       }),
     [],
   );
 
-export default function ProgramPdf({ program, notificationPdf }) {
+export default function ProgramPdf({ program, notificationPdf, currentExtrapolation }) {
   const styles = useStyles();
+  function isOdd(num) {
+    return num % 2;
+  }
   function sortFunction(a, b) {
     if (a.datePublished && b.datePublished) {
       var dateA = new Date(a.datePublished).getTime();
@@ -87,100 +206,113 @@ export default function ProgramPdf({ program, notificationPdf }) {
       return dateA > dateB ? 1 : -1;
     }
   }
+
+  const getExtrapolationRender = (extrapolationItem) => {
+    const item = Object.keys(extrapolationItem);
+    delete item[0];
+    return item;
+  };
+
+  const createTableHeaderExtrapolation = (key) => {
+    return (
+      <View style={styles.tableRowExtrapolation} fixed>
+        <View style={styles.tableColHeaderExtrapolation}>
+          <Text style={styles.tableCellHeaderExtrapolation}>Pv/VAM</Text>
+        </View>
+
+        {key.map((itemKey) => (
+          <View style={styles.tableColHeaderExtrapolation} key={itemKey}>
+            <Text style={styles.tableCellHeaderExtrapolation}>{itemKey}</Text>
+          </View>
+        ))}
+      </View>
+    );
+  };
+  const createTableRowExtrapolation = () => {
+    return (
+      <View style={styles.tableRowExtrapolation}>
+        <View style={styles.tableColStyleExtrapolation}>
+          <Text style={styles.tableCellExtrapolation}>{`${program.pv}km/h`}</Text>
+        </View>
+
+        {getExtrapolationRender(currentExtrapolation).map((item, index) => (
+          <View style={styles.tableColStyleExtrapolation} key={index}>
+            <Text style={styles.tableCellExtrapolation}>{currentExtrapolation[item]}</Text>
+          </View>
+        ))}
+      </View>
+    );
+  };
   const trainings = [...program.trainings].sort(sortFunction);
   return (
     <Document>
-      <Page size="A4" style={styles.page}>
-        <View style={[styles.gridContainer, styles.mb40]} fixed>
-          <Image source="/logo/logo_preta.png" style={{ width: 48, height: 48 }} />
-          <View style={{ alignItems: 'flex-end', flexDirection: 'column' }}>
-            <Text style={styles.h3}>Joana Foltz Muller</Text>
-            <Text> 031842-G/SC </Text>
+      <Page size="A4" renderMode="svg">
+        <View style={styles.header} fixed>
+          <View style={styles.headerLeft}>
+            <Image source="/logo/logo_preta.png" style={{ width: 60, height: 60 }} />
           </View>
-        </View>
-        <Line x1="0" y1="200" x2="200" y2="200" strokeWidth={2} stroke="rgb(0,0,0)" />
-
-        <View style={[styles.gridContainer, styles.mb40]}>
-          <View style={styles.col6}>
-            <Text style={[styles.subtitle2, styles.mb4]}>Dados do Aluno</Text>
-            <Text style={styles.body2}>Nome: {program.customer.name}</Text>
-            <Text style={styles.body2}>Email: {program.customer.email}</Text>
-            <Text style={styles.body2}>Telefone: {program.customer.phone}</Text>
-            <Text style={styles.body2}>Objetivo: {program.customer.goal}</Text>
-            <Text style={styles.body2}>
-              Data Nasc.: {fDate(program.customer.birthDate, 'dd/MM/yyyy')}
-            </Text>
-          </View>
-          <View style={styles.col6}>
-            <Text style={[styles.subtitle2, styles.mb4]}>Dados do Programa</Text>
-            <Text style={styles.body2}>{program.name}</Text>
-            <Text style={styles.body2}>Objetivo: {program.goal}</Text>
-            <Text style={styles.body2}>Dificuldade: {program.difficultyLevel}</Text>
-            <Text style={styles.body2}>
-              Mês de referência: {fDate(program.referenceMonth, 'MM-yyyy')}
-            </Text>
+          <View style={styles.headerRight}>
+            <Text>Joana Foltz Muller</Text>
+            <Text>031842-G/SC</Text>
+            <Text>(49) 99805-8840</Text>
+            <Text>@_joanaf</Text>
           </View>
         </View>
 
-        <View style={[styles.gridContainer, styles.mb40]}>
-          <View style={styles.col6}>
-            <Text style={[styles.subtitle2, styles.mb4]}>Detalhes do Programa</Text>
-            <Text style={styles.body2}>PV: {program.pv}</Text>
-            <Text style={styles.body2}>Pace: {program.pace}</Text>
-          </View>
-          <View style={styles.col6}>
-            <Text style={[styles.subtitle2, styles.mb4]}>Vla / Vlan</Text>
-            <Text style={styles.body2}>Vlan: {program.vlan}</Text>
-            <Text style={styles.body2}>Pace Vlan: {program.paceVlan}</Text>
-            <Text style={styles.body2}>Vla: {program.vla}</Text>
-            <Text style={styles.body2}>Pace Vla: {program.paceVla}</Text>
-          </View>
+        <View style={styles.ribbon} fixed>
+          <Text style={styles.ribbonLabel}>{program.customer.name}</Text>
         </View>
 
-        <Text style={[styles.subtitle1, styles.mb8]}>Treinos</Text>
+        <View style={styles.ml5}>
+          <Text style={styles.body1}>Idade: 41 anos</Text>
+          <Text style={styles.body1}>FC máx estimada (200-idade) : {program.fcmValue}</Text>
+          <Text style={styles.body1}>Pace: {program.pace}</Text>
+          <Text style={styles.body1}>Vla: {program.vla}</Text>
+          <Text style={styles.body1}>Pace - Vla: {program.paceVla}</Text>
+          <Text style={styles.body1}>Vlan: {program.vlan}</Text>
+          <Text style={styles.body1}>Pace - Vlan: {program.paceVlan}</Text>
+        </View>
+        {program.warningPdf && (
+          <View style={styles.alertMessage}>
+            <Text style={styles.alertMessagLabel}>{program.warningPdf}</Text>
+          </View>
+        )}
+
+        <View style={styles.tableExtrapolation}>
+          {createTableHeaderExtrapolation(getExtrapolationRender(currentExtrapolation))}
+          {createTableRowExtrapolation()}
+        </View>
+        <View style={styles.tableTop}>
+          <Text style={styles.tableTopLabel}>Seus treinos</Text>
+        </View>
         <View style={styles.table}>
-          <View>
-            <View style={styles.tableRow}>
-              <View style={styles.tableCell_1}>
-                <Text style={styles.subtitle2}>Dia</Text>
-              </View>
-
-              <View style={styles.tableCell_2}>
-                <Text style={styles.subtitle2}>Nome</Text>
-              </View>
-
-              <View style={styles.tableCell_3}>
-                <Text style={styles.subtitle2}>Descriçao</Text>
-              </View>
-            </View>
+          <View style={styles.tableRowB}>
+            <Text style={styles.tableHeadingA}>Data</Text>
+            <Text style={styles.tableHeadingC}>Título</Text>
+            <Text style={styles.tableHeadingB}>Descriçao</Text>
           </View>
 
-          <View>
-            {trainings.length > 0 &&
-              trainings.map((item) => (
-                <View style={styles.tableRow} key={item.id}>
-                  <View style={styles.tableCell_1}>
-                    <Text>{fDate(item.datePublished, 'dd/MM/yyyy')}</Text>
-                  </View>
-                  <View style={styles.tableCell_2}>
-                    <Text>{item.name}</Text>
-                  </View>
-                  <View style={styles.tableCell_3}>
-                    <Text>{item.description}</Text>
-                  </View>
+          {trainings.length > 0 &&
+            trainings.map((item, index) => (
+              <View style={isOdd(index) ? styles.tableRowA : styles.tableRowB} key={item.id}>
+                <View style={styles.serviceName}>
+                  <Text>
+                    {item.datePublished ? fDate(item.datePublished, 'dd/MM/yyyy') : 'EXTRA'}
+                  </Text>
                 </View>
-              ))}
-          </View>
+                <View style={styles.serviceAmount}>
+                  <Text>{item.name}</Text>
+                </View>
+                <View style={styles.serviceDescription}>
+                  <Text>{item.description}</Text>
+                </View>
+              </View>
+            ))}
         </View>
-        <View style={[styles.gridContainer, styles.footer]} fixed>
-          <View style={styles.col8}>
-            <Text style={styles.subtitle2}>Avisos</Text>
-            <Text>{notificationPdf}</Text>
-          </View>
-          <View style={[styles.col4, styles.alignRight]}>
-            <Text style={styles.subtitle2}>Duvidas?</Text>
-            <Text>(49 - 99805-8840)</Text>
-          </View>
+        <View style={styles.footer}>
+          {notificationPdf && <Text>{notificationPdf}</Text>}
+
+          <Text>Dúvidas? &bull; (49)99805-8840</Text>
         </View>
       </Page>
     </Document>

@@ -16,7 +16,7 @@ import { useMockedUser } from 'src/hooks/use-mocked-user';
 import { useResponsive } from 'src/hooks/use-responsive';
 import { usePathname } from 'src/routes/hook';
 
-import { NavToggleButton } from '../_common';
+// import { NavToggleButton } from '../_common';
 //
 import { NAV } from '../config-layout';
 import { useNavData } from './config-navigation';
@@ -70,7 +70,7 @@ export default function NavVertical({ openNav, onCloseNav }) {
         width: { lg: NAV.W_VERTICAL },
       }}
     >
-      <NavToggleButton />
+      {/* <NavToggleButton /> */}
 
       {lgUp ? (
         <Stack

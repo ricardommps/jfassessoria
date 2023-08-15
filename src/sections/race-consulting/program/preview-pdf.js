@@ -5,8 +5,10 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import Typography from '@mui/material/Typography';
 import { PDFViewer } from '@react-pdf/renderer';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { useUpdateEffect } from 'react-use';
 import useProgram from 'src/hooks/use-program';
+import { extrapolation } from 'src/utils/extrapolation';
 
 import ProgramPdf from './program-pdf';
 export default function PreviewPdf({ open, onClose, programId, notificationPdf }) {
@@ -14,6 +16,19 @@ export default function PreviewPdf({ open, onClose, programId, notificationPdf }
   useEffect(() => {
     onViewPdf(programId);
   }, []);
+
+  const [currentExtrapolation, setCurrentExtrapolation] = useState(null);
+
+  const getExtrapolationByPv = () => {
+    const resultValue = extrapolation[viewPdf.pv];
+    setCurrentExtrapolation(resultValue);
+  };
+
+  useUpdateEffect(() => {
+    if (viewPdf) {
+      getExtrapolationByPv();
+    }
+  }, [viewPdf]);
   return (
     <Dialog fullScreen open={open}>
       <Box sx={{ height: 1, display: 'flex', flexDirection: 'column' }}>
@@ -35,9 +50,13 @@ export default function PreviewPdf({ open, onClose, programId, notificationPdf }
               </Typography>
             </Box>
           )}
-          {viewPdf && !viewPdfStatus.loading && (
+          {viewPdf && !viewPdfStatus.loading && currentExtrapolation && (
             <PDFViewer width="100%" height="100%" style={{ border: 'none' }}>
-              <ProgramPdf program={viewPdf} notificationPdf={notificationPdf} />
+              <ProgramPdf
+                program={viewPdf}
+                notificationPdf={notificationPdf}
+                currentExtrapolation={currentExtrapolation}
+              />
             </PDFViewer>
           )}
         </Box>

@@ -47,6 +47,7 @@ export default function SendTraining({
           variant="contained"
           loading={sendTrainingStatus.loading}
           disabled={programsIdSelected.length === 0}
+          color="success"
         >
           Enviar
         </LoadingButton>

@@ -1,5 +1,4 @@
 import Checkbox from '@mui/material/Checkbox';
-import InputAdornment from '@mui/material/InputAdornment';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';

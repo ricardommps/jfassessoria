@@ -26,6 +26,7 @@ const slice = createSlice({
       state.customersStatus.empty = false;
       state.customersStatus.error = null;
       state.customerCreate = null;
+      state.updateCustomerSuccess = null;
     },
     getCustomersFailure(state, action) {
       state.customersStatus.loading = false;

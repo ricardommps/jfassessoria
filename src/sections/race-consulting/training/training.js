@@ -31,6 +31,7 @@ export default function Training() {
     sendTrainingSuccess,
     sendTrainingStatus,
     onSendTraining,
+    deleteTraining,
   } = useTraining();
 
   const [programsIdSelected, setProgramsIdSelected] = useState([]);
@@ -55,6 +56,7 @@ export default function Training() {
   };
 
   const handleCloseSend = () => {
+    setProgramsIdSelected([]);
     setOpenSend({
       open: false,
       training: null,
@@ -96,6 +98,7 @@ export default function Training() {
   const onConfirmSendProgram = () => {
     confirm.onFalse();
     setAction(null);
+    setProgramsIdSelected([]);
     const payload = Object.assign({}, openSend.training);
     delete payload.id;
     delete payload.programId;
@@ -150,6 +153,17 @@ export default function Training() {
       handleCancel();
     }
   }, [sendTrainingSuccess]);
+
+  useEffect(() => {
+    if (deleteTraining) {
+      onListTrainings(program.id);
+      enqueueSnackbar('Treino deletado com sucesso!', {
+        autoHideDuration: 3000,
+        variant: 'success',
+      });
+      handleCancel();
+    }
+  }, [deleteTraining]);
 
   return (
     <>
@@ -234,7 +248,7 @@ export default function Training() {
         title={action?.title}
         content={action?.message}
         action={
-          <Button variant="contained" color="error" onClick={onConfirmSendProgram}>
+          <Button variant="contained" color="success" onClick={onConfirmSendProgram}>
             Confirmar
           </Button>
         }

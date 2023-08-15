@@ -25,7 +25,9 @@ export const ActionsHeader = styled('div')(() => ({
   },
 }));
 
-export const ListItem = styled('div')(() => ({
+export const ListItem = styled('div')(({ published }) => ({
+  borderLeft: '5px solid !important',
+  borderLeftColor: published ? '#00b826 !important' : '#f44336 !important',
   backgroundColor: alpha('#333', 0.3),
   padding: 0,
   position: 'relative',
@@ -60,15 +62,7 @@ export const BasecInfoColumn1 = styled('div')(() => ({
   display: 'flex',
   justifyContent: 'center',
   flexDirection: 'column',
-}));
-
-export const BasecInfoColumn2 = styled('div')(() => ({
-  float: 'left',
-  width: '168px',
-  height: '60px',
-  display: 'flex',
-  justifyContent: 'center',
-  flexDirection: 'column',
+  flexGrow: 1,
 }));
 
 export const BasecInfoTitle = styled('div')(() => ({
@@ -136,7 +130,7 @@ export const StyledDialogActions = styled('div')(() => ({
 
 export const BasecColumnAction = styled('div')(() => ({
   float: 'left',
-  width: '168px',
+  width: 'auto',
   height: '60px',
   display: 'flex',
   justifyContent: 'center',

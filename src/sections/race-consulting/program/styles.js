@@ -1,3 +1,4 @@
+import InputBase from '@mui/material/InputBase';
 import { alpha, styled } from '@mui/material/styles';
 
 export const Container = styled('div')(({ theme }) => ({
@@ -25,7 +26,9 @@ export const ActionsHeader = styled('div')(() => ({
   },
 }));
 
-export const ListItem = styled('div')(() => ({
+export const ListItem = styled('div')(({ active }) => ({
+  borderLeft: '5px solid !important',
+  borderLeftColor: active ? '#00b826 !important' : '#f44336 !important',
   backgroundColor: alpha('#333', 0.3),
   padding: 0,
   position: 'relative',
@@ -35,7 +38,6 @@ export const ListItem = styled('div')(() => ({
   overflow: 'hidden',
   boxShadow:
     '0 2px 1px -1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 3px 0 rgba(0,0,0,.12)',
-  cursor: 'pointer',
   textAlign: 'left',
   fontSize: '14px',
   display: 'flex',
@@ -55,11 +57,12 @@ export const CheckboxAction = styled('div')(() => ({
 
 export const BasecInfoColumn1 = styled('div')(() => ({
   float: 'left',
-  width: '140px',
+  width: '50%',
   height: 'auto',
   display: 'flex',
   justifyContent: 'center',
   flexDirection: 'column',
+  maxWidth: '50%',
 }));
 
 export const BasecInfoColumn2 = styled('div')(() => ({
@@ -69,11 +72,13 @@ export const BasecInfoColumn2 = styled('div')(() => ({
   display: 'flex',
   justifyContent: 'center',
   flexDirection: 'column',
+  paddingTop: '20px',
+  flexGrow: 1,
 }));
 
 export const BasecColumnAction = styled('div')(() => ({
   float: 'left',
-  width: '168px',
+  width: 'auto',
   height: '60px',
   display: 'flex',
   justifyContent: 'center',
@@ -102,7 +107,7 @@ export const BasecInfoSubTitle = styled('div')(() => ({
   fontSize: '11px',
   fontStyle: 'italic',
   color: '#888',
-  padding: '5px 36px 0 8px',
+  padding: '5px 0 0 8px',
   height: 'auto',
 }));
 
@@ -141,4 +146,38 @@ export const StyledDialogActions = styled('div')(() => ({
   flexWrap: 'wrap',
   minHeight: '52px',
   alignItems: 'center',
+}));
+
+export const BootstrapInput = styled(InputBase)(({ theme }) => ({
+  'label + &': {
+    marginTop: theme.spacing(3),
+  },
+  '& .MuiInputBase-input': {
+    borderRadius: 4,
+    position: 'relative',
+    backgroundColor: theme.palette.mode === 'light' ? '#F3F6F9' : '#1A2027',
+    border: '1px solid',
+    borderColor: theme.palette.mode === 'light' ? '#E0E3E7' : '#2D3843',
+    fontSize: 16,
+    width: '100%',
+    padding: '10px 12px',
+    transition: theme.transitions.create(['border-color', 'background-color', 'box-shadow']),
+    // Use the system font instead of the default Roboto font.
+    fontFamily: [
+      '-apple-system',
+      'BlinkMacSystemFont',
+      '"Segoe UI"',
+      'Roboto',
+      '"Helvetica Neue"',
+      'Arial',
+      'sans-serif',
+      '"Apple Color Emoji"',
+      '"Segoe UI Emoji"',
+      '"Segoe UI Symbol"',
+    ].join(','),
+    '&:focus': {
+      boxShadow: `${alpha(theme.palette.primary.main, 0.25)} 0 0 0 0.2rem`,
+      borderColor: theme.palette.primary.main,
+    },
+  },
 }));

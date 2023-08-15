@@ -36,12 +36,14 @@ export const API_ENDPOINTS = {
     send: '/api/v2/program/sendProgram',
     all: 'api/v2/program',
     viewPdf: 'api/v2/program/viewPdf',
+    delete: '/api/v2/program',
   },
   training: {
     list: '/api/v2/training/program',
     details: '/api/v2/training',
     register: '/api/v2/training',
     send: '/api/v2/training/sendTraining',
+    delete: '/api/v2/training',
   },
   mail: {
     list: '/api/mail/list',

@@ -7,6 +7,7 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { m } from 'framer-motion';
 import PropTypes from 'prop-types';
+import { paceFormater } from 'src/utils/format-number';
 
 import { StyledDialogActions } from './styles';
 
@@ -37,7 +38,7 @@ export function ResultadoPv({ open, onClose, vla, paceVla, vlan, paceVlan, pace,
                 sx={{ flex: 'none' }}
               />
               <Typography variant="subtitle2" sx={{ ml: 1 }}>
-                {pace}
+                {paceFormater(pace)}
               </Typography>
             </Stack>
             <Stack direction="row" spacing={0}>
@@ -86,7 +87,7 @@ export function ResultadoPv({ open, onClose, vla, paceVla, vlan, paceVlan, pace,
                 sx={{ flex: 'none' }}
               />
               <Typography variant="subtitle2" sx={{ ml: 1 }}>
-                {paceVla}
+                {paceFormater(paceVla)}
               </Typography>
             </Stack>
           </Stack>
@@ -123,7 +124,7 @@ export function ResultadoPv({ open, onClose, vla, paceVla, vlan, paceVlan, pace,
                 sx={{ flex: 'none' }}
               />
               <Typography variant="subtitle2" sx={{ ml: 1 }}>
-                {paceVlan}
+                {paceFormater(paceVlan)}
               </Typography>
             </Stack>
           </Stack>
@@ -141,7 +142,7 @@ export function ResultadoPv({ open, onClose, vla, paceVla, vlan, paceVlan, pace,
           >
             <Stack direction="row" sx={{ textAlign: 'left', justifyContent: 'left', width: '50%' }}>
               <ListItemText
-                primary={'FC: '}
+                primary={'FCM: '}
                 primaryTypographyProps={{
                   typography: 'subtitle1',
                 }}

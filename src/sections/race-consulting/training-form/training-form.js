@@ -105,6 +105,7 @@ export default function TrainingForm({ handleCancel }) {
                 render={({ field, fieldState: { error } }) => (
                   <DatePicker
                     label="Data do treino"
+                    format="dd/MM/yyyy"
                     value={dayjs(field?.value).toDate() || null}
                     onChange={(newValue) => {
                       field.onChange(newValue);
@@ -134,7 +135,7 @@ export default function TrainingForm({ handleCancel }) {
                   />
                 }
                 label="Liberado"
-                labelPlacement="bottom"
+                labelPlacement="end"
               />
             </Stack>
           </Box>

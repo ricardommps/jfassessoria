@@ -27,6 +27,11 @@ const initialState = {
     loading: false,
     error: null,
   },
+  deleteTraining: null,
+  deleteTrainingStatus: {
+    loading: false,
+    error: false,
+  },
 };
 
 const slice = createSlice({
@@ -43,6 +48,9 @@ const slice = createSlice({
       state.cloneTrainingStatus.loading = false;
       state.cloneTrainingStatus.error = null;
       state.cloneTraining = null;
+      state.deleteTraining = null;
+      state.deleteTrainingStatus.loading = false;
+      state.deleteTrainingStatus.error = false;
     },
     getTrainingsFailure(state, action) {
       state.trainingsStatus.loading = false;
@@ -90,6 +98,10 @@ const slice = createSlice({
       state.trainingCreate = null;
       state.training = null;
       state.updateTrainingSuccess = null;
+      state.sendTrainingSuccess = null;
+      state.sendTrainingStatus.loading = false;
+      state.sendTrainingStatus.error = null;
+      state.sendTrainingSuccess = null;
     },
 
     clearTrainings(state) {
@@ -134,6 +146,23 @@ const slice = createSlice({
 
       state.sendTrainingStatus.loading = false;
       state.sendTrainingStatus.error = null;
+    },
+    deleteTrainingStart(state) {
+      state.deleteTraining = null;
+      state.deleteTrainingStatus.error = null;
+      state.deleteTrainingStatus.loading = true;
+    },
+    deleteTrainingFailure(state, action) {
+      state.deleteTrainingStatus.loading = false;
+      state.deleteTrainingStatus.error = action.payload;
+      state.deleteTraining = null;
+    },
+    deleteTrainingSuccess(state, action) {
+      const deleteTraining = action.payload;
+      state.deleteTraining = deleteTraining;
+
+      state.deleteTrainingStatus.loading = false;
+      state.deleteTrainingStatus.error = null;
     },
   },
 });
@@ -233,6 +262,18 @@ export function sendTraining(sendPayload) {
       dispatch(slice.actions.sendTrainingSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.sendTrainingFailure(error));
+    }
+  };
+}
+
+export function deleteTrainingReq(trainingId) {
+  return async (dispatch) => {
+    dispatch(slice.actions.deleteTrainingStart());
+    try {
+      const response = await axios.delete(`${API_ENDPOINTS.training.delete}/${trainingId}`);
+      dispatch(slice.actions.deleteTrainingSuccess(response.data));
+    } catch (error) {
+      dispatch(slice.actions.deleteTrainingFailure(error));
     }
   };
 }

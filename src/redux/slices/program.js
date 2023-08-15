@@ -37,6 +37,11 @@ const initialState = {
     loading: false,
     error: null,
   },
+  deleteProgram: null,
+  deleteProgramStatus: {
+    loading: false,
+    error: false,
+  },
 };
 
 const slice = createSlice({
@@ -48,6 +53,13 @@ const slice = createSlice({
       state.allProgramsStatus.empty = false;
       state.allProgramsStatus.error = null;
       state.allProgramsStatus.loading = true;
+      state.deleteProgram = null;
+      state.deleteProgramStatus.loading = false;
+      state.deleteProgramStatus.error = false;
+      state.updateProgramSuccess = null;
+      state.cloneProgramStatus.loading = false;
+      state.cloneProgramStatus.error = null;
+      state.cloneProgramSuccess = null;
     },
     getAllProgramsFailure(state, action) {
       state.allProgramsStatus.loading = false;
@@ -184,6 +196,23 @@ const slice = createSlice({
       state.viewPdfStatus.loading = false;
       state.viewPdfStatus.error = null;
     },
+    deleteProgramStart(state) {
+      state.deleteProgram = null;
+      state.deleteProgramStatus.error = null;
+      state.deleteProgramStatus.loading = true;
+    },
+    deleteProgramFailure(state, action) {
+      state.deleteProgramStatus.loading = false;
+      state.deleteProgramStatus.error = action.payload;
+      state.deleteProgram = null;
+    },
+    deleteProgramSuccess(state, action) {
+      const deleteProgram = action.payload;
+      state.deleteProgram = deleteProgram;
+
+      state.deleteProgramStatus.loading = false;
+      state.deleteProgramStatus.error = null;
+    },
   },
 });
 
@@ -299,6 +328,18 @@ export function getViewPdf(programId) {
       dispatch(slice.actions.getViewPdfSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.getViewPdfFailure(error));
+    }
+  };
+}
+
+export function deleteProgramReq(programId) {
+  return async (dispatch) => {
+    dispatch(slice.actions.deleteProgramStart());
+    try {
+      const response = await axios.delete(`${API_ENDPOINTS.program.delete}/${programId}`);
+      dispatch(slice.actions.deleteProgramSuccess(response.data));
+    } catch (error) {
+      dispatch(slice.actions.deleteProgramFailure(error));
     }
   };
 }

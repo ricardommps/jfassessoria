@@ -28,6 +28,10 @@ export function fData(number) {
   return result(format, '.0');
 }
 
+export function paceFormater(pace) {
+  return parseFloat(Math.ceil(pace * 2) / 2).toFixed(2);
+}
+
 function result(format, key = '.00') {
   const isInteger = format.includes(key);
 

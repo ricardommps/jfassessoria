@@ -58,13 +58,13 @@ export default function RootLayout({ children }) {
       <body>
         <AuthProvider>
           <ReduxProvider>
-            <LocalizationProvider>
+            <LocalizationProvider adapterLocale={'pt-BR'}>
               <SettingsProvider
                 defaultSettings={{
                   themeMode: 'dark', // 'light' | 'dark'
                   themeDirection: 'ltr', //  'rtl' | 'ltr'
                   themeContrast: 'default', // 'default' | 'bold'
-                  themeLayout: 'vertical', // 'vertical' | 'horizontal' | 'mini'
+                  themeLayout: 'mini', // 'vertical' | 'horizontal' | 'mini'
                   themeColorPresets: 'default', // 'default' | 'cyan' | 'purple' | 'blue' | 'orange' | 'red'
                   themeStretch: false,
                 }}

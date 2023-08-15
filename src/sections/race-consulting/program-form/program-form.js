@@ -2,12 +2,13 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import LoadingButton from '@mui/lab/LoadingButton';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import IconButton from '@mui/material/IconButton';
 import ListItemText from '@mui/material/ListItemText';
 import MenuItem from '@mui/material/MenuItem';
 import Stack from '@mui/material/Stack';
+import Switch from '@mui/material/Switch';
 import Typography from '@mui/material/Typography';
-import { format } from 'date-fns';
 import PropTypes from 'prop-types';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -19,7 +20,6 @@ import useCustomer from 'src/hooks/use-customer';
 import useProgram from 'src/hooks/use-program';
 import { extrapolation } from 'src/utils/extrapolation';
 import { fPercent } from 'src/utils/format-number';
-import { runningPace } from 'src/utils/running-pace';
 import * as Yup from 'yup';
 
 import DialogTablePaceSpeed from './dialog-table-pace-speed';
@@ -29,8 +29,9 @@ import { ResultadoPv } from './resultado-pv';
 import TestDate from './test-date';
 
 const DIFFICULTYLEVELOPTIONS = [
-  { value: 'Iniciante', label: 'Iniciante(60%)' },
-  { value: 'Avançado', label: 'Avançado(70%)' },
+  { value: 'Iniciante', label: 'Iniciante' },
+  { value: 'Intermediário', label: 'Intermediário' },
+  { value: 'Avançado', label: 'Avançado' },
 ];
 
 const PVOPTIONS = [
@@ -50,7 +51,7 @@ const PVOPTIONS = [
 ];
 
 export default function ProgramForm({ handleClear }) {
-  const { program, onUpdateProgram, onCreateProgram } = useProgram();
+  const { program, onUpdateProgram, onCreateProgram, getFcValue } = useProgram();
 
   const { customer } = useCustomer();
   const openTable = useBoolean();
@@ -58,11 +59,20 @@ export default function ProgramForm({ handleClear }) {
   const [currentExtrapolation, setCurrentExtrapolation] = useState(null);
   const [showEstrapolativeTable, setShowEstrapolativeTable] = useState(false);
   const [showResultPv, setShowResulPv] = useState(false);
+  const [actionType, setActionType] = useState(null);
 
   const NewProgramSchema = Yup.object().shape({
     name: Yup.string().required('Titulo obrigatório'),
     difficultyLevel: Yup.string().required('Nível de dificuldade obrigatório'),
     pv: Yup.string().required('Pico de Velocidade obrigatório'),
+    pace: Yup.string().required('Pace obrigatório'),
+    vla: Yup.string().required('Vla obrigatório'),
+    vlan: Yup.string().required('Vlan obrigatório'),
+    paceVla: Yup.string().required('Pace Vla obrigatório'),
+    paceVlan: Yup.string().required('Pace Vlan obrigatório'),
+    vlaLevel: Yup.string().required('Nível Vla obrigatório'),
+    vlanLevel: Yup.string().required('Nível Vlan obrigatório'),
+    fcmValue: Yup.string().required('FCM obrigatório'),
   });
 
   const defaultValues = useMemo(
@@ -72,15 +82,19 @@ export default function ProgramForm({ handleClear }) {
       difficultyLevel: program?.difficultyLevel || '',
       vlan: program?.vlan || '',
       paceVlan: program?.paceVlan || '',
+      vlanLevel: program?.vlanLevel || '',
       vla: program?.vla || '',
       paceVla: program?.paceVla || '',
+      vlaLevel: program?.vlaLevel || '',
       pv: program?.pv || '',
       pace: program?.pace || '',
       test: program?.test || null,
+      warningPdf: program?.warningPdf || null,
       dateTest: program?.dateTest || null,
       customerId: program?.customerId || customer.id,
       active: false,
       referenceMonth: program?.referenceMonth || null,
+      fcmValue: program?.fcmValue || getFcValue(),
     }),
     [],
   );
@@ -99,56 +113,6 @@ export default function ProgramForm({ handleClear }) {
 
   const values = watch();
 
-  const getVlan = () => {
-    if (values.pv > 0) {
-      const resultValue = fPercent(values.pv, 80);
-      if (resultValue > 0) {
-        setValue('vlan', resultValue.toString());
-        const resultValueRound = parseFloat(Math.ceil(resultValue * 2) / 2).toFixed(2);
-        const getPace = 60 / resultValueRound;
-        const result = parseFloat(Math.ceil(getPace * 2) / 2).toFixed(2);
-        setValue('paceVlan', result);
-      }
-    }
-  };
-
-  const getVla = () => {
-    if (values.pv > 0 && values.difficultyLevel.length > 0) {
-      const percent = values.difficultyLevel === 'Iniciante' ? 60 : 70;
-      const resultValue = fPercent(values.pv, percent);
-      if (resultValue > 0) {
-        setValue('vla', resultValue.toString());
-        const resultValueRound = parseFloat(Math.ceil(resultValue * 2) / 2).toFixed(2);
-        const getPace = 60 / resultValueRound;
-        const result = parseFloat(Math.ceil(getPace * 2) / 2).toFixed(2);
-        setValue('paceVla', result);
-      }
-    }
-  };
-
-  const getFcValue = () => {
-    if (customer.birthDate) {
-      const birthdateValue = format(new Date(customer.birthDate), 'dd/MM/yyyy');
-      if (birthdateValue) {
-        const from = birthdateValue.split('/');
-        var birthdateTimeStamp = new Date(from[2], from[1] - 1, from[0]);
-        var cur = new Date();
-        var diff = cur - birthdateTimeStamp;
-        var currentAge = Math.floor(diff / 31557600000);
-        return currentAge ? 220 - currentAge : '';
-      }
-    }
-    return null;
-  };
-
-  const handleChangePv = (event) => {
-    const resultValueRound = parseFloat(Math.ceil(parseInt(event.target.value) * 2) / 2).toFixed(2);
-    const getPace = 60 / resultValueRound;
-    const result = parseFloat(Math.ceil(getPace * 2) / 2).toFixed(2);
-    setValue('pace', result);
-    setValue('pv', event.target.value);
-  };
-
   const handleOpenEstrapolativeTable = () => {
     setShowEstrapolativeTable(true);
   };
@@ -165,11 +129,28 @@ export default function ProgramForm({ handleClear }) {
     setShowResulPv(false);
   };
 
+  const handleTableSelected = (item) => {
+    if (actionType === 'pace') {
+      setValue('pace', item.toString());
+    }
+    if (actionType === 'paceVla') {
+      setValue('paceVla', item.toString());
+    }
+
+    if (actionType === 'paceVlan') {
+      setValue('paceVlan', item.toString());
+    }
+    setActionType(null);
+  };
+
   const onSubmit = useCallback(
     async (data) => {
       try {
+        const payload = Object.assign({}, data);
+        payload.vlanLevel = Number(payload.vlanLevel);
+        payload.vlaLevel = Number(payload.vlaLevel);
+        payload.fcmValue = Number(payload.fcmValue);
         if (program) {
-          const payload = Object.assign({}, data);
           delete payload.id;
           delete payload.programId;
           delete payload.createdAt;
@@ -177,7 +158,7 @@ export default function ProgramForm({ handleClear }) {
           onUpdateProgram(payload, program.id);
           reset({ ...defaultValues });
         } else {
-          onCreateProgram(data);
+          onCreateProgram(payload);
           reset({ ...defaultValues });
         }
       } catch (error) {
@@ -188,19 +169,6 @@ export default function ProgramForm({ handleClear }) {
   );
 
   useEffect(() => {
-    if (values.pv) {
-      getVlan();
-      getExtrapolationByPv();
-    }
-  }, [values.pv]);
-
-  useEffect(() => {
-    if (values.pv && values.difficultyLevel) {
-      getVla();
-    }
-  }, [values.pv, values.difficultyLevel]);
-
-  useEffect(() => {
     if (program) {
       reset({ ...program });
     } else {
@@ -208,16 +176,49 @@ export default function ProgramForm({ handleClear }) {
     }
   }, [program]);
 
-  const getExtrapolationByPv = () => {
-    const resultValue = extrapolation[values.pv];
-    setCurrentExtrapolation(resultValue);
-  };
-
   const getExtrapolationRender = (extrapolationItem) => {
     const item = Object.keys(extrapolationItem);
     delete item[0];
     return item;
   };
+
+  const handleChangeVlaLevel = (event) => {
+    const vlaLevel = Number(event.target.value);
+    const resultValue = fPercent(values.pv, vlaLevel);
+    setValue('vla', resultValue.toString());
+    setValue('vlaLevel', event.target.value);
+  };
+
+  const handleChangeVlanLevel = (event) => {
+    const vlanLevel = Number(event.target.value);
+    const resultValue = fPercent(values.pv, vlanLevel);
+    setValue('vlan', resultValue.toString());
+    setValue('vlanLevel', vlanLevel);
+  };
+
+  const handleOpenTableSpeed = (type) => {
+    setActionType(type);
+    openTable.onTrue();
+  };
+
+  const getExtrapolationByPv = () => {
+    const resultValue = extrapolation[values.pv];
+    setCurrentExtrapolation(resultValue);
+  };
+
+  const handleChangeActive = useCallback(
+    (event) => {
+      setValue('active', event.target.checked);
+    },
+    [setValue],
+  );
+
+  useEffect(() => {
+    if (values.pv) {
+      getExtrapolationByPv();
+    }
+  }, [values.pv]);
+
   return (
     <>
       <Stack>
@@ -233,7 +234,7 @@ export default function ProgramForm({ handleClear }) {
       </Stack>
       <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
         <>
-          <Box rowGap={3} columnGap={2} display="grid" pt={2}>
+          <Box rowGap={3} columnGap={2} display="grid" pt={1}>
             <RHFTextField name="name" label="Titulo *" variant="standard" />
             <RHFTextField name="goal" label="Objetivo" variant="standard" />
             <RHFSelect name="difficultyLevel" label="Nível de dificuldade *" variant="standard">
@@ -247,7 +248,7 @@ export default function ProgramForm({ handleClear }) {
               name="pv"
               label="Pico de Velocidade(PV) *"
               variant="standard"
-              onChange={handleChangePv}
+              onChange={(e) => setValue('pv', e.target.value)}
             >
               {PVOPTIONS.map((option) => (
                 <MenuItem key={option.value} value={option.value}>
@@ -255,6 +256,132 @@ export default function ProgramForm({ handleClear }) {
                 </MenuItem>
               ))}
             </RHFSelect>
+
+            <RHFTextField name="fcmValue" label="FCM" variant="standard" type={'number'} />
+
+            {values.pv && values.difficultyLevel && (
+              <>
+                <RHFSelect
+                  name="vlaLevel"
+                  label="Nível Vla"
+                  variant="standard"
+                  onChange={handleChangeVlaLevel}
+                >
+                  <MenuItem value={60}>60%</MenuItem>
+                  <MenuItem value={70}>70%</MenuItem>
+                </RHFSelect>
+
+                <RHFSelect
+                  name="vlanLevel"
+                  label="Nível Vlan"
+                  variant="standard"
+                  onChange={handleChangeVlanLevel}
+                >
+                  <MenuItem value={60}>60%</MenuItem>
+                  <MenuItem value={70}>70%</MenuItem>
+                </RHFSelect>
+
+                <Stack
+                  direction="row"
+                  sx={{
+                    textAlign: 'left',
+                    justifyContent: 'left',
+                    borderBottom: (theme) => `dashed 1px ${theme.palette.divider}`,
+                  }}
+                >
+                  <Stack
+                    sx={{
+                      typography: 'body2',
+                      cursor: 'pointer',
+                      width: '100%',
+                      maxWidth: '100%',
+                    }}
+                    onClick={() => handleOpenTableSpeed('pace')}
+                  >
+                    <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                      Pace
+                    </Typography>
+                    {values.pace ? <>{values.pace}</> : <>Clique aqui para selecionar um valor</>}
+                  </Stack>
+                </Stack>
+
+                <Stack
+                  direction="row"
+                  sx={{
+                    textAlign: 'left',
+                    justifyContent: 'left',
+                    borderBottom: (theme) => `dashed 1px ${theme.palette.divider}`,
+                  }}
+                >
+                  <Stack sx={{ typography: 'body2', width: '50%', maxWidth: '50%' }}>
+                    <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                      Vla(km/h)
+                    </Typography>
+                    <Typography>{values.vla}</Typography>
+                  </Stack>
+                  <Stack
+                    sx={{
+                      typography: 'body2',
+                      cursor: values.vla && 'pointer',
+                      width: '50%',
+                      maxWidth: '50%',
+                    }}
+                    onClick={() => handleOpenTableSpeed('paceVla')}
+                  >
+                    <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                      Pace - Vla
+                    </Typography>
+                    {values.vla && (
+                      <Typography>
+                        {values.paceVla ? (
+                          <>{values.paceVla}</>
+                        ) : (
+                          <>Clique aqui para selecionar um valor</>
+                        )}
+                      </Typography>
+                    )}
+                  </Stack>
+                </Stack>
+
+                <Stack
+                  direction="row"
+                  sx={{
+                    textAlign: 'left',
+                    justifyContent: 'left',
+                    borderBottom: (theme) => `dashed 1px ${theme.palette.divider}`,
+                  }}
+                >
+                  <Stack sx={{ typography: 'body2', width: '50%', maxWidth: '50%' }}>
+                    <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                      Vlan(km/h)
+                    </Typography>
+                    <Typography>{values.vlan}</Typography>
+                  </Stack>
+                  <Stack
+                    sx={{
+                      typography: 'body2',
+                      cursor: values.vla && 'pointer',
+                      width: '50%',
+                      maxWidth: '50%',
+                    }}
+                    onClick={() => handleOpenTableSpeed('paceVlan')}
+                  >
+                    <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                      Pace - Vlan
+                    </Typography>
+                    {values.vla && (
+                      <Typography>
+                        {values.paceVlan ? (
+                          <>{values.paceVlan}</>
+                        ) : (
+                          <>Clique aqui para selecionar um valor</>
+                        )}
+                      </Typography>
+                    )}
+                  </Stack>
+                </Stack>
+              </>
+            )}
           </Box>
           <Box mt={3}>
             <Typography sx={{ fontSize: '1.5em', fontWeight: 'bold' }}>
@@ -274,7 +401,7 @@ export default function ProgramForm({ handleClear }) {
               </IconButton>
             </Stack>
           )}
-          {currentExtrapolation && values.vlan && values.difficultyLevel && (
+          {values.vlan && values.difficultyLevel && (
             <Stack spacing={1.5} direction="row" mt={3}>
               <Typography>Validade Extrapolativa</Typography>
               <IconButton sx={{ padding: 0 }} onClick={handleOpenEstrapolativeTable}>
@@ -282,7 +409,7 @@ export default function ProgramForm({ handleClear }) {
               </IconButton>
             </Stack>
           )}
-          {currentExtrapolation && values.vlan && values.difficultyLevel && (
+          {values.vlan && values.difficultyLevel && (
             <Stack spacing={1.5} direction="row" mt={3}>
               <Typography>Tabela Pace/Km</Typography>
               <IconButton sx={{ padding: 0 }} onClick={openTable.onTrue}>
@@ -290,6 +417,22 @@ export default function ProgramForm({ handleClear }) {
               </IconButton>
             </Stack>
           )}
+          <Stack pt={3}>
+            <RHFTextField name="warningPdf" label="Aviso - PDF" multiline rows={6} />
+          </Stack>
+          <Stack alignItems="flex-start" sx={{ mb: 1, mt: 2 }}>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={Boolean(values.active)}
+                  color="primary"
+                  onChange={handleChangeActive}
+                />
+              }
+              label="Liberado"
+              labelPlacement="end"
+            />
+          </Stack>
           <Stack alignItems="flex-end" sx={{ mt: 3 }} spacing={2}>
             <LoadingButton type="submit" variant="contained" loading={isSubmitting} fullWidth>
               Salvar
@@ -345,16 +488,15 @@ export default function ProgramForm({ handleClear }) {
           paceVlan={values.paceVlan}
           pace={values.pace}
           VO2={currentExtrapolation?.VO2}
-          fc={getFcValue()}
+          fc={values.fcmValue}
         />
       )}
       {openTable.value && (
         <DialogTablePaceSpeed
           open={openTable.value}
           onClose={openTable.onFalse}
-          pace={values.pace}
-          paceVla={values.paceVla}
-          paceVlan={values.paceVlan}
+          actionType={actionType}
+          handleTableSelected={handleTableSelected}
         />
       )}
     </>

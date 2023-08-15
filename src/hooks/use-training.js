@@ -5,6 +5,7 @@ import {
   clearTraining,
   clearTrainings,
   createTraining,
+  deleteTrainingReq,
   getTrainingById,
   getTrainings,
   sendTraining,
@@ -25,6 +26,8 @@ export default function useTraining() {
     cloneTrainingStatus,
     sendTrainingSuccess,
     sendTrainingStatus,
+    deleteTraining,
+    deleteTrainingStatus,
   } = useSelector((state) => state.training);
   const onListTrainings = useCallback(
     (programId) => {
@@ -83,6 +86,13 @@ export default function useTraining() {
     [dispatch],
   );
 
+  const onDeleteTraining = useCallback(
+    (trainingId) => {
+      dispatch(deleteTrainingReq(trainingId));
+    },
+    [dispatch],
+  );
+
   return {
     trainings,
     trainingsStatus,
@@ -104,5 +114,8 @@ export default function useTraining() {
     onSendTraining,
     sendTrainingSuccess,
     sendTrainingStatus,
+    onDeleteTraining,
+    deleteTraining,
+    deleteTrainingStatus,
   };
 }

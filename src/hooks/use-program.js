@@ -1,9 +1,11 @@
+import { format } from 'date-fns';
 import { useCallback } from 'react';
 import {
   clearProgram,
   clearPrograms,
   cloneProgram,
   createProgram,
+  deleteProgramReq,
   getAllPrograms,
   getProgramById,
   getPrograms,
@@ -12,6 +14,8 @@ import {
   updateProgram,
 } from 'src/redux/slices/program';
 import { useDispatch, useSelector } from 'src/redux/store';
+
+import useCustomer from './use-customer';
 export default function useProgram() {
   const dispatch = useDispatch();
   const {
@@ -29,7 +33,11 @@ export default function useProgram() {
     sendProgramStatus,
     viewPdf,
     viewPdfStatus,
+    deleteProgram,
+    deleteProgramStatus,
   } = useSelector((state) => state.program);
+
+  const { customer } = useCustomer();
 
   const onListPrograms = useCallback(
     (customerId) => {
@@ -92,6 +100,28 @@ export default function useProgram() {
     [dispatch],
   );
 
+  const onDeleteProgram = useCallback(
+    (programId) => {
+      dispatch(deleteProgramReq(programId));
+    },
+    [dispatch],
+  );
+
+  const getFcValue = () => {
+    if (customer.birthDate) {
+      const birthdateValue = format(new Date(customer.birthDate), 'dd/MM/yyyy');
+      if (birthdateValue) {
+        const from = birthdateValue.split('/');
+        var birthdateTimeStamp = new Date(from[2], from[1] - 1, from[0]);
+        var cur = new Date();
+        var diff = cur - birthdateTimeStamp;
+        var currentAge = Math.floor(diff / 31557600000);
+        return currentAge ? 220 - currentAge : '';
+      }
+    }
+    return null;
+  };
+
   return {
     allPrograms,
     allProgramsStatus,
@@ -117,5 +147,9 @@ export default function useProgram() {
     onViewPdf,
     viewPdf,
     viewPdfStatus,
+    getFcValue,
+    onDeleteProgram,
+    deleteProgram,
+    deleteProgramStatus,
   };
 }
