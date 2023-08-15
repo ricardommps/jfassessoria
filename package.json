@@ -1,7 +1,7 @@
 {
   "name": "@minimal-kit/simple-next-js",
   "author": "Minimals",
-  "version": "5.0.0",
+  "version": "5.0.1",
   "description": "Simple Next & JavaScript",
   "private": true,
   "scripts": {
