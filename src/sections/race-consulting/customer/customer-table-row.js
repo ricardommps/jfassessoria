@@ -96,6 +96,15 @@ export default function CustomerTableRow({ row, selected, handleOpenCustomer, ha
             Programas
           </MenuItem>
         )}
+        <MenuItem
+          onClick={() => {
+            handleOpenCustomer(row.id);
+            popover.onClose();
+          }}
+        >
+          <SvgColor src="/assets/icons/navbar/ic_user.svg" sx={{ mr: 1 }} />
+          Renovar plano
+        </MenuItem>
       </CustomPopover>
     </>
   );
