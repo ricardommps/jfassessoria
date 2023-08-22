@@ -4,14 +4,16 @@ import Card from '@mui/material/Card';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Iconify from 'src/components/iconify/iconify';
 import Scrollbar from 'src/components/scrollbar/scrollbar';
 import { useSettingsContext } from 'src/components/settings';
+import { useBoolean } from 'src/hooks/use-boolean';
 import useCustomer from 'src/hooks/use-customer';
 import useProgram from 'src/hooks/use-program';
 import useTraining from 'src/hooks/use-training';
 
+import Payment from '../../payment/payment';
 import { CustomersList } from './customer-list';
 
 export default function CustomerDesktop({
@@ -21,9 +23,11 @@ export default function CustomerDesktop({
   programs,
 }) {
   const settings = useSettingsContext();
+  const openPayment = useBoolean();
   const { customers, onListCustomers, onCustomerById } = useCustomer();
   const { onListPrograms, onClearPrograms, onClearProgram, cloneProgramSuccess } = useProgram();
   const { onShowTraining, onClearTrainings } = useTraining();
+  const [customerSelected, setCustomerSelected] = useState(null);
 
   const isNavMini = settings.themeLayout === 'mini';
 
@@ -42,6 +46,16 @@ export default function CustomerDesktop({
     setCustomerForm(true);
   };
 
+  const handleOpenPayment = (customerId) => {
+    setCustomerSelected(customerId);
+  };
+
+  const handleClosePayment = () => {
+    setCustomerSelected(null);
+    openPayment.onFalse();
+    onListCustomers();
+  };
+
   useEffect(() => {
     onListCustomers();
   }, []);
@@ -51,6 +65,12 @@ export default function CustomerDesktop({
       onListCustomers();
     }
   }, [cloneProgramSuccess]);
+
+  useEffect(() => {
+    if (customerSelected) {
+      openPayment.onTrue();
+    }
+  }, [customerSelected]);
 
   const getWidth = () => {
     if (customerForm || programs) {
@@ -70,42 +90,52 @@ export default function CustomerDesktop({
   };
 
   return (
-    <Paper
-      sx={{
-        px: 2,
-        borderRadius: 2,
-        bgcolor: 'background.neutral',
-      }}
-    >
-      <Stack sx={{ position: 'relative' }}>
-        <Backdrop
-          sx={{ position: 'absolute', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-          open={!!programs}
-        >
-          <div />
-        </Backdrop>
-        <Stack p={2}>
-          <Typography variant="h3">Alunos</Typography>
+    <>
+      <Paper
+        sx={{
+          px: 2,
+          borderRadius: 2,
+          bgcolor: 'background.neutral',
+        }}
+      >
+        <Stack sx={{ position: 'relative' }}>
+          <Backdrop
+            sx={{ position: 'absolute', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+            open={!!programs}
+          >
+            <div />
+          </Backdrop>
+          <Stack p={2}>
+            <Typography variant="h3">Alunos</Typography>
+          </Stack>
+          <Stack spacing={2} sx={{ width: getWidth(), py: 3, height: '67vh' }}>
+            <Scrollbar>
+              <Button
+                variant="contained"
+                startIcon={<Iconify icon="mingcute:add-line" />}
+                onClick={handleOpenNewCustomer}
+              >
+                Novo
+              </Button>
+              <Card sx={{ backgroundColor: 'rgba(22, 28, 36, 0.8)', mt: 3 }}>
+                <CustomersList
+                  customers={customers}
+                  handleOpenProgram={handleOpenProgram}
+                  handleOpenCustomer={handleOpenCustomer}
+                  handleOpenPayment={handleOpenPayment}
+                />
+              </Card>
+            </Scrollbar>
+          </Stack>
         </Stack>
-        <Stack spacing={2} sx={{ width: getWidth(), py: 3, height: '67vh' }}>
-          <Scrollbar>
-            <Button
-              variant="contained"
-              startIcon={<Iconify icon="mingcute:add-line" />}
-              onClick={handleOpenNewCustomer}
-            >
-              Novo
-            </Button>
-            <Card sx={{ backgroundColor: 'rgba(22, 28, 36, 0.8)', mt: 3 }}>
-              <CustomersList
-                customers={customers}
-                handleOpenProgram={handleOpenProgram}
-                handleOpenCustomer={handleOpenCustomer}
-              />
-            </Card>
-          </Scrollbar>
-        </Stack>
-      </Stack>
-    </Paper>
+      </Paper>
+      {openPayment.value && customerSelected && (
+        <Payment
+          open={openPayment.value}
+          onClose={handleClosePayment}
+          customerId={customerSelected}
+        />
+      )}
+    </>
   );
 }

@@ -4,7 +4,6 @@ import TableBody from '@mui/material/TableBody';
 import TableContainer from '@mui/material/TableContainer';
 import Tooltip from '@mui/material/Tooltip';
 import isEqual from 'lodash/isEqual';
-import PropTypes from 'prop-types';
 import { useCallback, useEffect, useState } from 'react';
 import Iconify from 'src/components/iconify/iconify';
 import Scrollbar from 'src/components/scrollbar/scrollbar';
@@ -25,7 +24,8 @@ import CustomerTableToolbar from '../customer-table-toolbar';
 const TABLE_HEAD = [
   { id: 'status', label: 'Status', width: 80 },
   { id: 'name', label: 'Name' },
-  { id: 'premium_expires_date', label: 'Expiração', width: 220 },
+  { id: 'dueDate', label: 'Próximo vencimento', width: 320 },
+  { id: 'expiresDate', label: 'Expiração', width: 320 },
   { id: 'programs', label: 'Programas', width: 180 },
   { id: '', width: 90 },
 ];
@@ -35,7 +35,12 @@ const defaultFilters = {
   status: 'all',
 };
 
-export function CustomersList({ customers, handleOpenProgram, handleOpenCustomer }) {
+export function CustomersList({
+  customers,
+  handleOpenProgram,
+  handleOpenCustomer,
+  handleOpenPayment,
+}) {
   const table = useTable();
 
   const [tableData, setTableData] = useState([]);
@@ -110,6 +115,7 @@ export function CustomersList({ customers, handleOpenProgram, handleOpenCustomer
                     selected={table.selected.includes(row.id)}
                     handleOpenProgram={handleOpenProgram}
                     handleOpenCustomer={handleOpenCustomer}
+                    handleOpenPayment={handleOpenPayment}
                   />
                 ))}
 
@@ -126,9 +132,3 @@ export function CustomersList({ customers, handleOpenProgram, handleOpenCustomer
     </>
   );
 }
-
-CustomersList.propTypes = {
-  customers: PropTypes.array,
-  handleOpenProgram: PropTypes.func,
-  handleOpenCustomer: PropTypes.func,
-};

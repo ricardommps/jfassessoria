@@ -50,9 +50,12 @@ export default function AccountPopover() {
   };
 
   function stringAvatar(name) {
-    return {
-      children: `${name.split(' ')[0][0]}`,
-    };
+    if (name) {
+      return {
+        children: `${name.split(' ')[0][0]}`,
+      };
+    }
+    return null;
   }
 
   return (

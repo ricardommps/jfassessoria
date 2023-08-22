@@ -7,7 +7,7 @@ export function fNumber(number) {
 }
 
 export function fCurrency(number) {
-  const format = number ? numeral(number).format('$0,0.00') : '';
+  const format = number ? numeral(number).format('R$0,0.00') : '';
 
   return result(format, '.00');
 }
@@ -36,4 +36,15 @@ function result(format, key = '.00') {
   const isInteger = format.includes(key);
 
   return isInteger ? format.replace(key, '') : format;
+}
+
+export function formatCurrency(value, label = '') {
+  if (value === undefined || value == null) {
+    return label;
+  }
+  return new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+    maximumFractionDigits: 2,
+  }).format(value);
 }

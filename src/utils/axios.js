@@ -10,8 +10,11 @@ const axiosInstance = axios.create({ baseURL: HOST_API_JF });
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response.data.message) {
-      enqueueSnackbar(error.response.data.message, { autoHideDuration: 3000, variant: 'error' });
+    if (error) {
+      enqueueSnackbar('Não foi possível executar esta operação. Tente novamente mais tarde.', {
+        autoHideDuration: 8000,
+        variant: 'error',
+      });
     }
     Promise.reject((error.response && error.response.data) || 'Something went wrong');
   },
@@ -44,6 +47,11 @@ export const API_ENDPOINTS = {
     register: '/api/v2/training',
     send: '/api/v2/training/sendTraining',
     delete: '/api/v2/training',
+  },
+  payment: {
+    list: '/api/v2/payment',
+    created: '/api/v2/payment',
+    delete: '/api/v2/payment',
   },
   mail: {
     list: '/api/mail/list',

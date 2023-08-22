@@ -2,7 +2,9 @@
 import 'simplebar-react/dist/simplebar.min.css';
 // lazy image
 import 'react-lazy-load-image-component/src/effects/blur.css';
+import 'moment/min/locales';
 
+import * as moment from 'moment';
 import PropTypes from 'prop-types';
 // auth
 import { AuthConsumer, AuthProvider } from 'src/auth/context/jwt';
@@ -51,6 +53,7 @@ export const metadata = {
     },
   ],
 };
+moment.locale('pt-br');
 
 export default function RootLayout({ children }) {
   return (
@@ -58,7 +61,7 @@ export default function RootLayout({ children }) {
       <body>
         <AuthProvider>
           <ReduxProvider>
-            <LocalizationProvider adapterLocale={'pt-BR'}>
+            <LocalizationProvider>
               <SettingsProvider
                 defaultSettings={{
                   themeMode: 'dark', // 'light' | 'dark'
