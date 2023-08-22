@@ -71,17 +71,15 @@ export default function CustomerTableRow({
         <TableCell
           sx={{
             whiteSpace: 'nowrap',
-            color: checkDueDate(payments[0].dueDate, payments[0].paymentDate),
+            color: checkDueDate(payments[0]?.dueDate, payments[0]?.paymentDate),
           }}
         >
-          {payments.length > 0
-            ? format(addHours(new Date(payments[0].dueDate), 3), 'dd/MM/yyyy')
-            : ''}
+          {payments[0]?.id ? format(addHours(new Date(payments[0]?.dueDate), 3), 'dd/MM/yyyy') : ''}
         </TableCell>
 
         <TableCell sx={{ whiteSpace: 'nowrap', color: checkExpiresDate(payments[0].expiresDate) }}>
           {payments.length > 0
-            ? format(addHours(new Date(payments[0].expiresDate), 3), 'dd/MM/yyyy')
+            ? format(addHours(new Date(payments[0]?.expiresDate), 3), 'dd/MM/yyyy')
             : ''}
         </TableCell>
 
