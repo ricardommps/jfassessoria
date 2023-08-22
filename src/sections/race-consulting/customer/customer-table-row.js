@@ -83,7 +83,7 @@ export default function CustomerTableRow({
           {payments[0]?.id ? format(addHours(new Date(payments[0]?.dueDate), 3), 'dd/MM/yyyy') : ''}
         </TableCell>
 
-        <TableCell sx={{ whiteSpace: 'nowrap', color: checkExpiresDate(payments[0].expiresDate) }}>
+        <TableCell sx={{ whiteSpace: 'nowrap', color: checkExpiresDate(payments[0]?.expiresDate) }}>
           {payments[0]?.id
             ? format(addHours(new Date(payments[0]?.expiresDate), 3), 'dd/MM/yyyy')
             : ''}
