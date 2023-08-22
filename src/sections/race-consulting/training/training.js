@@ -119,7 +119,7 @@ export default function Training() {
     if (trainingCreate) {
       onListTrainings(program.id);
       enqueueSnackbar('Treino criado com sucesso!', {
-        autoHideDuration: 3000,
+        autoHideDuration: 8000,
         variant: 'success',
       });
       handleCancel();
@@ -130,7 +130,7 @@ export default function Training() {
     if (cloneTraining) {
       onListTrainings(program.id);
       enqueueSnackbar('Treino clonado com sucesso!', {
-        autoHideDuration: 3000,
+        autoHideDuration: 8000,
         variant: 'success',
       });
       handleCancel();
@@ -146,7 +146,7 @@ export default function Training() {
           ? 'Programa enviado com sucesso!'
           : 'Falha ao enviar programa',
         {
-          autoHideDuration: 3000,
+          autoHideDuration: 8000,
           variant: sendTrainingSuccess.status === 200 ? 'success' : 'error',
         },
       );
@@ -158,7 +158,7 @@ export default function Training() {
     if (deleteTraining) {
       onListTrainings(program.id);
       enqueueSnackbar('Treino deletado com sucesso!', {
-        autoHideDuration: 3000,
+        autoHideDuration: 8000,
         variant: 'success',
       });
       handleCancel();

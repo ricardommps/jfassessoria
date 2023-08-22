@@ -2,6 +2,7 @@ import { combineReducers } from 'redux';
 import createWebStorage from 'redux-persist/lib/storage/createWebStorage';
 
 import customerReducer from './slices/customers';
+import paymentReducer from './slices/payment';
 import programReducer from './slices/program';
 import trainingReducer from './slices/training';
 
@@ -33,4 +34,5 @@ export const rootReducer = combineReducers({
   customer: customerReducer,
   program: programReducer,
   training: trainingReducer,
+  payment: paymentReducer,
 });

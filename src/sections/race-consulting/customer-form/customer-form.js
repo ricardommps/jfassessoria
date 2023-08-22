@@ -41,7 +41,7 @@ export default function CustomerForm({ handleCloseNewCustomer, isMobile = false 
   const NewCustomerSchema = Yup.object().shape({
     name: Yup.string().required('Titulo obrigatório'),
     email: Yup.string().required('Email obrigatório'),
-    birthDate: Yup.date().required('Due date is required').typeError(''),
+    birthDate: Yup.date().required('Data de Nascimento obrigatório').typeError(''),
   });
   const defaultValues = useMemo(
     () => ({

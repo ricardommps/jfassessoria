@@ -2,19 +2,15 @@
 
 // @mui
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { ptBR } from '@mui/x-date-pickers/locales';
 import { LocalizationProvider as MuiLocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import ptBR from 'date-fns/locale/pt-BR';
 import PropTypes from 'prop-types';
 
 // ----------------------------------------------------------------------
 
 export default function LocalizationProvider({ children }) {
   return (
-    <MuiLocalizationProvider
-      dateAdapter={AdapterDateFns}
-      locale={ptBR}
-      localeText={ptBR.components.MuiLocalizationProvider.defaultProps.localeText}
-    >
+    <MuiLocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ptBR}>
       {children}
     </MuiLocalizationProvider>
   );

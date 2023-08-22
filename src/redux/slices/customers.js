@@ -25,6 +25,7 @@ const slice = createSlice({
       state.customersStatus.loading = true;
       state.customersStatus.empty = false;
       state.customersStatus.error = null;
+      state.customers = [];
       state.customerCreate = null;
       state.updateCustomerSuccess = null;
     },
@@ -32,6 +33,7 @@ const slice = createSlice({
       state.customersStatus.loading = false;
       state.customersStatus.empty = false;
       state.customersStatus.error = action.payload;
+      state.customers = [];
     },
     getCustomersSuccess(state, action) {
       const customers = action.payload;

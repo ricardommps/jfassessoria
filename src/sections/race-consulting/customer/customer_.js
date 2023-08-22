@@ -7,11 +7,13 @@ import { useEffect } from 'react';
 import Iconify from 'src/components/iconify/iconify';
 import Scrollbar from 'src/components/scrollbar/scrollbar';
 import { useSettingsContext } from 'src/components/settings';
+import { useBoolean } from 'src/hooks/use-boolean';
 import useCustomer from 'src/hooks/use-customer';
 import useProgram from 'src/hooks/use-program';
 import { useResponsive } from 'src/hooks/use-responsive';
 import useTraining from 'src/hooks/use-training';
 
+import Payment from '../payment/payment';
 import { CustomersList } from './desktop/customer-list';
 import CustomerCard from './mobile/customer-card';
 
@@ -23,6 +25,7 @@ export default function Customer({
 }) {
   const settings = useSettingsContext();
   const mdUp = useResponsive('up', 'md');
+  const openPayment = useBoolean();
   const { customers, onListCustomers, onCustomerById } = useCustomer();
   const { onListPrograms, onClearPrograms, onClearProgram, cloneProgramSuccess } = useProgram();
   const { onShowTraining, onClearTrainings } = useTraining();
@@ -72,39 +75,43 @@ export default function Customer({
   };
 
   return (
-    <Paper
-      sx={{
-        px: 2,
-        borderRadius: 2,
-        bgcolor: 'background.neutral',
-      }}
-    >
-      <Stack>
-        <Stack p={2}>
-          <Typography variant="h3">Alunos</Typography>
+    <>
+      <Paper
+        sx={{
+          px: 2,
+          borderRadius: 2,
+          bgcolor: 'background.neutral',
+        }}
+      >
+        <Stack>
+          <Stack p={2}>
+            <Typography variant="h3">Alunos</Typography>
+          </Stack>
+          <Stack spacing={2} sx={{ width: getWidth(), py: 3, height: '67vh' }}>
+            <Scrollbar>
+              <Button
+                variant="contained"
+                startIcon={<Iconify icon="mingcute:add-line" />}
+                onClick={handleOpenNewCustomer}
+              >
+                Novo
+              </Button>
+              <Card sx={{ backgroundColor: 'rgba(22, 28, 36, 0.8)', mt: 3 }}>
+                {mdUp && (
+                  <CustomersList
+                    customers={customers}
+                    handleOpenProgram={handleOpenProgram}
+                    handleOpenCustomer={handleOpenCustomer}
+                    openPayment={openPayment}
+                  />
+                )}
+                {!mdUp && <CustomerCard customers={customers} />}
+              </Card>
+            </Scrollbar>
+          </Stack>
         </Stack>
-        <Stack spacing={2} sx={{ width: getWidth(), py: 3, height: '67vh' }}>
-          <Scrollbar>
-            <Button
-              variant="contained"
-              startIcon={<Iconify icon="mingcute:add-line" />}
-              onClick={handleOpenNewCustomer}
-            >
-              Novo
-            </Button>
-            <Card sx={{ backgroundColor: 'rgba(22, 28, 36, 0.8)', mt: 3 }}>
-              {mdUp && (
-                <CustomersList
-                  customers={customers}
-                  handleOpenProgram={handleOpenProgram}
-                  handleOpenCustomer={handleOpenCustomer}
-                />
-              )}
-              {!mdUp && <CustomerCard customers={customers} />}
-            </Card>
-          </Scrollbar>
-        </Stack>
-      </Stack>
-    </Paper>
+      </Paper>
+      <Payment open={openPayment.value} onClose={openPayment.onFalse} />
+    </>
   );
 }

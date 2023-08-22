@@ -150,7 +150,7 @@ export default function Program({ isMobile = false }) {
       onListPrograms(customer.id);
       onListCustomers();
       enqueueSnackbar('Programa criado com sucesso!', {
-        autoHideDuration: 3000,
+        autoHideDuration: 8000,
         variant: 'success',
       });
       handleClear();
@@ -163,7 +163,7 @@ export default function Program({ isMobile = false }) {
       onListPrograms(customer.id);
       onListCustomers();
       enqueueSnackbar('Programa clonado com sucesso!', {
-        autoHideDuration: 3000,
+        autoHideDuration: 8000,
         variant: 'success',
       });
       handleClear();
@@ -180,7 +180,7 @@ export default function Program({ isMobile = false }) {
           ? 'Programa enviado com sucesso!'
           : 'Falha ao enviar programa',
         {
-          autoHideDuration: 3000,
+          autoHideDuration: 8000,
           variant: sendProgramSuccess.status === 200 ? 'success' : 'error',
         },
       );
@@ -194,7 +194,7 @@ export default function Program({ isMobile = false }) {
       onListPrograms(customer.id);
       onListCustomers();
       enqueueSnackbar('Programa deletado com sucesso!', {
-        autoHideDuration: 3000,
+        autoHideDuration: 8000,
         variant: 'success',
       });
       handleClear();

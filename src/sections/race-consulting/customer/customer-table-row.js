@@ -4,16 +4,43 @@ import Chip from '@mui/material/Chip';
 import IconButton from '@mui/material/IconButton';
 import ListItemText from '@mui/material/ListItemText';
 import MenuItem from '@mui/material/MenuItem';
+import { useTheme } from '@mui/material/styles';
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
-import { format } from 'date-fns';
-import PropTypes from 'prop-types';
+import { addHours, format } from 'date-fns';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 import Iconify from 'src/components/iconify';
 import SvgColor from 'src/components/svg-color/svg-color';
 
-export default function CustomerTableRow({ row, selected, handleOpenCustomer, handleOpenProgram }) {
+export default function CustomerTableRow({
+  row,
+  selected,
+  handleOpenCustomer,
+  handleOpenProgram,
+  handleOpenPayment,
+}) {
+  const theme = useTheme();
   const popover = usePopover();
+  const { payments } = row;
+
+  const checkExpiresDate = (expiresDate) => {
+    const currentDate = new Date().toISOString();
+    const expiresDateTimezone = addHours(new Date(expiresDate), 3).toISOString();
+    if (expiresDate && expiresDateTimezone < currentDate) {
+      return theme.palette.error.main;
+    }
+    return theme.palette.success.main;
+  };
+
+  const checkDueDate = (dueDate, paymentDate) => {
+    const paymentDateTimezone = paymentDate && addHours(new Date(paymentDate), 3).toISOString();
+    const currentDate = new Date().toISOString();
+    const dueDateTimezone = addHours(new Date(dueDate), 3).toISOString();
+    if (!paymentDateTimezone && dueDateTimezone < currentDate) {
+      return theme.palette.error.main;
+    }
+    return theme.palette.success.main;
+  };
 
   return (
     <>
@@ -41,23 +68,21 @@ export default function CustomerTableRow({ row, selected, handleOpenCustomer, ha
           />
         </TableCell>
 
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>
-          <ListItemText
-            primary={
-              row?.premium_expires_date
-                ? format(new Date(row.premium_expires_date), 'dd MMM yyyy')
-                : ''
-            }
-            secondary={
-              row?.premium_expires_date ? format(new Date(row.premium_expires_date), 'p') : ''
-            }
-            primaryTypographyProps={{ typography: 'body2', noWrap: true }}
-            secondaryTypographyProps={{
-              mt: 0.5,
-              component: 'span',
-              typography: 'caption',
-            }}
-          />
+        <TableCell
+          sx={{
+            whiteSpace: 'nowrap',
+            color: checkDueDate(payments[0].dueDate, payments[0].paymentDate),
+          }}
+        >
+          {payments.length > 0
+            ? format(addHours(new Date(payments[0].dueDate), 3), 'dd/MM/yyyy')
+            : ''}
+        </TableCell>
+
+        <TableCell sx={{ whiteSpace: 'nowrap', color: checkExpiresDate(payments[0].expiresDate) }}>
+          {payments.length > 0
+            ? format(addHours(new Date(payments[0].expiresDate), 3), 'dd/MM/yyyy')
+            : ''}
         </TableCell>
 
         <TableCell sx={{ whiteSpace: 'nowrap' }}>
@@ -98,22 +123,14 @@ export default function CustomerTableRow({ row, selected, handleOpenCustomer, ha
         )}
         <MenuItem
           onClick={() => {
-            handleOpenCustomer(row.id);
+            handleOpenPayment(row.id);
             popover.onClose();
           }}
         >
-          <SvgColor src="/assets/icons/navbar/ic_user.svg" sx={{ mr: 1 }} />
-          Renovar plano
+          <SvgColor src="/assets/icons/navbar/ic_invoice.svg" sx={{ mr: 1 }} />
+          Renovar
         </MenuItem>
       </CustomPopover>
     </>
   );
 }
-
-CustomerTableRow.propTypes = {
-  row: PropTypes.object,
-  selected: PropTypes.bool,
-  onSelectRow: PropTypes.func,
-  handleOpenCustomer: PropTypes.func,
-  handleOpenProgram: PropTypes.func,
-};
