@@ -24,6 +24,9 @@ export default function CustomerTableRow({
   const { payments } = row;
 
   const checkExpiresDate = (expiresDate) => {
+    if (!expiresDate) {
+      return theme.palette.warning.main;
+    }
     const currentDate = new Date().toISOString();
     const expiresDateTimezone = addHours(new Date(expiresDate), 3).toISOString();
     if (expiresDate && expiresDateTimezone < currentDate) {
@@ -33,6 +36,9 @@ export default function CustomerTableRow({
   };
 
   const checkDueDate = (dueDate, paymentDate) => {
+    if (!dueDate || !paymentDate) {
+      return theme.palette.warning.main;
+    }
     const paymentDateTimezone = paymentDate && addHours(new Date(paymentDate), 3).toISOString();
     const currentDate = new Date().toISOString();
     const dueDateTimezone = addHours(new Date(dueDate), 3).toISOString();
@@ -78,7 +84,7 @@ export default function CustomerTableRow({
         </TableCell>
 
         <TableCell sx={{ whiteSpace: 'nowrap', color: checkExpiresDate(payments[0].expiresDate) }}>
-          {payments.length > 0
+          {payments[0]?.id
             ? format(addHours(new Date(payments[0]?.expiresDate), 3), 'dd/MM/yyyy')
             : ''}
         </TableCell>
