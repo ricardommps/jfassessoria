@@ -36,7 +36,7 @@ export default function CustomerTableRow({
   };
 
   const checkDueDate = (dueDate, paymentDate) => {
-    if (!dueDate || !paymentDate) {
+    if (!dueDate) {
       return theme.palette.warning.main;
     }
     const paymentDateTimezone = paymentDate && addHours(new Date(paymentDate), 3).toISOString();
