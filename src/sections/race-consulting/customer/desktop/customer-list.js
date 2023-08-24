@@ -16,7 +16,6 @@ import {
   TableSelectedAction,
   useTable,
 } from 'src/components/table';
-import { applyFilter } from 'src/layouts/_common/searchbar/utils';
 
 import CustomerTableRow from '../customer-table-row';
 import CustomerTableToolbar from '../customer-table-toolbar';
@@ -32,7 +31,6 @@ const TABLE_HEAD = [
 
 const defaultFilters = {
   name: '',
-  status: 'all',
 };
 
 export function CustomersList({
@@ -131,4 +129,25 @@ export function CustomersList({
       </TableContainer>
     </>
   );
+}
+
+function applyFilter({ inputData, comparator, filters }) {
+  const { name } = filters;
+
+  const stabilizedThis = inputData.map((el, index) => [el, index]);
+
+  stabilizedThis.sort((a, b) => {
+    const order = comparator(a[0], b[0]);
+    if (order !== 0) return order;
+    return a[1] - b[1];
+  });
+
+  inputData = stabilizedThis.map((el) => el[0]);
+
+  if (name) {
+    inputData = inputData.filter(
+      (customer) => customer.name.toLowerCase().indexOf(name.toLowerCase()) !== -1,
+    );
+  }
+  return inputData;
 }
