@@ -62,6 +62,11 @@ export default function TrainingItem({
     onCloneTraining(payload);
   };
 
+  const handleCloseDeleteTraining = () => {
+    deleteTraining.onFalse();
+    setTrainingName(null);
+  };
+
   return (
     <>
       <Stack key={training.id}>
@@ -76,10 +81,17 @@ export default function TrainingItem({
             </Stack>
 
             <BasecInfoSubTitle>{training.description}</BasecInfoSubTitle>
-            <BasecInfoSubTitle>
+            <BasecInfoSubTitle bold>
               {' '}
               {training.datePublished &&
                 format(new Date(training.datePublished), 'dd/MM/yyyy', { locale: ptBR })}
+              {training.trainingDateOther && (
+                <>
+                  {' ou '}
+                  {training.trainingDateOther &&
+                    format(new Date(training.trainingDateOther), 'dd/MM/yyyy', { locale: ptBR })}
+                </>
+              )}
             </BasecInfoSubTitle>
           </BasecInfoColumn1>
           <BasecColumnAction>
@@ -107,7 +119,6 @@ export default function TrainingItem({
           onClick={() => {
             onTrainingById(training.id);
           }}
-          sx={{ color: 'warning.main' }}
         >
           <EditIcon sx={{ fontSize: '22px', width: '22px', height: '30px' }} />
           Editar
@@ -118,7 +129,6 @@ export default function TrainingItem({
             confirm.onTrue();
             popover.onClose();
           }}
-          sx={{ color: 'warning.main' }}
         >
           <ContentCopyIcon sx={{ fontSize: '22px', width: '22px', height: '30px' }} />
           Copiar
@@ -129,7 +139,6 @@ export default function TrainingItem({
             onSendTrainig(training, e);
             popover.onClose();
           }}
-          sx={{ color: 'warning.main' }}
         >
           <NearMeIcon sx={{ fontSize: '22px', width: '22px', height: '30px' }} />
           Enviar
@@ -171,7 +180,7 @@ export default function TrainingItem({
 
       <ConfirmDialog
         open={deleteTraining.value}
-        onClose={deleteTraining.onFalse}
+        onClose={handleCloseDeleteTraining}
         title={`DELERAR ${training.name}`}
         content={
           <>
@@ -200,7 +209,7 @@ export default function TrainingItem({
               onDeleteTraining(training.id);
               deleteTraining.onFalse();
             }}
-            disabled={training.name !== trainingName}
+            disabled={training.name.trim() !== trainingName?.trim()}
           >
             DELETAR
           </Button>

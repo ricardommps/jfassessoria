@@ -122,7 +122,10 @@ export default function CustomerForm({ handleCloseNewCustomer, isMobile = false 
   useEffect(() => {
     if (updateCustomerSuccess) {
       onListCustomers();
-      enqueueSnackbar('Update success!', { autoHideDuration: 3000, variant: 'success' });
+      enqueueSnackbar('Aluno atualizado com sucesso!', {
+        autoHideDuration: 3000,
+        variant: 'success',
+      });
       handleCancel();
     }
   }, [updateCustomerSuccess]);
@@ -247,6 +250,9 @@ export default function CustomerForm({ handleCloseNewCustomer, isMobile = false 
                               fullWidth: true,
                               error: !!error,
                               helperText: error?.message,
+                            },
+                            actionBar: {
+                              actions: ['clear'],
                             },
                           }}
                         />

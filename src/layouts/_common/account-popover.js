@@ -15,6 +15,7 @@ import { varHover } from 'src/components/animate';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 // routes
 import { useRouter } from 'src/routes/hook';
+import { paths } from 'src/routes/paths';
 
 // ----------------------------------------------------------------------
 
@@ -22,6 +23,10 @@ const OPTIONS = [
   {
     label: 'Home',
     linkTo: '/',
+  },
+  {
+    label: 'Segurança',
+    linkTo: paths.dashboard.security,
   },
 ];
 

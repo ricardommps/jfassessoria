@@ -8,11 +8,11 @@ import { runningPace } from 'src/utils/running-pace';
 
 import { StyledTableCell, StyledTableRow } from './styles';
 
-export default function TablePaceSpeed({ handleClick, actionType }) {
+export default function TablePaceSpeed({ handleClick, actionType, minWidth }) {
   return (
     <>
       <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 500 }} aria-label="customized table">
+        <Table sx={{ minWidth: minWidth || 500 }} aria-label="customized table">
           <TableHead>
             <TableRow>
               <StyledTableCell align="center">Pace</StyledTableCell>

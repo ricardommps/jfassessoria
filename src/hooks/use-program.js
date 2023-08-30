@@ -1,16 +1,21 @@
 import { format } from 'date-fns';
 import { useCallback } from 'react';
 import {
+  clearArchivedPrograms,
   clearProgram,
   clearPrograms,
   cloneProgram,
   createProgram,
   deleteProgramReq,
+  getAllPChart,
   getAllPrograms,
+  getArchivedPrograms,
   getProgramById,
   getPrograms,
   getViewPdf,
+  hideProgramReq,
   sendProgram,
+  showProgramReq,
   updateProgram,
 } from 'src/redux/slices/program';
 import { useDispatch, useSelector } from 'src/redux/store';
@@ -35,9 +40,24 @@ export default function useProgram() {
     viewPdfStatus,
     deleteProgram,
     deleteProgramStatus,
+    hideProgramSuccess,
+    hideProgramStatus,
+    showProgramSuccess,
+    showProgramStatus,
+    archived,
+    archivedStatus,
+    allChart,
+    allChartStatus,
   } = useSelector((state) => state.program);
 
   const { customer } = useCustomer();
+
+  const onListArquivedPrograms = useCallback(
+    (customerId) => {
+      dispatch(getArchivedPrograms(customerId));
+    },
+    [dispatch],
+  );
 
   const onListPrograms = useCallback(
     (customerId) => {
@@ -48,6 +68,10 @@ export default function useProgram() {
 
   const onListAllPrograms = useCallback(() => {
     dispatch(getAllPrograms());
+  }, [dispatch]);
+
+  const onListAllChart = useCallback(() => {
+    dispatch(getAllPChart());
   }, [dispatch]);
 
   const onCreateProgram = useCallback(
@@ -107,6 +131,24 @@ export default function useProgram() {
     [dispatch],
   );
 
+  const onHideProgram = useCallback(
+    (programId) => {
+      dispatch(hideProgramReq(programId));
+    },
+    [dispatch],
+  );
+
+  const onShowProgram = useCallback(
+    (programId) => {
+      dispatch(showProgramReq(programId));
+    },
+    [dispatch],
+  );
+
+  const onClearArchivedPrograms = useCallback(() => {
+    dispatch(clearArchivedPrograms());
+  }, [dispatch]);
+
   const getFcValue = () => {
     if (customer.birthDate) {
       const birthdateValue = format(new Date(customer.birthDate), 'dd/MM/yyyy');
@@ -151,5 +193,18 @@ export default function useProgram() {
     onDeleteProgram,
     deleteProgram,
     deleteProgramStatus,
+    onHideProgram,
+    hideProgramSuccess,
+    hideProgramStatus,
+    onListArquivedPrograms,
+    archived,
+    archivedStatus,
+    onClearArchivedPrograms,
+    onShowProgram,
+    showProgramSuccess,
+    showProgramStatus,
+    allChart,
+    allChartStatus,
+    onListAllChart,
   };
 }

@@ -280,6 +280,11 @@ export default function NewEditForm({ payment, customerId, handleCancelPayment }
                 <DatePicker
                   label={'Selecione o mês e ano'}
                   views={['month', 'year']}
+                  slotProps={{
+                    actionBar: {
+                      actions: ['clear'],
+                    },
+                  }}
                   onChange={(newValue) =>
                     setPaymentMonthe(
                       format(new Date(newValue), 'MMMM/yyyy', {

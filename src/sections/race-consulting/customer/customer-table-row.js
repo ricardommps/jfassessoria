@@ -1,16 +1,26 @@
 // @mui
-import Avatar from '@mui/material/Avatar';
+import DeleteIcon from '@mui/icons-material/Delete';
+import DeleteSweepIcon from '@mui/icons-material/DeleteSweep';
+import Alert from '@mui/material/Alert';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import Chip from '@mui/material/Chip';
+import FormControl from '@mui/material/FormControl';
 import IconButton from '@mui/material/IconButton';
 import ListItemText from '@mui/material/ListItemText';
 import MenuItem from '@mui/material/MenuItem';
 import { useTheme } from '@mui/material/styles';
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
+import Typography from '@mui/material/Typography';
 import { addHours, format } from 'date-fns';
+import { useState } from 'react';
+import { BootstrapInput } from 'src/components/bootstrap-input/bootstrap-input';
+import { ConfirmDialog } from 'src/components/confirm-dialog';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 import Iconify from 'src/components/iconify';
 import SvgColor from 'src/components/svg-color/svg-color';
+import { useBoolean } from 'src/hooks/use-boolean';
 
 export default function CustomerTableRow({
   row,
@@ -18,10 +28,20 @@ export default function CustomerTableRow({
   handleOpenCustomer,
   handleOpenProgram,
   handleOpenPayment,
+  onDeleteCustomer,
+  handleOpenArquivedProgram,
 }) {
   const theme = useTheme();
   const popover = usePopover();
+  const deleteCustomer = useBoolean();
+
+  const [customerName, setCustomerName] = useState('');
+
   const { payments } = row;
+
+  const handleChangeCustomerName = (event) => {
+    setCustomerName(event.target.value);
+  };
 
   const checkExpiresDate = (expiresDate) => {
     if (!expiresDate) {
@@ -48,6 +68,15 @@ export default function CustomerTableRow({
     return theme.palette.success.main;
   };
 
+  const handleCloseDeleteCustomer = () => {
+    deleteCustomer.onFalse();
+    setCustomerName();
+  };
+
+  const countProgramsVisibled = () => {
+    const programsFiltered = row.programs.filter((item) => item.hide === false);
+    return programsFiltered.length;
+  };
   return (
     <>
       <TableRow hover selected={selected}>
@@ -56,16 +85,6 @@ export default function CustomerTableRow({
         </TableCell>
 
         <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
-          <Avatar
-            src={row?.avatarUrl || ''}
-            sx={{
-              width: 48,
-              height: 48,
-              color: 'text.secondary',
-              bgcolor: 'background.neutral',
-              mr: 2,
-            }}
-          />
           <ListItemText
             primary={row.name}
             secondary={row.email}
@@ -90,7 +109,7 @@ export default function CustomerTableRow({
         </TableCell>
 
         <TableCell sx={{ whiteSpace: 'nowrap' }}>
-          {row?.programs ? row?.programs.length : ''}
+          {row?.programs ? countProgramsVisibled() : ''}
         </TableCell>
 
         <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
@@ -103,7 +122,7 @@ export default function CustomerTableRow({
         open={popover.open}
         onClose={popover.onClose}
         arrow="right-top"
-        sx={{ width: 140 }}
+        sx={{ width: 240 }}
       >
         <MenuItem
           onClick={() => {
@@ -127,6 +146,15 @@ export default function CustomerTableRow({
         )}
         <MenuItem
           onClick={() => {
+            handleOpenArquivedProgram(row.id);
+            popover.onClose();
+          }}
+        >
+          <DeleteSweepIcon sx={{ mr: 1 }} />
+          Programas Arquivados
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
             handleOpenPayment(row.id);
             popover.onClose();
           }}
@@ -134,7 +162,57 @@ export default function CustomerTableRow({
           <SvgColor src="/assets/icons/navbar/ic_invoice.svg" sx={{ mr: 1 }} />
           Renovar
         </MenuItem>
+        <MenuItem
+          onClick={() => {
+            deleteCustomer.onTrue();
+            popover.onClose();
+          }}
+          sx={{ color: 'error.main' }}
+        >
+          <DeleteIcon sx={{ fontSize: '22px', width: '22px', height: '30px' }} />
+          Deletar
+        </MenuItem>
       </CustomPopover>
+      <ConfirmDialog
+        open={deleteCustomer.value}
+        onClose={handleCloseDeleteCustomer}
+        title={`DELERAR ${deleteCustomer.name}`}
+        content={
+          <>
+            <Typography>
+              Este aluno será excluído definitivamente, juntamente com todos os seus lançamentos de
+              planos, programas e treinos.
+            </Typography>
+            <Alert variant="filled" severity="error" sx={{ margin: '15px 0' }}>
+              Aviso: esta ação não é reversível. Por favor, tenha certeza.
+            </Alert>
+            <FormControl variant="standard" sx={{ width: '100%' }}>
+              <Typography>
+                Digite o nome do programa{' '}
+                <Box component="span" fontWeight="bold" color="#FF5630">
+                  {row.name}
+                </Box>{' '}
+                para continuar:
+              </Typography>
+              <BootstrapInput onChange={handleChangeCustomerName} />
+            </FormControl>
+          </>
+        }
+        action={
+          <Button
+            variant="contained"
+            color="error"
+            onClick={() => {
+              onDeleteCustomer(row.id);
+              setCustomerName(null);
+              deleteCustomer.onFalse();
+            }}
+            disabled={row.name.trim() !== customerName?.trim()}
+          >
+            DELETAR
+          </Button>
+        }
+      />
     </>
   );
 }

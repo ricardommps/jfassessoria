@@ -39,6 +39,8 @@ export default function Program({ isMobile = false }) {
     sendProgramStatus,
     onClearPrograms,
     deleteProgram,
+    hideProgramSuccess,
+    hideProgramStatus,
   } = useProgram();
 
   const { onShowTraining, onListTrainings, onClearTrainings } = useTraining();
@@ -139,7 +141,10 @@ export default function Program({ isMobile = false }) {
     if (updateProgramSuccess) {
       onListPrograms(customer.id);
       onListCustomers();
-      enqueueSnackbar('Update success!', { autoHideDuration: 3000, variant: 'success' });
+      enqueueSnackbar('Programa atualizado com sucesso!', {
+        autoHideDuration: 3000,
+        variant: 'success',
+      });
       handleClear();
     }
   }, [updateProgramSuccess]);
@@ -200,6 +205,32 @@ export default function Program({ isMobile = false }) {
       handleClear();
     }
   }, [deleteProgram]);
+
+  useUpdateEffect(() => {
+    if (hideProgramSuccess) {
+      setNewProduct(false);
+      onListPrograms(customer.id);
+      onListCustomers();
+      enqueueSnackbar('Programa arquivado com sucesso!', {
+        autoHideDuration: 8000,
+        variant: 'success',
+      });
+      handleClear();
+    }
+  }, [hideProgramSuccess]);
+
+  useUpdateEffect(() => {
+    if (hideProgramStatus.error) {
+      setNewProduct(false);
+      onListPrograms(customer.id);
+      onListCustomers();
+      enqueueSnackbar(hideProgramStatus.error, {
+        autoHideDuration: 8000,
+        variant: 'error',
+      });
+      handleClear();
+    }
+  }, [hideProgramStatus.error]);
 
   return (
     <>

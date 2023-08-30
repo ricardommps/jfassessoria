@@ -1,27 +1,21 @@
 // @mui
 import Box from '@mui/material/Box';
 import PropTypes from 'prop-types';
-// import NotMobile from 'src/components/NotMobile';
-// components
+import PasswordAlert from 'src/components/password-alert/password-alert';
 import { useSettingsContext } from 'src/components/settings';
-// hooks
 import { useBoolean } from 'src/hooks/use-boolean';
 import { useResponsive } from 'src/hooks/use-responsive';
 
 import Header from './header';
-//
 import Main from './main';
 import NavHorizontal from './nav-horizontal';
 import NavMini from './nav-mini';
 import NavVertical from './nav-vertical';
 
-// ----------------------------------------------------------------------
-
 export default function DashboardLayout({ children }) {
   const settings = useSettingsContext();
 
   const lgUp = useResponsive('up', 'lg');
-  // const mdUp = useResponsive('up', 'md');
 
   const nav = useBoolean();
 
@@ -43,6 +37,7 @@ export default function DashboardLayout({ children }) {
         {lgUp ? renderHorizontal : renderNavVertical}
 
         <Main>{children}</Main>
+        <PasswordAlert />
       </>
     );
   }
@@ -62,6 +57,7 @@ export default function DashboardLayout({ children }) {
 
           <Main>{children}</Main>
         </Box>
+        <PasswordAlert />
       </>
     );
   }
@@ -80,6 +76,7 @@ export default function DashboardLayout({ children }) {
 
         <Main>{children}</Main>
       </Box>
+      <PasswordAlert />
     </>
   );
 }

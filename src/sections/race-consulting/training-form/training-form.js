@@ -6,19 +6,22 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Stack from '@mui/material/Stack';
 import Switch from '@mui/material/Switch';
 import Typography from '@mui/material/Typography';
+import Grid from '@mui/material/Unstable_Grid2';
 import { DatePicker } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
 import PropTypes from 'prop-types';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { RHFTextField } from 'src/components/hook-form';
 import FormProvider from 'src/components/hook-form/form-provider';
+import Scrollbar from 'src/components/scrollbar/scrollbar';
+import TablePaceSpeed from 'src/components/table-pace-speed/table-pace-speed';
 import useProgram from 'src/hooks/use-program';
 import useTraining from 'src/hooks/use-training';
 import * as Yup from 'yup';
 
 import VideosForm from './videos-form';
-export default function TrainingForm({ handleCancel }) {
+export default function TrainingForm({ handleCancel, setShowTablePace, showTablePace }) {
   const { training, onUpdateTraining, onCreateTraining } = useTraining();
   const { program } = useProgram();
 
@@ -32,6 +35,7 @@ export default function TrainingForm({ handleCancel }) {
       description: training?.description || '',
       coverPath: training?.coverPath || '',
       datePublished: training?.datePublished || null,
+      trainingDateOther: training?.trainingDateOther || null,
       published: training?.published || false,
       videos: training?.videos || null,
     }),
@@ -81,6 +85,12 @@ export default function TrainingForm({ handleCancel }) {
     [setValue],
   );
 
+  useEffect(() => {
+    if (!values.datePublished) {
+      setValue('trainingDateOther', null);
+    }
+  }, [values.datePublished]);
+
   return (
     <>
       <Stack>
@@ -94,61 +104,114 @@ export default function TrainingForm({ handleCancel }) {
           .
         </Typography>
       </Stack>
-      <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
-        <>
-          <Box rowGap={3} columnGap={2} display="grid" pt={2}>
-            <RHFTextField name="name" label="Titulo *" variant="standard" />
-            <Stack mt={3}>
-              <Controller
-                name="datePublished"
-                control={control}
-                render={({ field, fieldState: { error } }) => (
-                  <DatePicker
-                    label="Data do treino"
-                    format="dd/MM/yyyy"
-                    value={dayjs(field?.value).toDate() || null}
-                    onChange={(newValue) => {
-                      field.onChange(newValue);
-                    }}
-                    slotProps={{
-                      textField: {
-                        fullWidth: true,
-                        error: !!error,
-                        helperText: error?.message,
-                      },
-                    }}
+      <Stack>
+        <Button
+          variant="outlined"
+          sx={{ width: 'fit-content' }}
+          onClick={() => setShowTablePace(!showTablePace ? true : false)}
+        >
+          {!showTablePace ? 'Exibir tabela Pace/Km' : 'Ocultas tabela Pace/Km'}
+        </Button>
+      </Stack>
+      <Grid container spacing={6}>
+        <Grid xs={12} md={showTablePace ? 6 : 12}>
+          <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
+            <>
+              <Box rowGap={3} columnGap={2} display="grid" pt={2}>
+                <RHFTextField name="name" label="Titulo *" variant="standard" />
+                <Stack mt={1}>
+                  <Controller
+                    name="datePublished"
+                    control={control}
+                    render={({ field, fieldState: { error } }) => (
+                      <DatePicker
+                        label="Data do treino"
+                        format="dd/MM/yyyy"
+                        value={dayjs(field?.value).toDate() || null}
+                        onChange={(newValue) => {
+                          field.onChange(newValue);
+                        }}
+                        slotProps={{
+                          textField: {
+                            fullWidth: true,
+                            error: !!error,
+                            helperText: error?.message,
+                          },
+                          actionBar: {
+                            actions: ['clear'],
+                          },
+                        }}
+                      />
+                    )}
                   />
-                )}
-              />
-            </Stack>
-            <RHFTextField name="description" label="Description" multiline rows={6} />
-            <Stack>
-              <VideosForm />
-            </Stack>
-            <Stack alignItems="flex-start" sx={{ mb: 1 }}>
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={Boolean(values.published)}
-                    color="primary"
-                    onChange={handleChangePublished}
+                  <Stack mt={1}>
+                    <Controller
+                      name="trainingDateOther"
+                      control={control}
+                      render={({ field, fieldState: { error } }) => (
+                        <DatePicker
+                          disabled={!values.datePublished}
+                          label="Data do treino alternativa"
+                          format="dd/MM/yyyy"
+                          value={dayjs(field?.value).toDate() || null}
+                          onChange={(newValue) => {
+                            field.onChange(newValue);
+                          }}
+                          slotProps={{
+                            textField: {
+                              fullWidth: true,
+                              error: !!error,
+                              helperText: error?.message,
+                            },
+                            actionBar: {
+                              actions: ['clear'],
+                            },
+                          }}
+                        />
+                      )}
+                    />
+                  </Stack>
+                </Stack>
+
+                <RHFTextField name="description" label="Description" multiline rows={6} />
+                <Stack>
+                  <VideosForm />
+                </Stack>
+                <Stack alignItems="flex-start" sx={{ mb: 1 }}>
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={Boolean(values.published)}
+                        color="primary"
+                        onChange={handleChangePublished}
+                      />
+                    }
+                    label="Liberado"
+                    labelPlacement="end"
                   />
-                }
-                label="Liberado"
-                labelPlacement="end"
-              />
+                </Stack>
+              </Box>
+              <Stack alignItems="flex-end" sx={{ mt: 3 }} spacing={2}>
+                <LoadingButton type="submit" variant="contained" loading={isSubmitting} fullWidth>
+                  Salvar
+                </LoadingButton>
+                <Button fullWidth variant="outlined" color="warning" onClick={handleCancel}>
+                  Cancelar
+                </Button>
+              </Stack>
+            </>
+          </FormProvider>
+        </Grid>
+        {showTablePace && (
+          <Grid xs={12} md={6}>
+            <Stack sx={{ height: '50vh' }}>
+              <Scrollbar sx={{ p: 3, pt: 2, height: 400 }}>
+                <TablePaceSpeed minWidth={200} />
+              </Scrollbar>
             </Stack>
-          </Box>
-          <Stack alignItems="flex-end" sx={{ mt: 3 }} spacing={2}>
-            <LoadingButton type="submit" variant="contained" loading={isSubmitting} fullWidth>
-              Salvar
-            </LoadingButton>
-            <Button fullWidth variant="outlined" color="warning" onClick={handleCancel}>
-              Cancelar
-            </Button>
-          </Stack>
-        </>
-      </FormProvider>
+          </Grid>
+        )}
+      </Grid>
     </>
   );
 }

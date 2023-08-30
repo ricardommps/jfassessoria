@@ -12,11 +12,12 @@ import { hideScroll } from 'src/theme/css';
 import CustomerDesktop from '../customer/desktop/customer-desktop';
 import CustomerMobile from '../customer/mobile/customer-mobile';
 import CustomerForm from '../customer-form/customer-form';
+import Archiveds from '../program/archived/archiveds';
 import Program from '../program/program';
 import Training from '../training/training';
 export default function RaceConsultingView() {
   const mdUp = useResponsive('up', 'md');
-  const { programs, onClearPrograms, onClearProgram } = useProgram();
+  const { programs, onClearPrograms, onClearProgram, archived } = useProgram();
   const { onShowTraining, onClearTrainings, showTraining } = useTraining();
   const { onClearCustome } = useCustomer();
   const [customerForm, setCustomerForm] = useState(false);
@@ -72,11 +73,13 @@ export default function RaceConsultingView() {
               customerForm={customerForm}
               setCustomerForm={setCustomerForm}
               programs={programs}
+              openArchived={!!archived}
             />
             {!programs && customerForm && (
               <CustomerForm handleCloseNewCustomer={handleCloseNewCustomer} />
             )}
             {programs && <Program />}
+            {archived && <Archiveds />}
             {showTraining && <Training />}
           </>
         )}
@@ -93,6 +96,7 @@ export default function RaceConsultingView() {
               <CustomerForm handleCloseNewCustomer={handleCloseNewCustomer} isMobile />
             )}
             {programs && <Program isMobile />}
+            {archived && <Archiveds />}
           </>
         )}
       </Stack>
