@@ -23,13 +23,17 @@ export default function RaceConsultingView() {
   const [customerForm, setCustomerForm] = useState(false);
 
   const handleOpenNewCustomer = () => {
+    onClearAll();
+    setCustomerForm(true);
+  };
+
+  const onClearAll = () => {
     onClearProgram();
     onClearPrograms();
     onClearProgram();
     onShowTraining(false);
     onClearTrainings();
     onClearCustome();
-    setCustomerForm(true);
   };
 
   const handleCloseNewCustomer = () => {
@@ -52,6 +56,10 @@ export default function RaceConsultingView() {
       trainingScrollIntoView();
     }
   }, [showTraining]);
+
+  useEffect(() => {
+    onClearAll();
+  }, []);
 
   return (
     <Container maxWidth={false} sx={{ height: 1 }}>
