@@ -44,7 +44,7 @@ export default function RaceConsultingView() {
       } else {
         trainingScrollIntoView();
       }
-    }, 1000);
+    }, 800);
   }, []);
 
   useEffect(() => {
