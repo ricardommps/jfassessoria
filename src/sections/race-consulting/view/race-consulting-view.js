@@ -2,7 +2,7 @@
 import Container from '@mui/material/Container';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import useCustomer from 'src/hooks/use-customer';
 import useProgram from 'src/hooks/use-program';
 import { useResponsive } from 'src/hooks/use-responsive';
@@ -36,12 +36,20 @@ export default function RaceConsultingView() {
     setCustomerForm(false);
   };
 
+  const trainingScrollIntoView = useCallback(() => {
+    setTimeout(() => {
+      const element = document.getElementById('training');
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      } else {
+        trainingScrollIntoView();
+      }
+    }, 1000);
+  }, []);
+
   useEffect(() => {
     if (showTraining) {
-      setTimeout(() => {
-        const element = document.getElementById('training');
-        element.scrollIntoView({ behavior: 'smooth' });
-      }, 500);
+      trainingScrollIntoView();
     }
   }, [showTraining]);
 
