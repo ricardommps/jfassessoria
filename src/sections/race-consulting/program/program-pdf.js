@@ -1,4 +1,5 @@
 import { Document, Font, Image, Page, StyleSheet, Text, View } from '@react-pdf/renderer';
+import { addHours } from 'date-fns';
 import { useMemo } from 'react';
 import { fDate } from 'src/utils/format-time';
 
@@ -213,6 +214,19 @@ export default function ProgramPdf({ program, notificationPdf, currentExtrapolat
     return item;
   };
 
+  function getAge(dateString) {
+    const today = new Date();
+    const birthDate = addHours(new Date(dateString), 3);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+
+    return age;
+  }
+
   const createTableHeaderExtrapolation = (key) => {
     return (
       <View style={styles.tableRowExtrapolation} fixed>
@@ -264,7 +278,7 @@ export default function ProgramPdf({ program, notificationPdf, currentExtrapolat
         </View>
 
         <View style={styles.ml5}>
-          <Text style={styles.body1}>Idade: 41 anos</Text>
+          <Text style={styles.body1}>Idade: {getAge(program.customer.birthDate)}</Text>
           <Text style={styles.body1}>FC máx estimada (200-idade) : {program.fcmValue}</Text>
           <Text style={styles.body1}>Pace: {program.pace}</Text>
           <Text style={styles.body1}>Vla: {program.vla}</Text>
@@ -299,6 +313,12 @@ export default function ProgramPdf({ program, notificationPdf, currentExtrapolat
                   <Text>
                     {item.datePublished ? fDate(item.datePublished, 'dd/MM/yyyy') : 'EXTRA'}
                   </Text>
+                  {item.trainingDateOther && (
+                    <>
+                      <Text> ou </Text>
+                      <Text>{fDate(item.trainingDateOther, 'dd/MM/yyyy')}</Text>
+                    </>
+                  )}
                 </View>
                 <View style={styles.serviceAmount}>
                   <Text>{item.name}</Text>

@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import {
   clearCustomer,
   createCustomer,
+  deleteCustomerReq,
   getCustomerById,
   getCustomers,
   updateCustomer,
@@ -17,6 +18,8 @@ export default function useCustomer() {
     customer,
     customerStatus,
     updateCustomerSuccess,
+    deleteCustomer,
+    deleteCustomerStatus,
   } = useSelector((state) => state.customer);
 
   const onCreateCustomer = useCallback(
@@ -48,6 +51,13 @@ export default function useCustomer() {
     [dispatch],
   );
 
+  const onDeleteCustomer = useCallback(
+    (customerId) => {
+      dispatch(deleteCustomerReq(customerId));
+    },
+    [dispatch],
+  );
+
   return {
     customers,
     customersStatus,
@@ -60,5 +70,8 @@ export default function useCustomer() {
     onClearCustome,
     onUpdateCustomer,
     updateCustomerSuccess,
+    onDeleteCustomer,
+    deleteCustomer,
+    deleteCustomerStatus,
   };
 }

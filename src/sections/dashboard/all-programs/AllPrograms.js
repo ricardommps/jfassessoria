@@ -1,16 +1,9 @@
-// @mui
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
 import Stack from '@mui/material/Stack';
 import { alpha, styled, useTheme } from '@mui/material/styles';
-import PropTypes from 'prop-types';
-// components
 import Chart, { useChart } from 'src/components/chart';
-// utils
 import { fNumber } from 'src/utils/format-number';
-
-// ----------------------------------------------------------------------
 
 const CHART_HEIGHT = 240;
 
@@ -27,9 +20,7 @@ const StyledChart = styled(Chart)(() => ({
   },
 }));
 
-// ----------------------------------------------------------------------
-
-export default function UsersActive({ title, subheader, chart, ...other }) {
+export default function AllPrograms({ chart, ...other }) {
   const theme = useTheme();
 
   const { colors, series, options } = chart;
@@ -78,9 +69,7 @@ export default function UsersActive({ title, subheader, chart, ...other }) {
     ...options,
   });
   return (
-    <Card {...other} sx={{ height: '55vh' }}>
-      <CardHeader title={title} subheader={subheader} sx={{ mb: 2 }} />
-
+    <Card {...other}>
       <StyledChart
         dir="ltr"
         type="donut"
@@ -89,7 +78,7 @@ export default function UsersActive({ title, subheader, chart, ...other }) {
         height={200}
       />
 
-      <Stack spacing={2} sx={{ p: 5 }}>
+      <Stack spacing={2} sx={{ padding: '0 15px 12px' }}>
         {series.map((item) => (
           <Stack
             key={item.label}
@@ -122,9 +111,3 @@ export default function UsersActive({ title, subheader, chart, ...other }) {
     </Card>
   );
 }
-
-UsersActive.propTypes = {
-  chart: PropTypes.object,
-  subheader: PropTypes.string,
-  title: PropTypes.string,
-};

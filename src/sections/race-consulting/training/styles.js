@@ -78,7 +78,7 @@ export const BasecInfoTitle = styled('div')(() => ({
   padding: '2px 2px 0 8px',
 }));
 
-export const BasecInfoSubTitle = styled('div')(() => ({
+export const BasecInfoSubTitle = styled('div')(({ bold }) => ({
   overflow: 'hidden',
   textOverflow: 'ellipsis',
   display: '-webkit-box',
@@ -89,6 +89,9 @@ export const BasecInfoSubTitle = styled('div')(() => ({
   color: '#888',
   padding: '5px 36px 0 8px',
   height: 'auto',
+  ...(bold && {
+    fontWeight: 'bold',
+  }),
 }));
 
 export const BaseHeader = styled('div')(() => ({

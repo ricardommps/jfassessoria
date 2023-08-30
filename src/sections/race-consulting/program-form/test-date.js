@@ -21,6 +21,9 @@ export default function TestDate({ value }) {
               fullWidth: true,
               error: false,
             },
+            actionBar: {
+              actions: ['clear'],
+            },
           }}
         />
       )}

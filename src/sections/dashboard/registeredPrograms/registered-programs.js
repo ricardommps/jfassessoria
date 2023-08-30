@@ -1,16 +1,45 @@
+import { useTheme } from '@emotion/react';
+import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
+import CircularProgress from '@mui/material/CircularProgress';
 import Divider from '@mui/material/Divider';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
+import { useEffect } from 'react';
+import useProgram from 'src/hooks/use-program';
 import { useResponsive } from 'src/hooks/use-responsive';
 
+import AllPrograms from '../all-programs/AllPrograms';
 import ChartContainer from './chartContainer';
 
 export default function RegisteredPrograms({ ...other }) {
   const smUp = useResponsive('up', 'sm');
+  const theme = useTheme();
+  const { onListAllChart, allChart, allChartStatus } = useProgram();
+
+  const getDifficultyLevel = (level) => {
+    if (allChart) {
+      const difficultyLevel = allChart?.filter((program) => program.difficultyLevel === level);
+      return difficultyLevel.length;
+    }
+    return 0;
+  };
+
+  const getStatus = (status) => {
+    if (allChart) {
+      const statusProgram = allChart?.filter((program) => program.active === status);
+      return statusProgram.length;
+    }
+    return 0;
+  };
+
+  useEffect(() => {
+    onListAllChart();
+  }, []);
+
   return (
-    <Card {...other}>
+    <Card {...other} sx={{ height: '55vh' }}>
       <CardHeader title="PROGRAMAS CADASTRADOS" sx={{ mb: 1 }} />
       <Stack
         direction={{ xs: 'column', sm: 'row' }}
@@ -31,19 +60,37 @@ export default function RegisteredPrograms({ ...other }) {
         >
           <div>
             <Typography variant="body2" sx={{ opacity: 0.72 }}>
-              OBJETIVOS
+              PROGRAMAS CADASTRADOS
             </Typography>
           </div>
 
-          <ChartContainer
-            chart={{
-              series: [
-                { label: 'Definição', value: 4 },
-                { label: 'Ganhar Massa Muscular', value: 2 },
-                { label: 'Condicionamento físico', value: 2 },
-              ],
-            }}
-          />
+          {allChartStatus.loading ? (
+            <Stack spacing={2} sx={{ px: 2, py: 2.5, position: 'relative', height: '50vh' }}>
+              <Box
+                sx={{
+                  mt: 5,
+                  width: 1,
+                  height: 320,
+                  borderRadius: 2,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <CircularProgress color="error" />
+              </Box>
+            </Stack>
+          ) : (
+            <AllPrograms
+              chart={{
+                colors: [theme.palette.success.main, theme.palette.error.main],
+                series: [
+                  { label: 'Ativos', value: getStatus(true) },
+                  { label: 'Bloqueados', value: getStatus(false) },
+                ],
+              }}
+            />
+          )}
         </Stack>
 
         <Stack
@@ -59,16 +106,38 @@ export default function RegisteredPrograms({ ...other }) {
             </Typography>
           </div>
 
-          <ChartContainer
-            chart={{
-              series: [
-                { label: 'Iniciante', value: 5 },
-                { label: 'Intermediário', value: 2 },
-                { label: ' Avançado', value: 1 },
-                { label: ' Expert', value: 0 },
-              ],
-            }}
-          />
+          {allChartStatus.loading ? (
+            <Stack spacing={2} sx={{ px: 2, py: 2.5, position: 'relative', height: '50vh' }}>
+              <Box
+                sx={{
+                  mt: 5,
+                  width: 1,
+                  height: 320,
+                  borderRadius: 2,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <CircularProgress color="error" />
+              </Box>
+            </Stack>
+          ) : (
+            <ChartContainer
+              chart={{
+                colors: [
+                  theme.palette.success.main,
+                  theme.palette.warning.main,
+                  theme.palette.error.main,
+                ],
+                series: [
+                  { label: 'Iniciante', value: getDifficultyLevel('Iniciante') },
+                  { label: 'Intermediário', value: getDifficultyLevel('Intermediário') },
+                  { label: ' Avançado', value: getDifficultyLevel('Avançado') },
+                ],
+              }}
+            />
+          )}
         </Stack>
       </Stack>
     </Card>

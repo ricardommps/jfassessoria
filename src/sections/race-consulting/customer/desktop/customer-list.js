@@ -38,6 +38,8 @@ export function CustomersList({
   handleOpenProgram,
   handleOpenCustomer,
   handleOpenPayment,
+  onDeleteCustomer,
+  handleOpenArquivedProgram,
 }) {
   const table = useTable();
 
@@ -101,21 +103,18 @@ export function CustomersList({
               onSort={table.onSort}
             />
             <TableBody>
-              {dataFiltered
-                .slice(
-                  table.page * table.rowsPerPage,
-                  table.page * table.rowsPerPage + table.rowsPerPage,
-                )
-                .map((row) => (
-                  <CustomerTableRow
-                    key={row.id}
-                    row={row}
-                    selected={table.selected.includes(row.id)}
-                    handleOpenProgram={handleOpenProgram}
-                    handleOpenCustomer={handleOpenCustomer}
-                    handleOpenPayment={handleOpenPayment}
-                  />
-                ))}
+              {dataFiltered.map((row) => (
+                <CustomerTableRow
+                  key={row.id}
+                  row={row}
+                  selected={table.selected.includes(row.id)}
+                  handleOpenProgram={handleOpenProgram}
+                  handleOpenCustomer={handleOpenCustomer}
+                  handleOpenPayment={handleOpenPayment}
+                  onDeleteCustomer={onDeleteCustomer}
+                  handleOpenArquivedProgram={handleOpenArquivedProgram}
+                />
+              ))}
 
               <TableEmptyRows
                 height={denseHeight}

@@ -15,6 +15,11 @@ const initialState = {
   },
   customerCreate: null,
   updateCustomerSuccess: null,
+  deleteCustomer: null,
+  deleteCustomerStatus: {
+    loading: false,
+    error: false,
+  },
 };
 
 const slice = createSlice({
@@ -28,6 +33,9 @@ const slice = createSlice({
       state.customers = [];
       state.customerCreate = null;
       state.updateCustomerSuccess = null;
+      state.deleteCustomer = null;
+      state.deleteCustomerStatus.loading = false;
+      state.deleteCustomerStatus.error = false;
     },
     getCustomersFailure(state, action) {
       state.customersStatus.loading = false;
@@ -78,6 +86,23 @@ const slice = createSlice({
       state.customerStatus.error = null;
       state.customerCreate = null;
       state.updateCustomer = null;
+    },
+    deleteCustomerStart(state) {
+      state.deleteCustomer = null;
+      state.deleteCustomerStatus.error = null;
+      state.deleteCustomerStatus.loading = true;
+    },
+    deleteCustomerFailure(state, action) {
+      state.deleteCustomerStatus.loading = false;
+      state.deleteCustomerStatus.error = action.payload;
+      state.deleteCustomer = null;
+    },
+    deleteCustomerSuccess(state, action) {
+      const deleteCustomer = action.payload;
+      state.deleteCustomer = deleteCustomer;
+
+      state.deleteCustomerStatus.loading = false;
+      state.deleteCustomerStatus.error = null;
     },
   },
 });
@@ -136,5 +161,17 @@ export function updateCustomer(customerUpadate, customerId) {
 export function clearCustomer() {
   return async (dispatch) => {
     dispatch(slice.actions.clearCustomer());
+  };
+}
+
+export function deleteCustomerReq(customerId) {
+  return async (dispatch) => {
+    dispatch(slice.actions.deleteCustomerStart());
+    try {
+      const response = await axios.delete(`${API_ENDPOINTS.customer}/${customerId}`);
+      dispatch(slice.actions.deleteCustomerSuccess(response.data));
+    } catch (error) {
+      dispatch(slice.actions.deleteCustomerFailure(error));
+    }
   };
 }

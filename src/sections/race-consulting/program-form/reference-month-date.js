@@ -21,6 +21,9 @@ export default function ReferenceMonthDate({ value }) {
               variant: 'standard',
               error: false,
             },
+            actionBar: {
+              actions: ['clear'],
+            },
           }}
         />
       )}

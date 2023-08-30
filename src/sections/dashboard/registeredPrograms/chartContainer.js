@@ -1,4 +1,5 @@
 // @mui
+import Stack from '@mui/material/Stack';
 import { styled, useTheme } from '@mui/material/styles';
 import PropTypes from 'prop-types';
 // components
@@ -75,7 +76,9 @@ export default function ChartContainer({ chart }) {
   });
 
   return (
-    <StyledChart dir="ltr" type="pie" series={chartSeries} options={chartOptions} height={200} />
+    <Stack spacing={2} sx={{ padding: '10px' }}>
+      <StyledChart dir="ltr" type="pie" series={chartSeries} options={chartOptions} height={200} />
+    </Stack>
   );
 }
 

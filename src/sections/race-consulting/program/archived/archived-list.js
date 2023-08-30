@@ -1,26 +1,20 @@
 import Grid from '@mui/material/Unstable_Grid2';
-import PropTypes from 'prop-types';
 import { useCallback, useState } from 'react';
 import useProgram from 'src/hooks/use-program';
 
-import ProgramItem from './program-item';
-import ProgramSearch from './program-search';
+import ProgramSearch from '../program-search';
+import ArchivedItem from './archived-item';
 
 const defaultFilters = {
   name: '',
 };
 
-export default function ProgramasList({
-  onSelectedProgram,
-  cloneProgramStatus,
-  handleOpenSend,
-  sendProgramStatus,
-}) {
-  const { programs, onCloneProgram, onDeleteProgram, onHideProgram } = useProgram();
+export default function ArchivedList({ handleOpenSend }) {
+  const { archived, archivedStatus, onShowProgram, onDeleteProgram } = useProgram();
   const [filters, setFilters] = useState(defaultFilters);
 
   const dataFiltered = applyFilter({
-    inputData: programs,
+    inputData: archived,
     filters,
   });
 
@@ -30,23 +24,19 @@ export default function ProgramasList({
       [name]: value,
     }));
   }, []);
-
   return (
     <Grid container spacing={2} pt={1}>
       <Grid xs={12} sm={12} md={12}>
         <>
           <ProgramSearch filters={filters} onFilters={handleFilters} />
-          {dataFiltered?.map((program) => (
-            <ProgramItem
-              key={program.id}
-              program={program}
-              onCloneProgram={onCloneProgram}
-              onSelectedProgram={onSelectedProgram}
-              onSendProgram={handleOpenSend}
+          {dataFiltered?.map((item) => (
+            <ArchivedItem
+              key={item.id}
+              archived={item}
+              archivedStatus={archivedStatus}
+              onShowProgram={onShowProgram}
               onDeleteProgram={onDeleteProgram}
-              cloneProgramStatus={cloneProgramStatus}
-              sendProgramStatus={sendProgramStatus}
-              onHideProgram={onHideProgram}
+              onSendProgram={handleOpenSend}
             />
           ))}
         </>
@@ -54,10 +44,6 @@ export default function ProgramasList({
     </Grid>
   );
 }
-
-ProgramasList.propTypes = {
-  onSelectedProgram: PropTypes.func,
-};
 
 function applyFilter({ inputData, filters }) {
   const { name } = filters;

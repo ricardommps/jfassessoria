@@ -4,6 +4,7 @@ import Card from '@mui/material/Card';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
+import { enqueueSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import Iconify from 'src/components/iconify/iconify';
 import Scrollbar from 'src/components/scrollbar/scrollbar';
@@ -21,11 +22,20 @@ export default function CustomerDesktop({
   customerForm,
   setCustomerForm,
   programs,
+  openArchived,
 }) {
   const settings = useSettingsContext();
   const openPayment = useBoolean();
-  const { customers, onListCustomers, onCustomerById } = useCustomer();
-  const { onListPrograms, onClearPrograms, onClearProgram, cloneProgramSuccess } = useProgram();
+  const { customers, onListCustomers, onCustomerById, deleteCustomer, onDeleteCustomer, customer } =
+    useCustomer();
+  const {
+    onListPrograms,
+    onClearPrograms,
+    onClearProgram,
+    cloneProgramSuccess,
+    onListArquivedPrograms,
+    showProgramStatus,
+  } = useProgram();
   const { onShowTraining, onClearTrainings } = useTraining();
   const [customerSelected, setCustomerSelected] = useState(null);
 
@@ -34,6 +44,13 @@ export default function CustomerDesktop({
   const handleOpenProgram = (customerId) => {
     onCustomerById(customerId);
     onListPrograms(customerId);
+    setCustomerForm(false);
+  };
+
+  const handleOpenArquivedProgram = (customerId) => {
+    setCustomerSelected(null);
+    onCustomerById(customerId);
+    onListArquivedPrograms(customerId);
     setCustomerForm(false);
   };
 
@@ -72,15 +89,35 @@ export default function CustomerDesktop({
     }
   }, [customerSelected]);
 
+  useEffect(() => {
+    if (deleteCustomer) {
+      onListCustomers();
+      enqueueSnackbar('Aluno Removido com sucesso!', {
+        autoHideDuration: 3000,
+        variant: 'success',
+      });
+    }
+  }, [deleteCustomer]);
+
+  useEffect(() => {
+    if (showProgramStatus.error) {
+      onListArquivedPrograms(customer.id);
+      enqueueSnackbar(showProgramStatus.error, {
+        autoHideDuration: 3000,
+        variant: 'warning',
+      });
+    }
+  }, [showProgramStatus.error]);
+
   const getWidth = () => {
-    if (customerForm || programs) {
+    if (customerForm || programs || openArchived) {
       if (isNavMini) {
         return '60vw';
       }
       return '50vw';
     }
 
-    if (!customerForm || !programs) {
+    if (!customerForm || !programs || !openArchived) {
       if (isNavMini) {
         return '84vw';
       }
@@ -101,7 +138,7 @@ export default function CustomerDesktop({
         <Stack sx={{ position: 'relative' }}>
           <Backdrop
             sx={{ position: 'absolute', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-            open={!!programs}
+            open={!!programs || openArchived}
           >
             <div />
           </Backdrop>
@@ -123,6 +160,8 @@ export default function CustomerDesktop({
                   handleOpenProgram={handleOpenProgram}
                   handleOpenCustomer={handleOpenCustomer}
                   handleOpenPayment={handleOpenPayment}
+                  onDeleteCustomer={onDeleteCustomer}
+                  handleOpenArquivedProgram={handleOpenArquivedProgram}
                 />
               </Card>
             </Scrollbar>

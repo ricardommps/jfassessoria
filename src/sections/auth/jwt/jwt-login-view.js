@@ -3,6 +3,7 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 // @mui
 import LoadingButton from '@mui/lab/LoadingButton';
+import Alert from '@mui/material/Alert';
 import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
 import Stack from '@mui/material/Stack';
@@ -26,7 +27,7 @@ import * as Yup from 'yup';
 export default function JwtLoginView() {
   const { login } = useAuthContext();
 
-  const [setErrorMsg] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
 
   const searchParams = useSearchParams();
 
@@ -72,6 +73,7 @@ export default function JwtLoginView() {
 
   const renderForm = (
     <Stack spacing={2.5}>
+      {!!errorMsg && <Alert severity="error">{errorMsg}</Alert>}
       <RHFTextField name="email" label="Email address" />
 
       <RHFTextField

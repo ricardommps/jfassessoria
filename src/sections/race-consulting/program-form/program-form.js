@@ -91,7 +91,7 @@ export default function ProgramForm({ handleClear }) {
       test: program?.test || null,
       warningPdf: program?.warningPdf || null,
       dateTest: program?.dateTest || null,
-      customerId: program?.customerId || customer.id,
+      customerId: program?.customerId || customer?.id,
       active: false,
       referenceMonth: program?.referenceMonth || null,
       fcmValue: program?.fcmValue || getFcValue(),
@@ -277,8 +277,8 @@ export default function ProgramForm({ handleClear }) {
                   variant="standard"
                   onChange={handleChangeVlanLevel}
                 >
-                  <MenuItem value={60}>60%</MenuItem>
                   <MenuItem value={70}>70%</MenuItem>
+                  <MenuItem value={80}>80%</MenuItem>
                 </RHFSelect>
 
                 <Stack

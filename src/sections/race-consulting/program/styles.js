@@ -128,13 +128,18 @@ export const BaseHeader = styled('div')(() => ({
   },
 }));
 
-export const Advanced = styled('div')(() => ({
-  color: '#f44336',
+export const Advanced = styled('div')(({ theme }) => ({
+  color: theme.palette.error.main,
   fontWeight: 400,
 }));
 
-export const Beginner = styled('div')(() => ({
-  color: '#00b826',
+export const Beginner = styled('div')(({ theme }) => ({
+  color: theme.palette.success.main,
+  fontWeight: 400,
+}));
+
+export const Intermediary = styled('div')(({ theme }) => ({
+  color: theme.palette.warning.main,
   fontWeight: 400,
 }));
 

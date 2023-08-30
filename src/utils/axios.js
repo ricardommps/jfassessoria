@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { enqueueSnackbar } from 'notistack';
 // config
 import { HOST_API_JF } from 'src/config-global';
 
@@ -9,15 +8,7 @@ const axiosInstance = axios.create({ baseURL: HOST_API_JF });
 
 axiosInstance.interceptors.response.use(
   (response) => response,
-  (error) => {
-    if (error) {
-      enqueueSnackbar('Não foi possível executar esta operação. Tente novamente mais tarde.', {
-        autoHideDuration: 8000,
-        variant: 'error',
-      });
-    }
-    Promise.reject((error.response && error.response.data) || 'Something went wrong');
-  },
+  (error) => Promise.reject((error.response && error.response.data) || 'Something went wrong'),
 );
 
 export default axiosInstance;
@@ -26,6 +17,9 @@ export const API_ENDPOINTS = {
   chat: '/api/chat',
   kanban: '/api/kanban',
   calendar: '/api/calendar',
+  user: {
+    changePassword: '/api/v2/user',
+  },
   auth: {
     me: '/api/v2/user/me',
     login: '/api/v2/auth',
@@ -37,9 +31,13 @@ export const API_ENDPOINTS = {
     register: '/api/v2/program',
     clone: '/api/v2/program/clone',
     send: '/api/v2/program/sendProgram',
-    all: 'api/v2/program',
-    viewPdf: 'api/v2/program/viewPdf',
+    all: '/api/v2/program',
+    viewPdf: '/api/v2/program/viewPdf',
     delete: '/api/v2/program',
+    hide: '/api/v2/program/hide',
+    show: '/api/v2/program/show',
+    archived: '/api/v2/program/archived',
+    allChart: '/api/v2/program/allChart',
   },
   training: {
     list: '/api/v2/training/program',

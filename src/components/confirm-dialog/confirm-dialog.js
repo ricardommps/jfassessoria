@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
 
 export default function ConfirmDialog({ title, content, action, open, onClose, ...other }) {
   return (
-    <Dialog fullWidth maxWidth="xs" open={open} onClose={onClose} {...other}>
+    <Dialog fullWidth maxWidth="xs" open={open} {...other}>
       <DialogTitle sx={{ pb: 2 }}>{title}</DialogTitle>
 
       {content && <DialogContent sx={{ typography: 'body2' }}> {content} </DialogContent>}

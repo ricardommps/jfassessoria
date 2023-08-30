@@ -5,6 +5,7 @@ import customerReducer from './slices/customers';
 import paymentReducer from './slices/payment';
 import programReducer from './slices/program';
 import trainingReducer from './slices/training';
+import userReducer from './slices/user';
 
 export const createNoopStorage = () => ({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -35,4 +36,5 @@ export const rootReducer = combineReducers({
   program: programReducer,
   training: trainingReducer,
   payment: paymentReducer,
+  user: userReducer,
 });

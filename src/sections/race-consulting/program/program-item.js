@@ -3,6 +3,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import NearMeIcon from '@mui/icons-material/NearMe';
 import PrintIcon from '@mui/icons-material/Print';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -32,6 +33,7 @@ import {
   BaseHeader,
   Beginner,
   BootstrapInput,
+  Intermediary,
   ListItem,
 } from './styles';
 
@@ -43,11 +45,13 @@ export default function ProgramItem({
   onDeleteProgram,
   cloneProgramStatus,
   sendProgramStatus,
+  onHideProgram,
 }) {
   const confirm = useBoolean();
   const view = useBoolean();
   const notification = useBoolean();
   const deleteProgram = useBoolean();
+  const hideProgram = useBoolean();
 
   const popover = usePopover();
 
@@ -65,19 +69,26 @@ export default function ProgramItem({
     return '';
   };
   const renderDifficultyLevel = (difficylty) => {
-    if (difficylty === 'Avançado') {
-      return (
-        <span>
-          <Advanced>{difficylty}</Advanced>
-        </span>
-      );
-    } else {
+    if (difficylty === 'Iniciante') {
       return (
         <span>
           <Beginner>{difficylty}</Beginner>
         </span>
       );
     }
+    if (difficylty === 'Intermediário') {
+      return (
+        <span>
+          <Intermediary>{difficylty}</Intermediary>
+        </span>
+      );
+    }
+
+    return (
+      <span>
+        <Advanced>{difficylty}</Advanced>
+      </span>
+    );
   };
 
   const handleChangeProgramName = (event) => {
@@ -141,6 +152,11 @@ export default function ProgramItem({
     }
   }, []);
 
+  const handleCloseDeleteProgram = () => {
+    deleteProgram.onFalse();
+    setProgramName(null);
+  };
+
   return (
     <>
       <Stack>
@@ -181,7 +197,6 @@ export default function ProgramItem({
           onClick={() => {
             onSelectedProgram(program.id);
           }}
-          sx={{ color: 'warning.main' }}
         >
           <EditIcon sx={{ fontSize: '22px', width: '22px', height: '30px' }} />
           Editar
@@ -192,7 +207,6 @@ export default function ProgramItem({
             confirm.onTrue();
             popover.onClose();
           }}
-          sx={{ color: 'warning.main' }}
         >
           <ContentCopyIcon sx={{ fontSize: '22px', width: '22px', height: '30px' }} />
           Copiar
@@ -203,7 +217,6 @@ export default function ProgramItem({
             onSendProgram(program, e);
             popover.onClose();
           }}
-          sx={{ color: 'warning.main' }}
         >
           <NearMeIcon sx={{ fontSize: '22px', width: '22px', height: '30px' }} />
           Enviar
@@ -214,12 +227,23 @@ export default function ProgramItem({
               handleOpenNotification(e);
               popover.onClose();
             }}
-            sx={{ color: 'warning.main' }}
           >
             <PrintIcon sx={{ fontSize: '22px', width: '22px', height: '30px' }} />
             Pdf
           </MenuItem>
         )}
+
+        <MenuItem
+          onClick={() => {
+            hideProgram.onTrue();
+            popover.onClose();
+          }}
+          sx={{ color: 'warning.main' }}
+        >
+          <VisibilityOffIcon sx={{ fontSize: '22px', width: '22px', height: '30px' }} />
+          Arquivar
+        </MenuItem>
+
         <MenuItem
           onClick={() => {
             deleteProgram.onTrue();
@@ -255,8 +279,37 @@ export default function ProgramItem({
       />
 
       <ConfirmDialog
+        open={hideProgram.value}
+        onClose={hideProgram.onFalse}
+        title="Ocultar"
+        content={
+          <>
+            <Typography>
+              Tem certeza que deseja ocultar o programa<strong> {program.name} </strong>?
+            </Typography>
+            <Alert variant="filled" severity="warning" sx={{ margin: '15px 0' }}>
+              Aviso: esta ação irá ocultar esse programa e todos os treinos cadastrados nele. O
+              programa oculto ficará em histórico no qual poderá ser recuperado novamente
+            </Alert>
+          </>
+        }
+        action={
+          <Button
+            variant="contained"
+            color="success"
+            onClick={() => {
+              onHideProgram(program.id);
+              hideProgram.onFalse();
+            }}
+          >
+            Confirmar
+          </Button>
+        }
+      />
+
+      <ConfirmDialog
         open={deleteProgram.value}
-        onClose={deleteProgram.onFalse}
+        onClose={handleCloseDeleteProgram}
         title={`DELERAR ${program.name}`}
         content={
           <>
@@ -287,7 +340,7 @@ export default function ProgramItem({
               onDeleteProgram(program.id);
               deleteProgram.onFalse();
             }}
-            disabled={program.name !== programName}
+            disabled={program.name.trim() !== programName?.trim()}
           >
             DELETAR
           </Button>

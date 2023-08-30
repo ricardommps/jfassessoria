@@ -1,9 +1,15 @@
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import Accordion from '@mui/material/Accordion';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import AccordionSummary from '@mui/material/AccordionSummary';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
+import ListItemText from '@mui/material/ListItemText';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
+import { m } from 'framer-motion';
 import { enqueueSnackbar } from 'notistack';
 import { useCallback, useEffect, useState } from 'react';
 import { ConfirmDialog } from 'src/components/confirm-dialog';
@@ -12,6 +18,8 @@ import Scrollbar from 'src/components/scrollbar/scrollbar';
 import { useBoolean } from 'src/hooks/use-boolean';
 import useProgram from 'src/hooks/use-program';
 import useTraining from 'src/hooks/use-training';
+import { extrapolation } from 'src/utils/extrapolation';
+import { paceFormater } from 'src/utils/format-number';
 
 import TrainingForm from '../training-form/training-form';
 import SendTraining from './send-training/send-training';
@@ -46,6 +54,9 @@ export default function Training() {
     message: null,
     training: null,
   });
+
+  const [currentExtrapolation, setCurrentExtrapolation] = useState(null);
+  const [showTablePace, setShowTablePace] = useState(false);
 
   const handleOpenSend = (training, event) => {
     event.stopPropagation();
@@ -84,6 +95,7 @@ export default function Training() {
     onClearTraining();
     setOpenSend(null);
     setProgramsIdSelected([]);
+    setShowTablePace(false);
   };
 
   const handleSendTraining = useCallback(() => {
@@ -165,6 +177,22 @@ export default function Training() {
     }
   }, [deleteTraining]);
 
+  useEffect(() => {
+    if (program) {
+      const resultValue = extrapolation[program.pv];
+      setCurrentExtrapolation(resultValue);
+    }
+  }, [program]);
+
+  useEffect(() => {
+    if (showTablePace) {
+      setTimeout(() => {
+        const element = document.getElementById('expandMoreIcon');
+        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 500);
+    }
+  }, [showTablePace]);
+
   return (
     <>
       <Paper
@@ -179,18 +207,176 @@ export default function Training() {
           <Stack>
             <Stack p={2}>
               <Typography variant="h3">Treinamentos</Typography>
-              <Typography variant="h6" component="div">
-                {program?.name}
-              </Typography>
+              <Accordion>
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon id="expandMoreIcon" />}
+                  aria-controls="panel1a-content"
+                  id="panel1a-header"
+                >
+                  <Typography>Detalhes do programa</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Typography variant="subtitle1" component="div">
+                    {`Nome do programa: ${program?.name}`}
+                  </Typography>
+                  <Stack
+                    component={m.div}
+                    spacing={1}
+                    direction="row"
+                    alignItems="center"
+                    sx={{
+                      my: 0.5,
+                      py: 0.5,
+                      borderRadius: 1,
+                    }}
+                  >
+                    <Stack
+                      direction="row"
+                      sx={{ textAlign: 'left', justifyContent: 'left', width: '20%' }}
+                    >
+                      <ListItemText
+                        primary={'Pace: '}
+                        primaryTypographyProps={{
+                          typography: 'subtitle1',
+                        }}
+                        sx={{ flex: 'none' }}
+                      />
+                      <Typography variant="subtitle2" sx={{ ml: 1 }}>
+                        {paceFormater(program?.pace)}
+                      </Typography>
+                    </Stack>
+                    <Stack direction="row" spacing={0}>
+                      <ListItemText
+                        primary={'V02máx: '}
+                        primaryTypographyProps={{
+                          typography: 'subtitle1',
+                        }}
+                        sx={{ flex: 'none' }}
+                      />
+                      <Typography variant="subtitle2" sx={{ ml: 1 }}>
+                        {currentExtrapolation?.VO2}
+                      </Typography>
+                    </Stack>
+                  </Stack>
+                  <Stack
+                    component={m.div}
+                    spacing={1}
+                    direction="row"
+                    alignItems="center"
+                    sx={{
+                      my: 0.5,
+                      py: 0.5,
+                      borderRadius: 1,
+                    }}
+                  >
+                    <Stack
+                      direction="row"
+                      sx={{ textAlign: 'left', justifyContent: 'left', width: '20%' }}
+                    >
+                      <ListItemText
+                        primary={'Vla: '}
+                        primaryTypographyProps={{
+                          typography: 'subtitle1',
+                        }}
+                        sx={{ flex: 'none' }}
+                      />
+                      <Typography variant="subtitle2" sx={{ ml: 1 }}>
+                        {program.vla} km/h
+                      </Typography>
+                    </Stack>
+                    <Stack direction="row" spacing={0}>
+                      <ListItemText
+                        primary={'Pace - Vla: '}
+                        primaryTypographyProps={{
+                          typography: 'subtitle1',
+                        }}
+                        sx={{ flex: 'none' }}
+                      />
+                      <Typography variant="subtitle2" sx={{ ml: 1 }}>
+                        {paceFormater(program.paceVla)}
+                      </Typography>
+                    </Stack>
+                  </Stack>
+                  <Stack
+                    component={m.div}
+                    spacing={1}
+                    direction="row"
+                    alignItems="center"
+                    sx={{
+                      my: 0.5,
+                      py: 0.5,
+                      borderRadius: 1,
+                    }}
+                  >
+                    <Stack
+                      direction="row"
+                      sx={{ textAlign: 'left', justifyContent: 'left', width: '20%' }}
+                    >
+                      <ListItemText
+                        primary={'Vlan: '}
+                        primaryTypographyProps={{
+                          typography: 'subtitle1',
+                        }}
+                        sx={{ flex: 'none' }}
+                      />
+                      <Typography variant="subtitle2" sx={{ ml: 1 }}>
+                        {program.vlan} km/h
+                      </Typography>
+                    </Stack>
+                    <Stack direction="row" spacing={0}>
+                      <ListItemText
+                        primary={'Pace - Vlan: '}
+                        primaryTypographyProps={{
+                          typography: 'subtitle1',
+                        }}
+                        sx={{ flex: 'none' }}
+                      />
+                      <Typography variant="subtitle2" sx={{ ml: 1 }}>
+                        {paceFormater(program.paceVlan)}
+                      </Typography>
+                    </Stack>
+                  </Stack>
+                  <Stack
+                    component={m.div}
+                    spacing={1}
+                    direction="row"
+                    alignItems="center"
+                    sx={{
+                      my: 0.5,
+                      py: 0.5,
+                      borderRadius: 1,
+                    }}
+                  >
+                    <Stack
+                      direction="row"
+                      sx={{ textAlign: 'left', justifyContent: 'left', width: '20%' }}
+                    >
+                      <ListItemText
+                        primary={'FCM: '}
+                        primaryTypographyProps={{
+                          typography: 'subtitle1',
+                        }}
+                        sx={{ flex: 'none' }}
+                      />
+                      <Typography variant="subtitle2" sx={{ ml: 1 }}>
+                        {program.fcmValue}
+                      </Typography>
+                    </Stack>
+                  </Stack>
+                </AccordionDetails>
+              </Accordion>
             </Stack>
-            <Stack spacing={3} sx={{ width: '25vw', py: 1, height: 'calc(100vh - 340px)' }}>
+            <Stack
+              spacing={3}
+              sx={{ width: showTablePace ? '50vw' : '25vw', py: 1, height: 'calc(100vh - 340px)' }}
+            >
               <Scrollbar>
                 {!training && !newTraining && (
                   <>
                     <Button
                       variant="contained"
                       startIcon={<Iconify icon="mingcute:add-line" />}
-                      sx={{ mb: 2 }}
+                      sx={{ mb: 2, ml: 4 }}
                       onClick={handleNewTraining}
                     >
                       Novo
@@ -223,7 +409,11 @@ export default function Training() {
                 )}
                 {(training || (!training && newTraining)) && (
                   <Stack sx={{ px: 2, py: 2.5, position: 'relative' }}>
-                    <TrainingForm handleCancel={handleCancel} />
+                    <TrainingForm
+                      handleCancel={handleCancel}
+                      setShowTablePace={setShowTablePace}
+                      showTablePace={showTablePace}
+                    />
                   </Stack>
                 )}
               </Scrollbar>
