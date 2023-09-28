@@ -18,6 +18,7 @@ import { usePopover } from 'src/components/custom-popover';
 import CustomPopover from 'src/components/custom-popover/custom-popover';
 import Iconify from 'src/components/iconify/iconify';
 import { useBoolean } from 'src/hooks/use-boolean';
+import { getModuleName } from 'src/utils/training-modules';
 
 import { BootstrapInput } from '../program/styles';
 import {
@@ -77,7 +78,7 @@ export default function TrainingItem({
           />
           <BasecInfoColumn1>
             <Stack direction="row">
-              <BasecInfoTitle>{training.name} </BasecInfoTitle>
+              <BasecInfoTitle>{getModuleName(training.name)} </BasecInfoTitle>
             </Stack>
 
             <BasecInfoSubTitle>{training.description}</BasecInfoSubTitle>

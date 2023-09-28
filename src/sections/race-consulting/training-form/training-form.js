@@ -1,8 +1,10 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import LoadingButton from '@mui/lab/LoadingButton';
+import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import MenuItem from '@mui/material/MenuItem';
 import Stack from '@mui/material/Stack';
 import Switch from '@mui/material/Switch';
 import Typography from '@mui/material/Typography';
@@ -12,12 +14,13 @@ import dayjs from 'dayjs';
 import PropTypes from 'prop-types';
 import { useCallback, useEffect, useMemo } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { RHFTextField } from 'src/components/hook-form';
+import { RHFSelect, RHFTextField } from 'src/components/hook-form';
 import FormProvider from 'src/components/hook-form/form-provider';
 import Scrollbar from 'src/components/scrollbar/scrollbar';
 import TablePaceSpeed from 'src/components/table-pace-speed/table-pace-speed';
 import useProgram from 'src/hooks/use-program';
 import useTraining from 'src/hooks/use-training';
+import { trainingModules } from 'src/utils/training-modules';
 import * as Yup from 'yup';
 
 import VideosForm from './videos-form';
@@ -53,7 +56,7 @@ export default function TrainingForm({ handleCancel, setShowTablePace, showTable
     control,
     setValue,
     handleSubmit,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
   } = methods;
 
   const values = watch();
@@ -83,6 +86,20 @@ export default function TrainingForm({ handleCancel, setShowTablePace, showTable
       setValue('published', event.target.checked);
     },
     [setValue],
+  );
+
+  const renderErros = (
+    <>
+      {errors && (
+        <>
+          {Object.keys(errors).map((key) => (
+            <Alert severity="error" key={key}>
+              {errors[key].message}
+            </Alert>
+          ))}
+        </>
+      )}
+    </>
   );
 
   useEffect(() => {
@@ -118,7 +135,13 @@ export default function TrainingForm({ handleCancel, setShowTablePace, showTable
           <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
             <>
               <Box rowGap={3} columnGap={2} display="grid" pt={2}>
-                <RHFTextField name="name" label="Titulo *" variant="standard" />
+                <RHFSelect name="name" label="Módulo *" variant="standard">
+                  {trainingModules.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </RHFSelect>
                 <Stack mt={1}>
                   <Controller
                     name="datePublished"
@@ -191,6 +214,9 @@ export default function TrainingForm({ handleCancel, setShowTablePace, showTable
                   />
                 </Stack>
               </Box>
+              <Stack pt={2} sx={{ width: '100%' }} spacing={2}>
+                {renderErros}
+              </Stack>
               <Stack alignItems="flex-end" sx={{ mt: 3 }} spacing={2}>
                 <LoadingButton type="submit" variant="contained" loading={isSubmitting} fullWidth>
                   Salvar

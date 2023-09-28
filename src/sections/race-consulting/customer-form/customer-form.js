@@ -1,6 +1,7 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
 import LoadingButton from '@mui/lab/LoadingButton';
+import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
@@ -67,7 +68,7 @@ export default function CustomerForm({ handleCloseNewCustomer, isMobile = false 
     setValue,
     control,
     handleSubmit,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
   } = methods;
 
   const values = watch();
@@ -109,6 +110,20 @@ export default function CustomerForm({ handleCloseNewCustomer, isMobile = false 
       setValue('active', event.target.checked);
     },
     [setValue],
+  );
+
+  const renderErros = (
+    <>
+      {errors && (
+        <>
+          {Object.keys(errors).map((key) => (
+            <Alert severity="error" key={key}>
+              {errors[key].message}
+            </Alert>
+          ))}
+        </>
+      )}
+    </>
   );
 
   useEffect(() => {
@@ -270,6 +285,9 @@ export default function CustomerForm({ handleCloseNewCustomer, isMobile = false 
                     label="Aluno ativo"
                     labelPlacement="end"
                   />
+                  <Stack pt={2} sx={{ width: '100%' }} spacing={2}>
+                    {renderErros}
+                  </Stack>
                   <Stack alignItems="flex-end" sx={{ mt: 3 }} spacing={2}>
                     <LoadingButton
                       type="submit"

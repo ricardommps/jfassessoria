@@ -2,6 +2,7 @@ import { Document, Font, Image, Page, StyleSheet, Text, View } from '@react-pdf/
 import { addHours } from 'date-fns';
 import { useMemo } from 'react';
 import { fDate } from 'src/utils/format-time';
+import { getModuleName } from 'src/utils/training-modules';
 
 Font.register({
   family: 'Roboto',
@@ -302,7 +303,7 @@ export default function ProgramPdf({ program, notificationPdf, currentExtrapolat
         <View style={styles.table}>
           <View style={styles.tableRowB}>
             <Text style={styles.tableHeadingA}>Data</Text>
-            <Text style={styles.tableHeadingC}>Título</Text>
+            <Text style={styles.tableHeadingC}>Módulo</Text>
             <Text style={styles.tableHeadingB}>Descriçao</Text>
           </View>
 
@@ -321,7 +322,7 @@ export default function ProgramPdf({ program, notificationPdf, currentExtrapolat
                   )}
                 </View>
                 <View style={styles.serviceAmount}>
-                  <Text>{item.name}</Text>
+                  <Text>{getModuleName(item.name)}</Text>
                 </View>
                 <View style={styles.serviceDescription}>
                   <Text>{item.description}</Text>

@@ -87,6 +87,7 @@ export default function UsersActive({ title, subheader, chart, ...other }) {
         series={chartSeries}
         options={chartOptions}
         height={200}
+        width={'100%'}
       />
 
       <Stack spacing={2} sx={{ p: 5 }}>
