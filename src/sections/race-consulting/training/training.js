@@ -232,7 +232,7 @@ export default function Training() {
                   >
                     <Stack
                       direction="row"
-                      sx={{ textAlign: 'left', justifyContent: 'left', width: '20%' }}
+                      sx={{ textAlign: 'left', justifyContent: 'left', width: '35%' }}
                     >
                       <ListItemText
                         primary={'Pace: '}
@@ -271,7 +271,7 @@ export default function Training() {
                   >
                     <Stack
                       direction="row"
-                      sx={{ textAlign: 'left', justifyContent: 'left', width: '20%' }}
+                      sx={{ textAlign: 'left', justifyContent: 'left', width: '35%' }}
                     >
                       <ListItemText
                         primary={'Vla: '}
@@ -310,7 +310,7 @@ export default function Training() {
                   >
                     <Stack
                       direction="row"
-                      sx={{ textAlign: 'left', justifyContent: 'left', width: '20%' }}
+                      sx={{ textAlign: 'left', justifyContent: 'left', width: '35%' }}
                     >
                       <ListItemText
                         primary={'Vlan: '}
@@ -349,7 +349,7 @@ export default function Training() {
                   >
                     <Stack
                       direction="row"
-                      sx={{ textAlign: 'left', justifyContent: 'left', width: '20%' }}
+                      sx={{ textAlign: 'left', justifyContent: 'left', width: '35%' }}
                     >
                       <ListItemText
                         primary={'FCM: '}

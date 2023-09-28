@@ -1,5 +1,6 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import LoadingButton from '@mui/lab/LoadingButton';
+import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -108,7 +109,7 @@ export default function ProgramForm({ handleClear }) {
     watch,
     setValue,
     handleSubmit,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
   } = methods;
 
   const values = watch();
@@ -211,6 +212,20 @@ export default function ProgramForm({ handleClear }) {
       setValue('active', event.target.checked);
     },
     [setValue],
+  );
+
+  const renderErros = (
+    <>
+      {errors && (
+        <>
+          {Object.keys(errors).map((key) => (
+            <Alert severity="error" key={key}>
+              {errors[key].message}
+            </Alert>
+          ))}
+        </>
+      )}
+    </>
   );
 
   useEffect(() => {
@@ -432,6 +447,9 @@ export default function ProgramForm({ handleClear }) {
               label="Liberado"
               labelPlacement="end"
             />
+          </Stack>
+          <Stack pt={2} sx={{ width: '100%' }} spacing={2}>
+            {renderErros}
           </Stack>
           <Stack alignItems="flex-end" sx={{ mt: 3 }} spacing={2}>
             <LoadingButton type="submit" variant="contained" loading={isSubmitting} fullWidth>

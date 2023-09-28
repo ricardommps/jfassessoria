@@ -77,7 +77,14 @@ export default function ChartContainer({ chart }) {
 
   return (
     <Stack spacing={2} sx={{ padding: '10px' }}>
-      <StyledChart dir="ltr" type="pie" series={chartSeries} options={chartOptions} height={200} />
+      <StyledChart
+        dir="ltr"
+        type="pie"
+        series={chartSeries}
+        options={chartOptions}
+        height={200}
+        width={'100%'}
+      />
     </Stack>
   );
 }

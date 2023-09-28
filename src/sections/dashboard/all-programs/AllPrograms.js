@@ -76,6 +76,7 @@ export default function AllPrograms({ chart, ...other }) {
         series={chartSeries}
         options={chartOptions}
         height={200}
+        width={'100%'}
       />
 
       <Stack spacing={2} sx={{ padding: '0 15px 12px' }}>
