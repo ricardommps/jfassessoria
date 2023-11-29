@@ -55,8 +55,8 @@ export function useNavData() {
         items: [
           { title: 'Dashboard', path: paths.dashboard.root, icon: ICONS.dashboard },
           {
-            title: 'Assessoria Corrida',
-            titleMini: 'Corrida',
+            title: 'Assessoria',
+            titleMini: 'Assessoria',
             path: paths.dashboard.customersRacing,
             icon: ICONS.runner,
           },

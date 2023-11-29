@@ -51,7 +51,7 @@ const PVOPTIONS = [
   { value: '20', label: '20 Km/h', pace: '3' },
 ];
 
-export default function ProgramForm({ handleClear }) {
+export default function ProgramForm({ handleClear, typeProgram }) {
   const { program, onUpdateProgram, onCreateProgram, getFcValue } = useProgram();
 
   const { customer } = useCustomer();
@@ -96,6 +96,7 @@ export default function ProgramForm({ handleClear }) {
       active: false,
       referenceMonth: program?.referenceMonth || null,
       fcmValue: program?.fcmValue || getFcValue(),
+      type: program?.type || typeProgram,
     }),
     [],
   );
@@ -238,12 +239,12 @@ export default function ProgramForm({ handleClear }) {
     <>
       <Stack>
         <Typography sx={{ fontSize: '1.5em', fontWeight: 'bold', color: '#f7951e' }}>
-          {program ? 'Editar Programa' : 'Novo Programa'}
+          {program ? 'Editar Programa de Corrida' : 'Novo Programa de Corrida'}
         </Typography>
         <Typography sx={{ fontSize: 'smaller', color: '#777', marginBottom: 2 }}>
           {program
-            ? 'Atualize os dados do programa com este formulário'
-            : 'Cadastre um novo programa para seu aluno com este formulário'}
+            ? 'Atualize os dados do programa de corrida com este formulário'
+            : 'Cadastre um novo programa de corrida para seu aluno com este formulário'}
           .
         </Typography>
       </Stack>

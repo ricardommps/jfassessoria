@@ -1,6 +1,10 @@
 // @mui
+import AssignmentIcon from '@mui/icons-material/Assignment';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DeleteSweepIcon from '@mui/icons-material/DeleteSweep';
+import InsightsIcon from '@mui/icons-material/Insights';
+import PlaylistAddCheckCircleIcon from '@mui/icons-material/PlaylistAddCheckCircle';
+import ReviewsIcon from '@mui/icons-material/Reviews';
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -30,6 +34,9 @@ export default function CustomerTableRow({
   handleOpenPayment,
   onDeleteCustomer,
   handleOpenArquivedProgram,
+  handleOpenReview,
+  handleOpenAllDone,
+  handleOpenMetrics,
 }) {
   const theme = useTheme();
   const popover = usePopover();
@@ -73,10 +80,6 @@ export default function CustomerTableRow({
     setCustomerName();
   };
 
-  const countProgramsVisibled = () => {
-    const programsFiltered = row.programs.filter((item) => item.hide === false);
-    return programsFiltered.length;
-  };
   return (
     <>
       <TableRow hover selected={selected}>
@@ -84,7 +87,7 @@ export default function CustomerTableRow({
           <Chip label={row.active ? 'Ativo' : 'Inativo'} color={row.active ? 'primary' : 'error'} />
         </TableCell>
 
-        <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
+        <TableCell sx={{ display: 'flex', alignItems: 'center', padding: '23px' }}>
           <ListItemText
             primary={row.name}
             secondary={row.email}
@@ -96,20 +99,31 @@ export default function CustomerTableRow({
         <TableCell
           sx={{
             whiteSpace: 'nowrap',
-            color: checkDueDate(payments[0]?.dueDate, payments[0]?.paymentDate),
+            color: payments
+              ? checkDueDate(payments[0]?.due_date, payments[0]?.payment_date)
+              : theme.palette.success.main,
           }}
         >
-          {payments[0]?.id ? format(addHours(new Date(payments[0]?.dueDate), 3), 'dd/MM/yyyy') : ''}
+          {payments ? format(addHours(new Date(payments[0]?.due_date), 3), 'dd/MM/yyyy') : ''}
         </TableCell>
 
-        <TableCell sx={{ whiteSpace: 'nowrap', color: checkExpiresDate(payments[0]?.expiresDate) }}>
-          {payments[0]?.id
-            ? format(addHours(new Date(payments[0]?.expiresDate), 3), 'dd/MM/yyyy')
-            : ''}
+        <TableCell
+          sx={{
+            whiteSpace: 'nowrap',
+            color: payments
+              ? checkExpiresDate(payments[0]?.expires_date)
+              : theme.palette.success.main,
+          }}
+        >
+          {payments ? format(addHours(new Date(payments[0]?.expires_date), 3), 'dd/MM/yyyy') : ''}
         </TableCell>
 
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>
-          {row?.programs ? countProgramsVisibled() : ''}
+        <TableCell align="center" sx={{ whiteSpace: 'nowrap' }}>
+          {row?.programs}
+        </TableCell>
+
+        <TableCell align="center" sx={{ whiteSpace: 'nowrap' }}>
+          {row?.reviews}
         </TableCell>
 
         <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
@@ -140,7 +154,7 @@ export default function CustomerTableRow({
               popover.onClose();
             }}
           >
-            <SvgColor src="/assets/icons/navbar/icon_runner.svg" sx={{ mr: 1 }} />
+            <AssignmentIcon sx={{ mr: 1 }} />
             Programas
           </MenuItem>
         )}
@@ -161,6 +175,33 @@ export default function CustomerTableRow({
         >
           <SvgColor src="/assets/icons/navbar/ic_invoice.svg" sx={{ mr: 1 }} />
           Renovar
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            handleOpenReview(row.id);
+            popover.onClose();
+          }}
+        >
+          <ReviewsIcon sx={{ fontSize: '22px', width: '22px', height: '30px' }} />
+          Aguardando Feedback
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            handleOpenAllDone(row.id);
+            popover.onClose();
+          }}
+        >
+          <PlaylistAddCheckCircleIcon sx={{ fontSize: '22px', width: '22px', height: '30px' }} />
+          Feedbacks concluidos
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            handleOpenMetrics(row.id);
+            popover.onClose();
+          }}
+        >
+          <InsightsIcon sx={{ fontSize: '22px', width: '22px', height: '30px' }} />
+          Métricas
         </MenuItem>
         <MenuItem
           onClick={() => {

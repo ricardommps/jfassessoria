@@ -21,5 +21,9 @@ export const paths = {
     root: ROOTS.DASHBOARD,
     security: `${ROOTS.DASHBOARD}/security`,
     customersRacing: `${ROOTS.DASHBOARD}/customersRacing`,
+    metrics: {
+      root: (id) => `${ROOTS.DASHBOARD}/metrics/${id}`,
+      create: (type, id) => `${ROOTS.DASHBOARD}/metrics/create/${type}/${id}`,
+    },
   },
 };

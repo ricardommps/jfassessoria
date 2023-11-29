@@ -8,12 +8,12 @@ import { useCallback, useEffect, useState } from 'react';
 import Iconify from 'src/components/iconify/iconify';
 import Scrollbar from 'src/components/scrollbar/scrollbar';
 import {
-  emptyRows,
-  getComparator,
   TableEmptyRows,
   TableHeadCustom,
   TableNoData,
   TableSelectedAction,
+  emptyRows,
+  getComparator,
   useTable,
 } from 'src/components/table';
 
@@ -21,11 +21,12 @@ import CustomerTableRow from '../customer-table-row';
 import CustomerTableToolbar from '../customer-table-toolbar';
 
 const TABLE_HEAD = [
-  { id: 'status', label: 'Status', width: 80 },
+  { id: 'active', label: 'Status', width: 80 },
   { id: 'name', label: 'Name' },
   { id: 'dueDate', label: 'Próximo vencimento', width: 320 },
   { id: 'expiresDate', label: 'Expiração', width: 320 },
-  { id: 'programs', label: 'Programas', width: 180 },
+  { id: 'programs', label: 'Programas', width: 110 },
+  { id: 'review', label: 'Treinos review', width: 140 },
   { id: '', width: 90 },
 ];
 
@@ -40,6 +41,9 @@ export function CustomersList({
   handleOpenPayment,
   onDeleteCustomer,
   handleOpenArquivedProgram,
+  handleOpenReview,
+  handleOpenAllDone,
+  handleOpenMetrics,
 }) {
   const table = useTable();
 
@@ -105,7 +109,7 @@ export function CustomersList({
             <TableBody>
               {dataFiltered.map((row) => (
                 <CustomerTableRow
-                  key={row.id}
+                  key={`customers-list-review-${row.id}`}
                   row={row}
                   selected={table.selected.includes(row.id)}
                   handleOpenProgram={handleOpenProgram}
@@ -113,6 +117,9 @@ export function CustomersList({
                   handleOpenPayment={handleOpenPayment}
                   onDeleteCustomer={onDeleteCustomer}
                   handleOpenArquivedProgram={handleOpenArquivedProgram}
+                  handleOpenReview={handleOpenReview}
+                  handleOpenAllDone={handleOpenAllDone}
+                  handleOpenMetrics={handleOpenMetrics}
                 />
               ))}
 

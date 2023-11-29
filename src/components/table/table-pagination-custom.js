@@ -22,6 +22,7 @@ export default function TablePaginationCustom({
         sx={{
           borderTopColor: 'transparent',
         }}
+        labelRowsPerPage={'Itens por página'}
       />
 
       {onChangeDense && (

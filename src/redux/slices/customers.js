@@ -20,12 +20,45 @@ const initialState = {
     loading: false,
     error: false,
   },
+  customersReview: [],
+  customersReviewStatus: {
+    loading: false,
+    empty: false,
+    error: null,
+  },
 };
 
 const slice = createSlice({
   name: 'customer',
   initialState,
   reducers: {
+    getCustomerReviewStart(state) {
+      state.customerCreate = null;
+      state.updateCustomerSuccess = null;
+      state.deleteCustomer = null;
+      state.deleteCustomerStatus.loading = false;
+      state.deleteCustomerStatus.error = false;
+      state.customersReview = [];
+      state.customersReviewStatus.loading = true;
+      state.customersReviewStatus.empty = false;
+      state.customersReviewStatus.error = null;
+    },
+    getCustomerReviewFailure(state, action) {
+      const error = action.payload;
+
+      state.customersReviewStatus.error = error;
+      state.customersReview = [];
+      state.customersReviewStatus.loading = true;
+      state.customersReviewStatus.empty = false;
+    },
+    getCustomerReviewSuccess(state, action) {
+      const customersReview = action.payload;
+
+      state.customersReview = customersReview;
+      state.customersReviewStatus.loading = false;
+      state.customersReviewStatus.empty = false;
+      state.customersReviewStatus.error = null;
+    },
     getCustomersStart(state) {
       state.customersStatus.loading = true;
       state.customersStatus.empty = false;
@@ -108,6 +141,18 @@ const slice = createSlice({
 });
 
 export default slice.reducer;
+
+export function getCustomersReview() {
+  return async (dispatch) => {
+    dispatch(slice.actions.getCustomerReviewStart());
+    try {
+      const response = await axios.get(API_ENDPOINTS.customerAll);
+      dispatch(slice.actions.getCustomerReviewSuccess(response.data));
+    } catch (error) {
+      dispatch(slice.actions.getCustomerReviewFailure(error));
+    }
+  };
+}
 
 export function getCustomers() {
   return async (dispatch) => {

@@ -1,9 +1,11 @@
+// eslint-disable-next-line simple-import-sort/imports
 import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
 import CloseIcon from '@mui/icons-material/Close';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import IconButton from '@mui/material/IconButton';
+import MenuItem from '@mui/material/MenuItem';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
@@ -18,11 +20,25 @@ import useCustomer from 'src/hooks/use-customer';
 import useProgram from 'src/hooks/use-program';
 import useTraining from 'src/hooks/use-training';
 
+import CustomPopover, { usePopover } from 'src/components/custom-popover';
+import GymProgramForm from '../program-form/gym-program-form';
 import ProgramForm from '../program-form/program-form';
 import ProgramasList from './programs-list';
 import SendProgram from './send-program/send-program';
+
+export const NEW_OPTIONS = [
+  {
+    value: 1,
+    label: 'Programa de corrida',
+  },
+  {
+    value: 2,
+    label: 'Programa de força',
+  },
+];
+
 export default function Program({ isMobile = false }) {
-  const { customer, onListCustomers } = useCustomer();
+  const { customer, onListCustomersReview } = useCustomer();
   const confirm = useBoolean();
   const {
     onProgramById,
@@ -44,8 +60,10 @@ export default function Program({ isMobile = false }) {
   } = useProgram();
 
   const { onShowTraining, onListTrainings, onClearTrainings } = useTraining();
+  const popover = usePopover();
 
   const [newProduct, setNewProduct] = useState(false);
+  const [typeProgram, setTypeProgram] = useState(null);
   const [openSend, setOpenSend] = useState({
     open: false,
     program: null,
@@ -86,7 +104,7 @@ export default function Program({ isMobile = false }) {
     payload.customersId = [...customersIdSelected];
     payload.name = `[SEND-COPY]${payload.name}`;
     const newTrainings = payload.trainings.map((obj) => {
-      const newTraining = { ...obj, name: `[SEND-COPY]${obj.name}` };
+      const newTraining = { ...obj, name: obj.name };
       delete newTraining.id;
       return { ...newTraining };
     });
@@ -124,6 +142,11 @@ export default function Program({ isMobile = false }) {
     onClearProgram();
   };
 
+  const handleChangeType = useCallback((value) => {
+    setTypeProgram(value);
+    handleNewProduct();
+  }, []);
+
   const handleCloseProgram = () => {
     onClearPrograms();
     handleClear();
@@ -136,11 +159,12 @@ export default function Program({ isMobile = false }) {
     setNewProduct(false);
     setOpenSend(null);
     setCustomersIdSelected([]);
+    setTypeProgram(null);
   };
   useUpdateEffect(() => {
     if (updateProgramSuccess) {
       onListPrograms(customer.id);
-      onListCustomers();
+      onListCustomersReview();
       enqueueSnackbar('Programa atualizado com sucesso!', {
         autoHideDuration: 3000,
         variant: 'success',
@@ -153,7 +177,7 @@ export default function Program({ isMobile = false }) {
     if (programCreate) {
       setNewProduct(false);
       onListPrograms(customer.id);
-      onListCustomers();
+      onListCustomersReview();
       enqueueSnackbar('Programa criado com sucesso!', {
         autoHideDuration: 8000,
         variant: 'success',
@@ -166,7 +190,7 @@ export default function Program({ isMobile = false }) {
     if (cloneProgramSuccess) {
       setNewProduct(false);
       onListPrograms(customer.id);
-      onListCustomers();
+      onListCustomersReview();
       enqueueSnackbar('Programa clonado com sucesso!', {
         autoHideDuration: 8000,
         variant: 'success',
@@ -179,7 +203,7 @@ export default function Program({ isMobile = false }) {
     if (sendProgramSuccess) {
       setNewProduct(false);
       onListPrograms(customer.id);
-      onListCustomers();
+      onListCustomersReview();
       enqueueSnackbar(
         sendProgramSuccess.status === 200
           ? 'Programa enviado com sucesso!'
@@ -197,7 +221,7 @@ export default function Program({ isMobile = false }) {
     if (deleteProgram) {
       setNewProduct(false);
       onListPrograms(customer.id);
-      onListCustomers();
+      onListCustomersReview();
       enqueueSnackbar('Programa deletado com sucesso!', {
         autoHideDuration: 8000,
         variant: 'success',
@@ -210,7 +234,7 @@ export default function Program({ isMobile = false }) {
     if (hideProgramSuccess) {
       setNewProduct(false);
       onListPrograms(customer.id);
-      onListCustomers();
+      onListCustomersReview();
       enqueueSnackbar('Programa arquivado com sucesso!', {
         autoHideDuration: 8000,
         variant: 'success',
@@ -223,7 +247,7 @@ export default function Program({ isMobile = false }) {
     if (hideProgramStatus.error) {
       setNewProduct(false);
       onListPrograms(customer.id);
-      onListCustomers();
+      onListCustomersReview();
       enqueueSnackbar(hideProgramStatus.error, {
         autoHideDuration: 8000,
         variant: 'error',
@@ -251,7 +275,7 @@ export default function Program({ isMobile = false }) {
         <Stack>
           <Stack p={2} direction="row">
             <Stack direction="column" flexGrow={'1'}>
-              <Typography variant="h3">Programas de Corrida</Typography>
+              <Typography variant="h3">Programas</Typography>
               <Typography variant="h6" component="div">
                 {customer?.name}
               </Typography>
@@ -272,13 +296,33 @@ export default function Program({ isMobile = false }) {
               {!program && !newProduct && (
                 <>
                   <Button
+                    color="inherit"
                     variant="contained"
-                    startIcon={<Iconify icon="mingcute:add-line" />}
-                    sx={{ mb: 2 }}
-                    onClick={handleNewProduct}
+                    endIcon={<Iconify icon="eva:arrow-ios-downward-fill" />}
+                    onClick={popover.onOpen}
+                    sx={{ textTransform: 'capitalize' }}
                   >
                     Novo
                   </Button>
+                  <CustomPopover
+                    open={popover.open}
+                    onClose={popover.onClose}
+                    arrow="top-right"
+                    sx={{ width: 'auto' }}
+                  >
+                    {NEW_OPTIONS.map((option) => (
+                      <MenuItem
+                        key={option.value}
+                        selected={option.value === 0}
+                        onClick={() => {
+                          popover.onClose();
+                          handleChangeType(option.value);
+                        }}
+                      >
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                  </CustomPopover>
                   <Stack
                     spacing={2}
                     sx={{
@@ -318,7 +362,27 @@ export default function Program({ isMobile = false }) {
 
               {(program || (!program && newProduct)) && (
                 <Stack sx={{ px: 2, py: 2.5, position: 'relative' }}>
-                  <ProgramForm handleClear={handleClear} />
+                  <>
+                    {newProduct && (
+                      <>
+                        {typeProgram === 2 ? (
+                          <GymProgramForm handleClear={handleClear} typeProgram={typeProgram} />
+                        ) : (
+                          <ProgramForm handleClear={handleClear} typeProgram={typeProgram} />
+                        )}
+                      </>
+                    )}
+                    {program && !newProduct && (
+                      <>
+                        {program?.type === 2 && (
+                          <GymProgramForm handleClear={handleClear} typeProgram={program.type} />
+                        )}
+                        {(!program?.type || program.type === 1) && (
+                          <ProgramForm handleClear={handleClear} typeProgram={1} />
+                        )}
+                      </>
+                    )}
+                  </>
                 </Stack>
               )}
             </Scrollbar>

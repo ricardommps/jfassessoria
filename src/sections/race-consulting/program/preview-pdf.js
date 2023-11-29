@@ -18,14 +18,20 @@ export default function PreviewPdf({ open, onClose, programId, notificationPdf }
   }, []);
 
   const [currentExtrapolation, setCurrentExtrapolation] = useState(null);
+  const [pdfReady, setpdfReady] = useState(false);
 
   const getExtrapolationByPv = () => {
     const resultValue = extrapolation[viewPdf.pv];
     setCurrentExtrapolation(resultValue);
+    setpdfReady(true);
   };
 
   useUpdateEffect(() => {
     if (viewPdf) {
+      if (viewPdf?.type === 2) {
+        setpdfReady(true);
+        return;
+      }
       getExtrapolationByPv();
     }
   }, [viewPdf]);
@@ -50,7 +56,7 @@ export default function PreviewPdf({ open, onClose, programId, notificationPdf }
               </Typography>
             </Box>
           )}
-          {viewPdf && !viewPdfStatus.loading && currentExtrapolation && (
+          {viewPdf && !viewPdfStatus.loading && pdfReady && (
             <PDFViewer width="100%" height="100%" style={{ border: 'none' }}>
               <ProgramPdf
                 program={viewPdf}

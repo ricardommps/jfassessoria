@@ -1,14 +1,15 @@
 // scroll bar
 import 'simplebar-react/dist/simplebar.min.css';
 // lazy image
-import 'react-lazy-load-image-component/src/effects/blur.css';
 import 'moment/min/locales';
+import 'react-lazy-load-image-component/src/effects/blur.css';
 
 import * as moment from 'moment';
 import PropTypes from 'prop-types';
 // auth
 import { AuthConsumer, AuthProvider } from 'src/auth/context/jwt';
 import MotionLazy from 'src/components/animate/motion-lazy';
+import { DrawerTablePv, TablePvProvider } from 'src/components/drawer-table-pv';
 // components
 import ProgressBar from 'src/components/progress-bar';
 import { SettingsDrawer, SettingsProvider } from 'src/components/settings';
@@ -72,15 +73,18 @@ export default function RootLayout({ children }) {
                   themeStretch: false,
                 }}
               >
-                <ThemeProvider>
-                  <MotionLazy>
-                    <SnackbarProvider>
-                      <SettingsDrawer />
-                      <ProgressBar />
-                      <AuthConsumer>{children}</AuthConsumer>
-                    </SnackbarProvider>
-                  </MotionLazy>
-                </ThemeProvider>
+                <TablePvProvider>
+                  <ThemeProvider>
+                    <MotionLazy>
+                      <SnackbarProvider>
+                        <SettingsDrawer />
+                        <DrawerTablePv />
+                        <ProgressBar />
+                        <AuthConsumer>{children}</AuthConsumer>
+                      </SnackbarProvider>
+                    </MotionLazy>
+                  </ThemeProvider>
+                </TablePvProvider>
               </SettingsProvider>
             </LocalizationProvider>
           </ReduxProvider>

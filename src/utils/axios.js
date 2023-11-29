@@ -26,6 +26,22 @@ export const API_ENDPOINTS = {
     register: '/api/auth/register',
   },
   customer: '/api/v2/customer',
+  customerAll: '/api/v2/customer/all',
+  feedbacktraining: {
+    save: '/api/v2/trainingfeedback',
+  },
+  metrics: {
+    performance: '/api/v2/metrics/performance',
+    find: '/api/v2/metrics/find',
+    create: '/api/v2/metrics/',
+    physiological: '/api/v2/metrics/physiological',
+  },
+  finishedtraining: {
+    listByReview: '/api/v2/finishedtraining/review',
+    trainingReview: '/api/v2/finishedtraining/review/training',
+    update: '/api/v2/finishedtraining/update',
+    allDone: '/api/v2/finishedtraining/review/done',
+  },
   program: {
     list: '/api/v2/program/customer',
     register: '/api/v2/program',

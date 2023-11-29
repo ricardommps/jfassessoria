@@ -36,7 +36,7 @@ export default function CustomerForm({ handleCloseNewCustomer, isMobile = false 
     onCreateCustomer,
     onClearCustome,
     customerCreate,
-    onListCustomers,
+    onListCustomersReview,
     updateCustomerSuccess,
   } = useCustomer();
   const NewCustomerSchema = Yup.object().shape({
@@ -128,7 +128,7 @@ export default function CustomerForm({ handleCloseNewCustomer, isMobile = false 
 
   useEffect(() => {
     if (customerCreate) {
-      onListCustomers();
+      onListCustomersReview();
       enqueueSnackbar('Aluno criado com sucesso!', { autoHideDuration: 3000, variant: 'success' });
       handleCancel();
     }
@@ -136,7 +136,7 @@ export default function CustomerForm({ handleCloseNewCustomer, isMobile = false 
 
   useEffect(() => {
     if (updateCustomerSuccess) {
-      onListCustomers();
+      onListCustomersReview();
       enqueueSnackbar('Aluno atualizado com sucesso!', {
         autoHideDuration: 3000,
         variant: 'success',

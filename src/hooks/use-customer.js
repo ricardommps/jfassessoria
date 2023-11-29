@@ -5,6 +5,7 @@ import {
   deleteCustomerReq,
   getCustomerById,
   getCustomers,
+  getCustomersReview,
   updateCustomer,
 } from 'src/redux/slices/customers';
 import { useDispatch, useSelector } from 'src/redux/store';
@@ -20,6 +21,8 @@ export default function useCustomer() {
     updateCustomerSuccess,
     deleteCustomer,
     deleteCustomerStatus,
+    customersReview,
+    customersReviewStatus,
   } = useSelector((state) => state.customer);
 
   const onCreateCustomer = useCallback(
@@ -28,6 +31,10 @@ export default function useCustomer() {
     },
     [dispatch],
   );
+
+  const onListCustomersReview = useCallback(() => {
+    dispatch(getCustomersReview());
+  }, [dispatch]);
 
   const onListCustomers = useCallback(() => {
     dispatch(getCustomers());
@@ -73,5 +80,8 @@ export default function useCustomer() {
     onDeleteCustomer,
     deleteCustomer,
     deleteCustomerStatus,
+    customersReview,
+    customersReviewStatus,
+    onListCustomersReview,
   };
 }
