@@ -56,7 +56,6 @@ export default function TrainingItem({
     confirm.onFalse();
     const payload = Object.assign({}, training);
     delete payload.id;
-    payload.name = `[COPY]${payload.name}`;
     payload.datePublished = null;
     payload.published = false;
     payload.programId = programId;

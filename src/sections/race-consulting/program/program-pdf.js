@@ -249,7 +249,6 @@ export default function ProgramPdf({ program, notificationPdf, currentExtrapolat
         <View style={styles.tableColStyleExtrapolation}>
           <Text style={styles.tableCellExtrapolation}>{`${program.pv}km/h`}</Text>
         </View>
-
         {getExtrapolationRender(currentExtrapolation).map((item, index) => (
           <View style={styles.tableColStyleExtrapolation} key={index}>
             <Text style={styles.tableCellExtrapolation}>{currentExtrapolation[item]}</Text>
@@ -277,26 +276,30 @@ export default function ProgramPdf({ program, notificationPdf, currentExtrapolat
         <View style={styles.ribbon} fixed>
           <Text style={styles.ribbonLabel}>{program.customer.name}</Text>
         </View>
+        {(!program.type || program.type === 1) && (
+          <View style={styles.ml5}>
+            <Text style={styles.body1}>Idade: {getAge(program.customer.birthDate)}</Text>
+            <Text style={styles.body1}>FC máx estimada (200-idade) : {program.fcmValue}</Text>
+            <Text style={styles.body1}>Pace: {program.pace}</Text>
+            <Text style={styles.body1}>Vla: {program.vla}</Text>
+            <Text style={styles.body1}>Pace - Vla: {program.paceVla}</Text>
+            <Text style={styles.body1}>Vlan: {program.vlan}</Text>
+            <Text style={styles.body1}>Pace - Vlan: {program.paceVlan}</Text>
+          </View>
+        )}
 
-        <View style={styles.ml5}>
-          <Text style={styles.body1}>Idade: {getAge(program.customer.birthDate)}</Text>
-          <Text style={styles.body1}>FC máx estimada (200-idade) : {program.fcmValue}</Text>
-          <Text style={styles.body1}>Pace: {program.pace}</Text>
-          <Text style={styles.body1}>Vla: {program.vla}</Text>
-          <Text style={styles.body1}>Pace - Vla: {program.paceVla}</Text>
-          <Text style={styles.body1}>Vlan: {program.vlan}</Text>
-          <Text style={styles.body1}>Pace - Vlan: {program.paceVlan}</Text>
-        </View>
         {program.warningPdf && (
           <View style={styles.alertMessage}>
             <Text style={styles.alertMessagLabel}>{program.warningPdf}</Text>
           </View>
         )}
+        {currentExtrapolation && (
+          <View style={styles.tableExtrapolation}>
+            {createTableHeaderExtrapolation(getExtrapolationRender(currentExtrapolation))}
+            {createTableRowExtrapolation()}
+          </View>
+        )}
 
-        <View style={styles.tableExtrapolation}>
-          {createTableHeaderExtrapolation(getExtrapolationRender(currentExtrapolation))}
-          {createTableRowExtrapolation()}
-        </View>
         <View style={styles.tableTop}>
           <Text style={styles.tableTopLabel}>Seus treinos</Text>
         </View>

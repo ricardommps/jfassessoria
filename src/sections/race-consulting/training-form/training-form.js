@@ -14,17 +14,17 @@ import dayjs from 'dayjs';
 import PropTypes from 'prop-types';
 import { useCallback, useEffect, useMemo } from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import { useTablePvContext } from 'src/components/drawer-table-pv';
 import { RHFSelect, RHFTextField } from 'src/components/hook-form';
 import FormProvider from 'src/components/hook-form/form-provider';
-import Scrollbar from 'src/components/scrollbar/scrollbar';
-import TablePaceSpeed from 'src/components/table-pace-speed/table-pace-speed';
 import useProgram from 'src/hooks/use-program';
 import useTraining from 'src/hooks/use-training';
 import { trainingModules } from 'src/utils/training-modules';
 import * as Yup from 'yup';
 
 import VideosForm from './videos-form';
-export default function TrainingForm({ handleCancel, setShowTablePace, showTablePace }) {
+export default function TrainingForm({ handleCancel }) {
+  const tablePv = useTablePvContext();
   const { training, onUpdateTraining, onCreateTraining } = useTraining();
   const { program } = useProgram();
 
@@ -41,6 +41,8 @@ export default function TrainingForm({ handleCancel, setShowTablePace, showTable
       trainingDateOther: training?.trainingDateOther || null,
       published: training?.published || false,
       videos: training?.videos || null,
+      hide: training?.hide || false,
+      finished: training?.finished || false,
     }),
     [],
   );
@@ -108,6 +110,12 @@ export default function TrainingForm({ handleCancel, setShowTablePace, showTable
     }
   }, [values.datePublished]);
 
+  useEffect(() => {
+    if (program.type === 2) {
+      setValue('name', 'FORCA');
+    }
+  }, [program]);
+
   return (
     <>
       <Stack>
@@ -121,27 +129,31 @@ export default function TrainingForm({ handleCancel, setShowTablePace, showTable
           .
         </Typography>
       </Stack>
-      <Stack>
-        <Button
-          variant="outlined"
-          sx={{ width: 'fit-content' }}
-          onClick={() => setShowTablePace(!showTablePace ? true : false)}
-        >
-          {!showTablePace ? 'Exibir tabela Pace/Km' : 'Ocultas tabela Pace/Km'}
-        </Button>
-      </Stack>
+      {(!program.type || program.type === 1) && (
+        <Stack>
+          <Button variant="outlined" sx={{ width: 'fit-content' }} onClick={tablePv.onToggle}>
+            {!tablePv.open ? 'Exibir tabela Pv' : 'Ocultas tabela Pv'}
+          </Button>
+        </Stack>
+      )}
+
       <Grid container spacing={6}>
-        <Grid xs={12} md={showTablePace ? 6 : 12}>
+        <Grid xs={12} md={12}>
           <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
             <>
               <Box rowGap={3} columnGap={2} display="grid" pt={2}>
-                <RHFSelect name="name" label="Módulo *" variant="standard">
-                  {trainingModules.map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                      {option.label}
-                    </MenuItem>
-                  ))}
-                </RHFSelect>
+                {program?.type === 2 ? (
+                  <Typography>Força</Typography>
+                ) : (
+                  <RHFSelect name="name" label="Módulo *" variant="standard">
+                    {trainingModules.map((option) => (
+                      <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                  </RHFSelect>
+                )}
+
                 <Stack mt={1}>
                   <Controller
                     name="datePublished"
@@ -196,7 +208,7 @@ export default function TrainingForm({ handleCancel, setShowTablePace, showTable
                   </Stack>
                 </Stack>
 
-                <RHFTextField name="description" label="Description" multiline rows={6} />
+                <RHFTextField name="description" label="Descrição" multiline rows={6} />
                 <Stack>
                   <VideosForm />
                 </Stack>
@@ -228,15 +240,6 @@ export default function TrainingForm({ handleCancel, setShowTablePace, showTable
             </>
           </FormProvider>
         </Grid>
-        {showTablePace && (
-          <Grid xs={12} md={6}>
-            <Stack sx={{ height: '50vh' }}>
-              <Scrollbar sx={{ p: 3, pt: 2, height: 400 }}>
-                <TablePaceSpeed minWidth={200} />
-              </Scrollbar>
-            </Stack>
-          </Grid>
-        )}
       </Grid>
     </>
   );

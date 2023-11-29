@@ -13,6 +13,7 @@ import { m } from 'framer-motion';
 import { enqueueSnackbar } from 'notistack';
 import { useCallback, useEffect, useState } from 'react';
 import { ConfirmDialog } from 'src/components/confirm-dialog';
+import { useTablePvContext } from 'src/components/drawer-table-pv';
 import Iconify from 'src/components/iconify/iconify';
 import Scrollbar from 'src/components/scrollbar/scrollbar';
 import { useBoolean } from 'src/hooks/use-boolean';
@@ -26,6 +27,7 @@ import SendTraining from './send-training/send-training';
 import TrainingsList from './trainings-list';
 
 export default function Training() {
+  const tablePv = useTablePvContext();
   const { program } = useProgram();
   const confirm = useBoolean();
   const {
@@ -56,7 +58,6 @@ export default function Training() {
   });
 
   const [currentExtrapolation, setCurrentExtrapolation] = useState(null);
-  const [showTablePace, setShowTablePace] = useState(false);
 
   const handleOpenSend = (training, event) => {
     event.stopPropagation();
@@ -95,7 +96,7 @@ export default function Training() {
     onClearTraining();
     setOpenSend(null);
     setProgramsIdSelected([]);
-    setShowTablePace(false);
+    tablePv.onClose;
   };
 
   const handleSendTraining = useCallback(() => {
@@ -184,15 +185,6 @@ export default function Training() {
     }
   }, [program]);
 
-  useEffect(() => {
-    if (showTablePace) {
-      setTimeout(() => {
-        const element = document.getElementById('expandMoreIcon');
-        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }, 500);
-    }
-  }, [showTablePace]);
-
   return (
     <>
       <Paper
@@ -207,169 +199,168 @@ export default function Training() {
           <Stack>
             <Stack p={2}>
               <Typography variant="h3">Treinamentos</Typography>
-              <Accordion>
-                <AccordionSummary
-                  expandIcon={<ExpandMoreIcon id="expandMoreIcon" />}
-                  aria-controls="panel1a-content"
-                  id="panel1a-header"
-                >
-                  <Typography>Detalhes do programa</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <Typography variant="subtitle1" component="div">
-                    {`Nome do programa: ${program?.name}`}
-                  </Typography>
-                  <Stack
-                    component={m.div}
-                    spacing={1}
-                    direction="row"
-                    alignItems="center"
-                    sx={{
-                      my: 0.5,
-                      py: 0.5,
-                      borderRadius: 1,
-                    }}
+              {(!program.type || program.type === 1) && (
+                <Accordion>
+                  <AccordionSummary
+                    expandIcon={<ExpandMoreIcon id="expandMoreIcon" />}
+                    aria-controls="panel1a-content"
+                    id="panel1a-header"
                   >
+                    <Typography>Detalhes do programa</Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <Typography variant="subtitle1" component="div">
+                      {`Nome do programa: ${program?.name}`}
+                    </Typography>
                     <Stack
+                      component={m.div}
+                      spacing={1}
                       direction="row"
-                      sx={{ textAlign: 'left', justifyContent: 'left', width: '35%' }}
+                      alignItems="center"
+                      sx={{
+                        my: 0.5,
+                        py: 0.5,
+                        borderRadius: 1,
+                      }}
                     >
-                      <ListItemText
-                        primary={'Pace: '}
-                        primaryTypographyProps={{
-                          typography: 'subtitle1',
-                        }}
-                        sx={{ flex: 'none' }}
-                      />
-                      <Typography variant="subtitle2" sx={{ ml: 1 }}>
-                        {paceFormater(program?.pace)}
-                      </Typography>
+                      <Stack
+                        direction="row"
+                        sx={{ textAlign: 'left', justifyContent: 'left', width: '35%' }}
+                      >
+                        <ListItemText
+                          primary={'Pace: '}
+                          primaryTypographyProps={{
+                            typography: 'subtitle1',
+                          }}
+                          sx={{ flex: 'none' }}
+                        />
+                        <Typography variant="subtitle2" sx={{ ml: 1 }}>
+                          {paceFormater(program?.pace)}
+                        </Typography>
+                      </Stack>
+                      <Stack direction="row" spacing={0}>
+                        <ListItemText
+                          primary={'V02máx: '}
+                          primaryTypographyProps={{
+                            typography: 'subtitle1',
+                          }}
+                          sx={{ flex: 'none' }}
+                        />
+                        <Typography variant="subtitle2" sx={{ ml: 1 }}>
+                          {currentExtrapolation?.VO2}
+                        </Typography>
+                      </Stack>
                     </Stack>
-                    <Stack direction="row" spacing={0}>
-                      <ListItemText
-                        primary={'V02máx: '}
-                        primaryTypographyProps={{
-                          typography: 'subtitle1',
-                        }}
-                        sx={{ flex: 'none' }}
-                      />
-                      <Typography variant="subtitle2" sx={{ ml: 1 }}>
-                        {currentExtrapolation?.VO2}
-                      </Typography>
-                    </Stack>
-                  </Stack>
-                  <Stack
-                    component={m.div}
-                    spacing={1}
-                    direction="row"
-                    alignItems="center"
-                    sx={{
-                      my: 0.5,
-                      py: 0.5,
-                      borderRadius: 1,
-                    }}
-                  >
                     <Stack
+                      component={m.div}
+                      spacing={1}
                       direction="row"
-                      sx={{ textAlign: 'left', justifyContent: 'left', width: '35%' }}
+                      alignItems="center"
+                      sx={{
+                        my: 0.5,
+                        py: 0.5,
+                        borderRadius: 1,
+                      }}
                     >
-                      <ListItemText
-                        primary={'Vla: '}
-                        primaryTypographyProps={{
-                          typography: 'subtitle1',
-                        }}
-                        sx={{ flex: 'none' }}
-                      />
-                      <Typography variant="subtitle2" sx={{ ml: 1 }}>
-                        {program.vla} km/h
-                      </Typography>
+                      <Stack
+                        direction="row"
+                        sx={{ textAlign: 'left', justifyContent: 'left', width: '35%' }}
+                      >
+                        <ListItemText
+                          primary={'Vla: '}
+                          primaryTypographyProps={{
+                            typography: 'subtitle1',
+                          }}
+                          sx={{ flex: 'none' }}
+                        />
+                        <Typography variant="subtitle2" sx={{ ml: 1 }}>
+                          {program.vla} km/h
+                        </Typography>
+                      </Stack>
+                      <Stack direction="row" spacing={0}>
+                        <ListItemText
+                          primary={'Pace - Vla: '}
+                          primaryTypographyProps={{
+                            typography: 'subtitle1',
+                          }}
+                          sx={{ flex: 'none' }}
+                        />
+                        <Typography variant="subtitle2" sx={{ ml: 1 }}>
+                          {paceFormater(program.paceVla)}
+                        </Typography>
+                      </Stack>
                     </Stack>
-                    <Stack direction="row" spacing={0}>
-                      <ListItemText
-                        primary={'Pace - Vla: '}
-                        primaryTypographyProps={{
-                          typography: 'subtitle1',
-                        }}
-                        sx={{ flex: 'none' }}
-                      />
-                      <Typography variant="subtitle2" sx={{ ml: 1 }}>
-                        {paceFormater(program.paceVla)}
-                      </Typography>
-                    </Stack>
-                  </Stack>
-                  <Stack
-                    component={m.div}
-                    spacing={1}
-                    direction="row"
-                    alignItems="center"
-                    sx={{
-                      my: 0.5,
-                      py: 0.5,
-                      borderRadius: 1,
-                    }}
-                  >
                     <Stack
+                      component={m.div}
+                      spacing={1}
                       direction="row"
-                      sx={{ textAlign: 'left', justifyContent: 'left', width: '35%' }}
+                      alignItems="center"
+                      sx={{
+                        my: 0.5,
+                        py: 0.5,
+                        borderRadius: 1,
+                      }}
                     >
-                      <ListItemText
-                        primary={'Vlan: '}
-                        primaryTypographyProps={{
-                          typography: 'subtitle1',
-                        }}
-                        sx={{ flex: 'none' }}
-                      />
-                      <Typography variant="subtitle2" sx={{ ml: 1 }}>
-                        {program.vlan} km/h
-                      </Typography>
+                      <Stack
+                        direction="row"
+                        sx={{ textAlign: 'left', justifyContent: 'left', width: '35%' }}
+                      >
+                        <ListItemText
+                          primary={'Vlan: '}
+                          primaryTypographyProps={{
+                            typography: 'subtitle1',
+                          }}
+                          sx={{ flex: 'none' }}
+                        />
+                        <Typography variant="subtitle2" sx={{ ml: 1 }}>
+                          {program.vlan} km/h
+                        </Typography>
+                      </Stack>
+                      <Stack direction="row" spacing={0}>
+                        <ListItemText
+                          primary={'Pace - Vlan: '}
+                          primaryTypographyProps={{
+                            typography: 'subtitle1',
+                          }}
+                          sx={{ flex: 'none' }}
+                        />
+                        <Typography variant="subtitle2" sx={{ ml: 1 }}>
+                          {paceFormater(program.paceVlan)}
+                        </Typography>
+                      </Stack>
                     </Stack>
-                    <Stack direction="row" spacing={0}>
-                      <ListItemText
-                        primary={'Pace - Vlan: '}
-                        primaryTypographyProps={{
-                          typography: 'subtitle1',
-                        }}
-                        sx={{ flex: 'none' }}
-                      />
-                      <Typography variant="subtitle2" sx={{ ml: 1 }}>
-                        {paceFormater(program.paceVlan)}
-                      </Typography>
-                    </Stack>
-                  </Stack>
-                  <Stack
-                    component={m.div}
-                    spacing={1}
-                    direction="row"
-                    alignItems="center"
-                    sx={{
-                      my: 0.5,
-                      py: 0.5,
-                      borderRadius: 1,
-                    }}
-                  >
                     <Stack
+                      component={m.div}
+                      spacing={1}
                       direction="row"
-                      sx={{ textAlign: 'left', justifyContent: 'left', width: '35%' }}
+                      alignItems="center"
+                      sx={{
+                        my: 0.5,
+                        py: 0.5,
+                        borderRadius: 1,
+                      }}
                     >
-                      <ListItemText
-                        primary={'FCM: '}
-                        primaryTypographyProps={{
-                          typography: 'subtitle1',
-                        }}
-                        sx={{ flex: 'none' }}
-                      />
-                      <Typography variant="subtitle2" sx={{ ml: 1 }}>
-                        {program.fcmValue}
-                      </Typography>
+                      <Stack
+                        direction="row"
+                        sx={{ textAlign: 'left', justifyContent: 'left', width: '35%' }}
+                      >
+                        <ListItemText
+                          primary={'FCM: '}
+                          primaryTypographyProps={{
+                            typography: 'subtitle1',
+                          }}
+                          sx={{ flex: 'none' }}
+                        />
+                        <Typography variant="subtitle2" sx={{ ml: 1 }}>
+                          {program.fcmValue}
+                        </Typography>
+                      </Stack>
                     </Stack>
-                  </Stack>
-                </AccordionDetails>
-              </Accordion>
+                  </AccordionDetails>
+                </Accordion>
+              )}
             </Stack>
-            <Stack
-              spacing={3}
-              sx={{ width: showTablePace ? '50vw' : '25vw', py: 1, height: 'calc(100vh - 340px)' }}
-            >
+            <Stack spacing={3} sx={{ width: '25vw', py: 1, height: 'calc(100vh - 340px)' }}>
               <Scrollbar>
                 {!training && !newTraining && (
                   <>
@@ -409,11 +400,7 @@ export default function Training() {
                 )}
                 {(training || (!training && newTraining)) && (
                   <Stack sx={{ px: 2, py: 2.5, position: 'relative' }}>
-                    <TrainingForm
-                      handleCancel={handleCancel}
-                      setShowTablePace={setShowTablePace}
-                      showTablePace={showTablePace}
-                    />
+                    <TrainingForm handleCancel={handleCancel} />
                   </Stack>
                 )}
               </Scrollbar>

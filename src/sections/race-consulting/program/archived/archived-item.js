@@ -82,7 +82,7 @@ export default function ArchivedItem({
         <ListItem sx={{ padding: '2px 8px' }} active={archived.active}>
           <BasecInfoColumn1>
             <BasecInfoTitle>{archived.name}</BasecInfoTitle>
-            <BasecInfoTitle>{archived.customer.name}</BasecInfoTitle>
+            <BasecInfoTitle>{archived.customername}</BasecInfoTitle>
             <BasecInfoSubTitle>{archived.goal}</BasecInfoSubTitle>
             <BasecInfoSubTitle>{renderreferenceMonth(archived.referenceMonth)}</BasecInfoSubTitle>
           </BasecInfoColumn1>
@@ -151,7 +151,7 @@ export default function ArchivedItem({
           <>
             <Typography>
               Tem certeza que deseja restaurar o programa<strong> {archived.name} </strong>, para o
-              aluno(a) , <strong>{archived.customer.name}</strong>?
+              aluno(a) , <strong>{archived.customername}</strong>?
             </Typography>
           </>
         }

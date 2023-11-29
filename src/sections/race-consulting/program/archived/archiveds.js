@@ -28,7 +28,7 @@ export default function Archiveds({ isMobile = false }) {
     sendProgramSuccess,
     onClearPrograms,
   } = useProgram();
-  const { customer, onListCustomers } = useCustomer();
+  const { customer, onListCustomersReview } = useCustomer();
 
   const [customersIdSelected, setCustomersIdSelected] = useState([]);
   const [openSend, setOpenSend] = useState({
@@ -66,7 +66,7 @@ export default function Archiveds({ isMobile = false }) {
   const handleCloseArchived = () => {
     onClearPrograms();
     onClearArchivedPrograms();
-    onListCustomers();
+    onListCustomersReview();
   };
 
   const onConfirmSendProgram = () => {
@@ -79,7 +79,7 @@ export default function Archiveds({ isMobile = false }) {
     payload.name = `[SEND-COPY]${payload.name}`;
     payload.hide = false;
     const newTrainings = payload.trainings.map((obj) => {
-      const newTraining = { ...obj, name: `[SEND-COPY]${obj.name}` };
+      const newTraining = { ...obj, name: obj.name };
       delete newTraining.id;
       return { ...newTraining };
     });
@@ -153,7 +153,7 @@ export default function Archiveds({ isMobile = false }) {
         <Stack>
           <Stack p={2} direction="row">
             <Stack direction="column" flexGrow={'1'}>
-              <Typography variant="h3">Programas de Corrida Arquivados</Typography>
+              <Typography variant="h3">Programas Arquivados</Typography>
             </Stack>
             {!isMobile && (
               <Stack pt={2}>

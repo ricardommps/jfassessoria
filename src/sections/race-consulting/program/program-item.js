@@ -138,7 +138,7 @@ export default function ProgramItem({
       const newTrainings = payload.trainings.map((obj) => {
         const newTraining = {
           ...obj,
-          name: `[COPY]${obj.name}`,
+          name: obj.name,
           datePublished: null,
           published: false,
         };
@@ -160,16 +160,19 @@ export default function ProgramItem({
   return (
     <>
       <Stack>
-        <ListItem sx={{ padding: '2px 8px' }} active={program.active}>
+        <ListItem sx={{ padding: '2px 8px' }} active={program.active} type={program?.type}>
           <BasecInfoColumn1>
             <BasecInfoTitle>{program.name}</BasecInfoTitle>
             <BasecInfoSubTitle>{program.goal}</BasecInfoSubTitle>
             <BasecInfoSubTitle>{renderreferenceMonth(program.referenceMonth)}</BasecInfoSubTitle>
           </BasecInfoColumn1>
-          <BasecInfoColumn2>
-            <BasecInfoTitle>PV: {program.pv}</BasecInfoTitle>
-            <BasecInfoSubTitle>Pace: {program.pace}</BasecInfoSubTitle>
-          </BasecInfoColumn2>
+          {(!program?.type || program.type === 1) && (
+            <BasecInfoColumn2>
+              <BasecInfoTitle>PV: {program.pv}</BasecInfoTitle>
+              <BasecInfoSubTitle>Pace: {program.pace}</BasecInfoSubTitle>
+            </BasecInfoColumn2>
+          )}
+          {program?.type === 2 && <Stack flexGrow={1} />}
           <BasecColumnAction>
             <IconButton
               color={popover.open ? 'inherit' : 'default'}

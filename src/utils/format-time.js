@@ -7,6 +7,12 @@ export function fDate(date, newFormat) {
   return date ? format(new Date(date), fm) : '';
 }
 
+export function fDateMetrics(date, newFormat) {
+  const fm = newFormat || 'yyyy-MM-dd';
+
+  return date ? format(new Date(date), fm) : '';
+}
+
 export function fDateTime(date, newFormat) {
   const fm = newFormat || 'dd MMM yyyy p';
 

@@ -1,4 +1,5 @@
 import Box from '@mui/material/Box';
+import Checkbox from '@mui/material/Checkbox';
 import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
@@ -19,10 +20,28 @@ const visuallyHidden = {
 
 // ----------------------------------------------------------------------
 
-export default function TableHeadCustom({ order, orderBy, headLabel, onSort, sx }) {
+export default function TableHeadCustom({
+  order,
+  orderBy,
+  rowCount = 0,
+  headLabel,
+  numSelected = 0,
+  onSort,
+  onSelectAllRows,
+  sx,
+}) {
   return (
     <TableHead sx={sx}>
       <TableRow>
+        {onSelectAllRows && (
+          <TableCell padding="checkbox">
+            <Checkbox
+              indeterminate={!!numSelected && numSelected < rowCount}
+              checked={!!rowCount && numSelected === rowCount}
+              onChange={(event) => onSelectAllRows(event.target.checked)}
+            />
+          </TableCell>
+        )}
         {headLabel.map((headCell) => (
           <TableCell
             key={headCell.id}

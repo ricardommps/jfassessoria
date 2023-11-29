@@ -2,6 +2,9 @@ import { combineReducers } from 'redux';
 import createWebStorage from 'redux-persist/lib/storage/createWebStorage';
 
 import customerReducer from './slices/customers';
+import feedbackTrainingReducer from './slices/feedback-training';
+import finishedTrainingReducer from './slices/finished-training';
+import metricsReducer from './slices/metrics';
 import paymentReducer from './slices/payment';
 import programReducer from './slices/program';
 import trainingReducer from './slices/training';
@@ -37,4 +40,7 @@ export const rootReducer = combineReducers({
   training: trainingReducer,
   payment: paymentReducer,
   user: userReducer,
+  finishedTraining: finishedTrainingReducer,
+  feedbackTraining: feedbackTrainingReducer,
+  metrics: metricsReducer,
 });

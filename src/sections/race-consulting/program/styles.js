@@ -1,6 +1,17 @@
 import InputBase from '@mui/material/InputBase';
 import { alpha, styled } from '@mui/material/styles';
 
+function typeColor(active, type) {
+  if (!active) {
+    return '#f44336 !important';
+  } else {
+    if (type === 2) {
+      return '#0000FF !important';
+    }
+    return '#00b826 !important';
+  }
+}
+
 export const Container = styled('div')(({ theme }) => ({
   overflow: 'auto',
   display: 'block',
@@ -26,9 +37,9 @@ export const ActionsHeader = styled('div')(() => ({
   },
 }));
 
-export const ListItem = styled('div')(({ active }) => ({
+export const ListItem = styled('div')(({ active, type }) => ({
   borderLeft: '5px solid !important',
-  borderLeftColor: active ? '#00b826 !important' : '#f44336 !important',
+  borderLeftColor: typeColor(active, type),
   backgroundColor: alpha('#333', 0.3),
   padding: 0,
   position: 'relative',
