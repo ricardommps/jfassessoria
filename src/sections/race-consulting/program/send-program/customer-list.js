@@ -8,12 +8,12 @@ import Typography from '@mui/material/Typography';
 import useCustomer from 'src/hooks/use-customer';
 
 export default function CustomerList({ onSelectCustomer, currentCustomerId }) {
-  const { customers } = useCustomer();
+  const { customersReview } = useCustomer();
   return (
     <>
-      {customers.length && (
+      {customersReview.length && (
         <List dense sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-          {customers.map((customer) => {
+          {customersReview.map((customer) => {
             const labelId = `checkbox-list-secondary-label-${customer.id}`;
             return (
               <ListItem

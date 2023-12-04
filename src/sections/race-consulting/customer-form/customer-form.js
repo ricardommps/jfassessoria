@@ -14,7 +14,7 @@ import Typography from '@mui/material/Typography';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
 import { enqueueSnackbar } from 'notistack';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { RHFSwitch, RHFTextField } from 'src/components/hook-form';
 import FormProvider from 'src/components/hook-form/form-provider';
@@ -39,6 +39,8 @@ export default function CustomerForm({ handleCloseNewCustomer, isMobile = false 
     onListCustomersReview,
     updateCustomerSuccess,
   } = useCustomer();
+
+  const [loading, setLoading] = useState(false);
   const NewCustomerSchema = Yup.object().shape({
     name: Yup.string().required('Titulo obrigatório'),
     email: Yup.string().required('Email obrigatório'),
@@ -68,7 +70,7 @@ export default function CustomerForm({ handleCloseNewCustomer, isMobile = false 
     setValue,
     control,
     handleSubmit,
-    formState: { isSubmitting, errors },
+    formState: { errors },
   } = methods;
 
   const values = watch();
@@ -76,6 +78,7 @@ export default function CustomerForm({ handleCloseNewCustomer, isMobile = false 
   const onSubmit = useCallback(
     async (data) => {
       try {
+        setLoading(true);
         if (customer) {
           const payload = Object.assign({}, data);
           delete payload.id;
@@ -128,6 +131,7 @@ export default function CustomerForm({ handleCloseNewCustomer, isMobile = false 
 
   useEffect(() => {
     if (customerCreate) {
+      setLoading(false);
       onListCustomersReview();
       enqueueSnackbar('Aluno criado com sucesso!', { autoHideDuration: 3000, variant: 'success' });
       handleCancel();
@@ -136,6 +140,7 @@ export default function CustomerForm({ handleCloseNewCustomer, isMobile = false 
 
   useEffect(() => {
     if (updateCustomerSuccess) {
+      setLoading(false);
       onListCustomersReview();
       enqueueSnackbar('Aluno atualizado com sucesso!', {
         autoHideDuration: 3000,
@@ -289,12 +294,7 @@ export default function CustomerForm({ handleCloseNewCustomer, isMobile = false 
                     {renderErros}
                   </Stack>
                   <Stack alignItems="flex-end" sx={{ mt: 3 }} spacing={2}>
-                    <LoadingButton
-                      type="submit"
-                      variant="contained"
-                      loading={isSubmitting}
-                      fullWidth
-                    >
+                    <LoadingButton type="submit" variant="contained" loading={loading} fullWidth>
                       Salvar
                     </LoadingButton>
                     <Button fullWidth variant="outlined" color="warning" onClick={handleCancel}>
