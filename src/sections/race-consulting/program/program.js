@@ -106,6 +106,7 @@ export default function Program({ isMobile = false }) {
     const newTrainings = payload.trainings.map((obj) => {
       const newTraining = { ...obj, name: obj.name };
       delete newTraining.id;
+      newTraining.finished = false;
       return { ...newTraining };
     });
     payload.trainings = [...newTrainings];

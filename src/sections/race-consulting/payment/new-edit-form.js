@@ -22,8 +22,15 @@ import usePayment from 'src/hooks/use-payment';
 import * as Yup from 'yup';
 export default function NewEditForm({ payment, customerId, handleCancelPayment }) {
   const deletePayment = useBoolean();
-  const { onCreatePayment, onUpdatePayment, onDeletePayment } = usePayment();
+  const {
+    onCreatePayment,
+    onUpdatePayment,
+    onDeletePayment,
+    updatePaymentSuccess,
+    deletePaymentSuccess,
+  } = usePayment();
 
+  const [loading, setLoading] = useState(false);
   const [paymentMonth, setPaymentMonthe] = useState(null);
   const currentMouthe =
     payment &&
@@ -55,19 +62,14 @@ export default function NewEditForm({ payment, customerId, handleCancelPayment }
     defaultValues,
   });
 
-  const {
-    reset,
-    watch,
-    control,
-    handleSubmit,
-    formState: { isSubmitting },
-  } = methods;
+  const { reset, watch, control, handleSubmit } = methods;
 
   const values = watch();
 
   const onSubmit = useCallback(
     async (data) => {
       try {
+        setLoading(true);
         await new Promise((resolve) => setTimeout(resolve, 500));
         const payload = Object.assign({}, data);
         payload.value = Number(payload.value);
@@ -112,6 +114,12 @@ export default function NewEditForm({ payment, customerId, handleCancelPayment }
       reset({ ...defaultValues });
     }
   }, [payment]);
+
+  useUpdateEffect(() => {
+    if (updatePaymentSuccess || deletePaymentSuccess) {
+      setLoading(false);
+    }
+  }, [updatePaymentSuccess, deletePaymentSuccess]);
 
   return (
     <>
@@ -254,7 +262,7 @@ export default function NewEditForm({ payment, customerId, handleCancelPayment }
               </Stack>
             )}
             <Stack alignItems="flex-end" sx={{ mt: 3 }} spacing={2}>
-              <LoadingButton type="submit" variant="contained" loading={isSubmitting} fullWidth>
+              <LoadingButton type="submit" variant="contained" loading={loading} fullWidth>
                 Salvar
               </LoadingButton>
               <Button fullWidth variant="outlined" color="warning" onClick={handleCancelPayment}>

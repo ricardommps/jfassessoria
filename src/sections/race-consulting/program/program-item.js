@@ -143,6 +143,7 @@ export default function ProgramItem({
           published: false,
         };
         delete newTraining.id;
+        newTraining.finished = false;
         return { ...newTraining };
       });
       payload.trainings = [...newTrainings];
