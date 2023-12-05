@@ -30,7 +30,6 @@ export default function FinishedForm({ training, editForm, onCancel }) {
     () => ({
       distance: training?.distance || null,
       duration: training?.duration || null,
-      pace: training?.pace || null,
       rpe: training?.rpe || null,
       trimp: training?.trimp || null,
       link: training?.link || null,
@@ -116,7 +115,12 @@ export default function FinishedForm({ training, editForm, onCancel }) {
               variant="standard"
               disabled={!editForm}
             />
-            <RHFTextField name="pace" label="Pace *" variant="standard" disabled={!editForm} />
+            <RHFTextField
+              name="pace"
+              label="Pace médio da sessão"
+              variant="standard"
+              disabled={!editForm}
+            />
             <RHFTextField name="rpe" label="RPE *" variant="standard" disabled={!editForm} />
             <RHFTextField name="trimp" label="Trimp *" variant="standard" disabled={!editForm} />
             <RHFTextField
