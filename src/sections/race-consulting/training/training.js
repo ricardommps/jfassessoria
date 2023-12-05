@@ -115,8 +115,8 @@ export default function Training() {
     const payload = Object.assign({}, openSend.training);
     delete payload.id;
     delete payload.programId;
+    payload.finished = false;
     payload.programsId = [...programsIdSelected];
-    payload.name = `[SEND-COPY]${payload.name}`;
     onSendTraining(payload);
   };
 

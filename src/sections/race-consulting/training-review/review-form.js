@@ -39,7 +39,6 @@ export default function ReviewForm({ training, handleCloseForm }) {
       showEditForm(false);
     }
   }, [updateFinishedTraining]);
-
   return (
     <>
       <Stack>
@@ -83,22 +82,37 @@ export default function ReviewForm({ training, handleCloseForm }) {
                     value={training?.tariningdesc}
                   />
                   <Divider />
-                  <Box>
-                    <Stack direction="row" alignItems="center" sx={{ mb: 1 }}>
-                      <Typography variant="h6" sx={{ color: 'text.disabled', flexGrow: 1 }}>
-                        Métricas do aluno
-                      </Typography>
+                  {training?.trainingname === 'FORCA' && (
+                    <>
+                      <TextField
+                        id="comments"
+                        label="Observações do aluno"
+                        multiline
+                        rows={6}
+                        disabled
+                        value={training?.comments}
+                      />
+                      <Divider />
+                    </>
+                  )}
+                  {training?.trainingname !== 'FORCA' && (
+                    <Box>
+                      <Stack direction="row" alignItems="center" sx={{ mb: 1 }}>
+                        <Typography variant="h6" sx={{ color: 'text.disabled', flexGrow: 1 }}>
+                          Métricas do aluno
+                        </Typography>
 
-                      <IconButton onClick={handleEditForm} disabled={editForm}>
-                        <Iconify icon="solar:pen-bold" />
-                      </IconButton>
-                    </Stack>
-                    <FinishedForm
-                      training={training}
-                      editForm={editForm}
-                      onCancel={handleEditForm}
-                    />
-                  </Box>
+                        <IconButton onClick={handleEditForm} disabled={editForm}>
+                          <Iconify icon="solar:pen-bold" />
+                        </IconButton>
+                      </Stack>
+                      <FinishedForm
+                        training={training}
+                        editForm={editForm}
+                        onCancel={handleEditForm}
+                      />
+                    </Box>
+                  )}
                 </Stack>
               </AccordionDetails>
             </Accordion>
