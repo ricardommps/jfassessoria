@@ -62,7 +62,7 @@ export default function AuthClassicLayout({ children, image }) {
         component="img"
         alt="auth"
         src={image || '/assets/illustrations/logo.png'}
-        sx={{ maxWidth: 520 }}
+        sx={{ maxWidth: 320 }}
       />
     </Stack>
   );
