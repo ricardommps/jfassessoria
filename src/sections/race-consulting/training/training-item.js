@@ -59,6 +59,7 @@ export default function TrainingItem({
     payload.datePublished = null;
     payload.published = false;
     payload.programId = programId;
+    payload.finished = false;
     onCloneTraining(payload);
   };
 
