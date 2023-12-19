@@ -9,6 +9,10 @@ const initialState = {
     error: null,
   },
   trainingCreate: null,
+  trainingCreateStatus: {
+    loading: false,
+    error: null,
+  },
   cloneTraining: null,
   cloneTrainingStatus: {
     loading: false,
@@ -43,6 +47,8 @@ const slice = createSlice({
       state.trainingsStatus.empty = false;
       state.trainingsStatus.error = null;
       state.trainingCreate = null;
+      state.trainingCreateStatus.error = null;
+      state.trainingCreateStatus.loading = false;
       state.training = null;
       state.updateTrainingSuccess = null;
       state.cloneTrainingStatus.loading = false;
@@ -71,6 +77,8 @@ const slice = createSlice({
       state.trainingStatus.empty = false;
       state.trainingStatus.error = null;
       state.trainingCreate = null;
+      state.trainingCreateStatus.error = null;
+      state.trainingCreateStatus.loading = false;
     },
     getTrainingFailure(state, action) {
       state.trainingStatus.loading = false;
@@ -86,8 +94,22 @@ const slice = createSlice({
       state.trainingStatus.error = null;
     },
 
+    createTrainingStart(state) {
+      state.trainingCreate = null;
+      state.trainingCreateStatus.error = null;
+      state.trainingCreateStatus.loading = true;
+    },
+
     createTrainingSuccess(state, action) {
       state.trainingCreate = action.payload;
+      state.trainingCreateStatus.error = null;
+      state.trainingCreateStatus.loading = false;
+    },
+
+    createTrainingFailure(state, action) {
+      state.trainingCreate = null;
+      state.trainingCreateStatus.error = action.payload;
+      state.trainingCreateStatus.loading = false;
     },
 
     updateTrainingSuccess(state, action) {
@@ -102,6 +124,9 @@ const slice = createSlice({
       state.sendTrainingStatus.loading = false;
       state.sendTrainingStatus.error = null;
       state.sendTrainingSuccess = null;
+      state.trainingCreate = null;
+      state.trainingCreateStatus.error = null;
+      state.trainingCreateStatus.loading = false;
     },
 
     clearTrainings(state) {
@@ -111,6 +136,9 @@ const slice = createSlice({
       state.trainingCreate = null;
       state.trainings = null;
       state.training = null;
+      state.trainingCreate = null;
+      state.trainingCreateStatus.error = null;
+      state.trainingCreateStatus.loading = false;
     },
 
     showTraining(state, action) {
@@ -197,10 +225,12 @@ export function getTrainingById(trainingId) {
 export function createTraining(trainingData) {
   return async (dispatch) => {
     try {
+      dispatch(slice.actions.createTrainingStart());
       const data = { ...trainingData };
       const response = await axios.post(API_ENDPOINTS.training.register, data);
       dispatch(slice.actions.createTrainingSuccess(response.data));
     } catch (error) {
+      dispatch(slice.actions.createTrainingFailure(error));
       console.error(error);
     }
   };

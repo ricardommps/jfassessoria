@@ -33,8 +33,9 @@ export const API_ENDPOINTS = {
   metrics: {
     performance: '/api/v2/metrics/performance',
     find: '/api/v2/metrics/find',
-    create: '/api/v2/metrics/',
+    create: '/api/v2/metrics',
     physiological: '/api/v2/metrics/physiological',
+    findById: '/api/v2/metrics/findById',
   },
   finishedtraining: {
     listByReview: '/api/v2/finishedtraining/review',

@@ -2,9 +2,12 @@ import { useCallback } from 'react';
 import {
   clearMetrics,
   createChartReq,
+  deleteMetricReq,
+  getFindMetric,
   getFindMetrics,
   getListPerformanceMetrics,
   getListPhysiologicalMetrics,
+  updateChartReq,
 } from 'src/redux/slices/metrics';
 import { useDispatch, useSelector } from 'src/redux/store';
 export default function useMetrics() {
@@ -16,6 +19,10 @@ export default function useMetrics() {
     metricsCreatedStatus,
     createChart,
     createChartStatus,
+    metric,
+    metricStatus,
+    deleteMetric,
+    deleteMetricStatus,
   } = useSelector((state) => state.metrics);
 
   const onGetListPerformanceMetrics = useCallback(
@@ -39,6 +46,13 @@ export default function useMetrics() {
     [dispatch],
   );
 
+  const onFindMetric = useCallback(
+    (id) => {
+      dispatch(getFindMetric(id));
+    },
+    [dispatch],
+  );
+
   const onCreateChart = useCallback(
     (payload) => {
       dispatch(createChartReq(payload));
@@ -46,9 +60,23 @@ export default function useMetrics() {
     [dispatch],
   );
 
+  const onUpdateChart = useCallback(
+    (payload, id) => {
+      dispatch(updateChartReq(payload, id));
+    },
+    [dispatch],
+  );
+
   const onClearMetrics = useCallback(() => {
     dispatch(clearMetrics());
   }, [dispatch]);
+
+  const onDeletemetric = useCallback(
+    (id) => {
+      dispatch(deleteMetricReq(id));
+    },
+    [dispatch],
+  );
 
   return {
     metrics,
@@ -62,5 +90,12 @@ export default function useMetrics() {
     createChart,
     createChartStatus,
     onGetListPhysiologicalMetrics,
+    metric,
+    metricStatus,
+    deleteMetric,
+    deleteMetricStatus,
+    onFindMetric,
+    onUpdateChart,
+    onDeletemetric,
   };
 }

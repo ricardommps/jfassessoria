@@ -146,7 +146,6 @@ export default function MetricsList({ id }) {
                   order={table.order}
                   orderBy={table.orderBy}
                   headLabel={TABLE_HEAD}
-                  onSort={table.onSort}
                 />
                 <TableBody>
                   {dataFiltered.map((row) => (
@@ -168,14 +167,8 @@ export default function MetricsList({ id }) {
     </Card>
   );
 }
-function applyFilter({ inputData, comparator, filters }) {
+function applyFilter({ inputData, filters }) {
   const stabilizedThis = inputData.map((el, index) => [el, index]);
-
-  stabilizedThis.sort((a, b) => {
-    const metric = comparator(a[0], b[0]);
-    if (metric !== 0) return metric;
-    return a[1] - b[1];
-  });
 
   inputData = stabilizedThis.map((el) => el[0]);
   if (filters.type !== 'all') {
