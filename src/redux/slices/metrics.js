@@ -18,6 +18,17 @@ const initialState = {
     empty: false,
     error: null,
   },
+  metric: [],
+  metricStatus: {
+    loading: false,
+    empty: false,
+    error: null,
+  },
+  deleteMetric: null,
+  deleteMetricStatus: {
+    loading: false,
+    error: false,
+  },
 };
 
 const slice = createSlice({
@@ -51,6 +62,15 @@ const slice = createSlice({
       state.metricsCreatedStatus.loading = true;
       state.metricsCreatedStatus.empty = false;
       state.metricsCreatedStatus.error = null;
+
+      state.metric = [];
+      state.metricStatus.loading = false;
+      state.metricStatus.empty = false;
+      state.metricStatus.error = null;
+
+      state.deleteMetric = null;
+      state.deleteMetricStatus.loading = false;
+      state.deleteMetricStatus.error = false;
     },
     getFindMetricsFailure(state, action) {
       const error = action.payload;
@@ -67,6 +87,10 @@ const slice = createSlice({
       state.metricsCreatedStatus.loading = false;
       state.metricsCreatedStatus.empty = !metricsCreated.length || metricsCreated.length === 0;
       state.metricsCreatedStatus.error = null;
+
+      state.metric = [];
+      state.metricStatus.loading = false;
+      state.metricStatus.empty = false;
     },
     clearMetrics(state) {
       state.metrics = [];
@@ -99,6 +123,48 @@ const slice = createSlice({
 
       state.createChartStatus.error = null;
       state.createChartStatus.loading = true;
+    },
+    getFindMetricStart(state) {
+      state.metric = [];
+      state.metricStatus.loading = true;
+      state.metricStatus.empty = false;
+      state.metricStatus.error = null;
+      state.createChart = null;
+      state.createChartStatus.error = null;
+      state.createChartStatus.loading = false;
+    },
+    getFindMetricFailure(state, action) {
+      const error = action.payload;
+      state.metricStatus.error = error;
+
+      state.metric = [];
+      state.metricStatus.loading = false;
+      state.metricStatus.empty = false;
+    },
+    getFindMetricSuccess(state, action) {
+      const metric = action.payload;
+      state.metric = metric;
+
+      state.metricStatus.loading = false;
+      state.metricStatus.empty = !metric.length || metric.length === 0;
+      state.metricStatus.error = null;
+    },
+    deleteMetricStart(state) {
+      state.deleteMetric = null;
+      state.deleteMetricStatus.error = null;
+      state.deleteMetricStatus.loading = true;
+    },
+    deleteMetricFailure(state, action) {
+      state.deleteMetricStatus.loading = false;
+      state.deleteMetricStatus.error = action.payload;
+      state.deleteMetric = null;
+    },
+    deleteMetricSuccess(state, action) {
+      const deleteMetric = action.payload;
+      state.deleteMetric = deleteMetric;
+
+      state.deleteMetricStatus.loading = false;
+      state.deleteMetricStatus.error = null;
     },
   },
 });
@@ -145,6 +211,18 @@ export function getFindMetrics(id) {
   };
 }
 
+export function getFindMetric(id) {
+  return async (dispatch) => {
+    dispatch(slice.actions.getFindMetricStart());
+    try {
+      const response = await axios.get(`${API_ENDPOINTS.metrics.findById}/${id}`);
+      dispatch(slice.actions.getFindMetricSuccess(response.data));
+    } catch (error) {
+      dispatch(slice.actions.getFindMetricFailure(error));
+    }
+  };
+}
+
 export function createChartReq(payload) {
   return async (dispatch) => {
     dispatch(slice.actions.createChartStart());
@@ -158,8 +236,33 @@ export function createChartReq(payload) {
   };
 }
 
+export function updateChartReq(payload, id) {
+  return async (dispatch) => {
+    dispatch(slice.actions.createChartStart());
+    try {
+      const data = { ...payload };
+      const response = await axios.put(`${API_ENDPOINTS.metrics.create}/${id}`, data);
+      dispatch(slice.actions.createChartSuccess(response.data));
+    } catch (error) {
+      dispatch(slice.actions.createChartsFailure(error));
+    }
+  };
+}
+
 export function clearMetrics() {
   return async (dispatch) => {
     dispatch(slice.actions.clearMetrics());
+  };
+}
+
+export function deleteMetricReq(id) {
+  return async (dispatch) => {
+    dispatch(slice.actions.deleteMetricStart());
+    try {
+      const response = await axios.delete(`${API_ENDPOINTS.metrics}/${id}`);
+      dispatch(slice.actions.deleteMetricSuccess(response.data));
+    } catch (error) {
+      dispatch(slice.actions.deleteMetricFailure(error));
+    }
   };
 }

@@ -1,7 +1,7 @@
-import MetricsView from 'src/sections/metrics/view/view';
+import { MetricsView } from 'src/sections/metrics/view';
 
 export const metadata = {
-  title: 'Dashboard: Metricas',
+  title: 'Dashboard: Métricas',
 };
 
 export default function Page() {

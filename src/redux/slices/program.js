@@ -26,6 +26,10 @@ const initialState = {
     error: null,
   },
   programCreate: null,
+  programCreateStatus: {
+    loading: false,
+    error: null,
+  },
   program: null,
   programStatus: {
     loading: false,
@@ -118,6 +122,8 @@ const slice = createSlice({
       state.programsStatus.empty = false;
       state.programsStatus.error = null;
       state.programCreate = null;
+      state.programCreateStatus.loading = false;
+      state.programCreateStatus.error = null;
       state.program = null;
       state.updateProgramSuccess = null;
       state.allPrograms = null;
@@ -158,6 +164,8 @@ const slice = createSlice({
       state.programStatus.empty = false;
       state.programStatus.error = null;
       state.programCreate = null;
+      state.programCreateStatus.loading = false;
+      state.programCreateStatus.error = null;
     },
     getProgramFailure(state, action) {
       state.programStatus.loading = false;
@@ -172,11 +180,21 @@ const slice = createSlice({
       state.programStatus.empty = !program.length;
       state.programStatus.error = null;
     },
-
+    createProgramStart(state) {
+      state.programCreate = null;
+      state.programCreateStatus.loading = true;
+      state.programCreateStatus.error = false;
+    },
     createProgramSuccess(state, action) {
       state.programCreate = action.payload;
+      state.programCreateStatus.loading = false;
+      state.programCreateStatus.error = null;
     },
-
+    createProgramFailure(state, action) {
+      state.programCreate = null;
+      state.programCreateStatus.loading = true;
+      state.programCreateStatus.error = action.payload;
+    },
     updateProgramSuccess(state, action) {
       state.updateProgramSuccess = action.payload;
     },
@@ -192,6 +210,8 @@ const slice = createSlice({
       state.programsStatus.empty = false;
       state.programsStatus.error = null;
       state.programCreate = null;
+      state.programCreateStatus.loading = false;
+      state.programCreateStatus.error = null;
       state.programs = null;
       state.program = null;
       state.updateProgramSuccess = null;
@@ -411,10 +431,12 @@ export function getProgramById(programId) {
 export function createProgram(programData) {
   return async (dispatch) => {
     try {
+      dispatch(slice.actions.createProgramStart());
       const data = { ...programData };
       const response = await axios.post(API_ENDPOINTS.program.register, data);
       dispatch(slice.actions.createProgramSuccess(response.data));
     } catch (error) {
+      dispatch(slice.actions.createProgramFailure(error));
       console.error(error);
     }
   };

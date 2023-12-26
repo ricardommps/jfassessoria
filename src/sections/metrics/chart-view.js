@@ -6,87 +6,21 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import IconButton from '@mui/material/IconButton';
-import { format } from 'date-fns';
 import { useEffect, useState } from 'react';
+import { formatedMetrics, formatedPHMetrics } from 'src/utils/charts';
 
 import PerformaceMetrics from './charts/performance-metrics';
 import PHMetrics from './charts/ph-metrics';
 export default function ChartView({ open, onClose, chartData, onConfirm, type, ...other }) {
   const [dataItems, setDataItens] = useState(null);
 
-  const formatedMetrics = () => {
-    const copycChartData = [...chartData];
-    const categories = [];
-    const data = [];
-    copycChartData.map((item) =>
-      categories.push(format(new Date(item.date_published), 'dd/MM/yyyy')),
-    );
-    copycChartData.map((item) => data.push(type === 1 ? mediaPaces(item.tf_paces) : item.pace));
-    const chartItems = {
-      categories: [...categories],
-      series: [
-        {
-          data: [
-            {
-              name: 'Pace',
-              data: [...data],
-            },
-          ],
-        },
-      ],
-    };
-    setDataItens(chartItems);
-  };
-
-  const formatedPHMetrics = () => {
-    const copycChartData = [...chartData];
-    const categories = [];
-    const dataPace = [];
-    const paceVla = [];
-    const paceVlan = [];
-
-    copycChartData.map((item) =>
-      categories.push(format(new Date(item.reference_month), 'dd/MM/yyyy')),
-    );
-    copycChartData.map((item) => dataPace.push(item.pace));
-    copycChartData.map((item) => paceVla.push(item.pace_vla));
-    copycChartData.map((item) => paceVlan.push(item.pace_vlan));
-    const chartItems = {
-      categories: [...categories],
-      series: [
-        {
-          data: [
-            {
-              name: 'Pace',
-              data: [...dataPace],
-            },
-            {
-              name: 'Pace Vla',
-              data: [...paceVla],
-            },
-            {
-              name: 'Pace Vlan',
-              data: [...paceVlan],
-            },
-          ],
-        },
-      ],
-    };
-    setDataItens(chartItems);
-  };
   const dataFormated = () => {
     if (type === 3) {
-      formatedPHMetrics();
+      setDataItens(formatedPHMetrics(chartData));
     } else {
-      formatedMetrics();
+      setDataItens(formatedMetrics(chartData, type));
     }
   };
-  const mediaPaces = (paces) => {
-    const soma = paces.reduce((t, n) => Number(n) + Number(t), 0);
-    const media = soma / paces.length;
-    return Number(media.toFixed(2));
-  };
-
   useEffect(() => {
     dataFormated();
   }, []);

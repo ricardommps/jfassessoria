@@ -30,6 +30,27 @@ export default function ReviewForm({ training, handleCloseForm }) {
     showEditForm((prev) => !prev);
   }, []);
 
+  const renderUnrealized = (
+    <Stack
+      direction="row"
+      alignItems="center"
+      sx={{
+        top: 8,
+        right: 8,
+        zIndex: 9,
+        borderRadius: 1,
+        position: 'absolute',
+        p: '2px 6px 2px 4px',
+        typography: 'subtitle2',
+        bgcolor: 'error.main',
+      }}
+    >
+      <Box component="span" sx={{ mr: 0.25, fontSize: '11px' }}>
+        Não realizado
+      </Box>
+    </Stack>
+  );
+
   useEffect(() => {
     if (updateFinishedTraining) {
       enqueueSnackbar('Editado com sucesso', {
@@ -39,8 +60,11 @@ export default function ReviewForm({ training, handleCloseForm }) {
       showEditForm(false);
     }
   }, [updateFinishedTraining]);
+
   return (
     <>
+      {training?.unrealized && <> {renderUnrealized}</>}
+
       <Stack>
         <Typography sx={{ fontSize: 'smaller', color: '#777', marginBottom: 2 }}>
           Registrar feedback do treino
@@ -82,37 +106,39 @@ export default function ReviewForm({ training, handleCloseForm }) {
                     value={training?.tariningdesc}
                   />
                   <Divider />
-                  {training?.trainingname === 'FORCA' && (
-                    <>
-                      <TextField
-                        id="comments"
-                        label="Observações do aluno"
-                        multiline
-                        rows={6}
-                        disabled
-                        value={training?.comments}
-                      />
-                      <Divider />
-                    </>
-                  )}
-                  {training?.trainingname !== 'FORCA' && (
-                    <Box>
-                      <Stack direction="row" alignItems="center" sx={{ mb: 1 }}>
-                        <Typography variant="h6" sx={{ color: 'text.disabled', flexGrow: 1 }}>
-                          Métricas do aluno
-                        </Typography>
+                  {training?.trainingname === 'FORCA' ||
+                    (training?.unrealized && (
+                      <>
+                        <TextField
+                          id="comments"
+                          label="Observações do aluno"
+                          multiline
+                          rows={6}
+                          disabled
+                          value={training?.comments}
+                        />
+                        <Divider />
+                      </>
+                    ))}
+                  {training?.trainingname !== 'FORCA' ||
+                    (training?.unrealized && (
+                      <Box>
+                        <Stack direction="row" alignItems="center" sx={{ mb: 1 }}>
+                          <Typography variant="h6" sx={{ color: 'text.disabled', flexGrow: 1 }}>
+                            Métricas do aluno
+                          </Typography>
 
-                        <IconButton onClick={handleEditForm} disabled={editForm}>
-                          <Iconify icon="solar:pen-bold" />
-                        </IconButton>
-                      </Stack>
-                      <FinishedForm
-                        training={training}
-                        editForm={editForm}
-                        onCancel={handleEditForm}
-                      />
-                    </Box>
-                  )}
+                          <IconButton onClick={handleEditForm} disabled={editForm}>
+                            <Iconify icon="solar:pen-bold" />
+                          </IconButton>
+                        </Stack>
+                        <FinishedForm
+                          training={training}
+                          editForm={editForm}
+                          onCancel={handleEditForm}
+                        />
+                      </Box>
+                    ))}
                 </Stack>
               </AccordionDetails>
             </Accordion>

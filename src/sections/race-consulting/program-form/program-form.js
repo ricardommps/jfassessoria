@@ -52,7 +52,8 @@ const PVOPTIONS = [
 ];
 
 export default function ProgramForm({ handleClear, typeProgram }) {
-  const { program, onUpdateProgram, onCreateProgram, getFcValue } = useProgram();
+  const { program, onUpdateProgram, onCreateProgram, getFcValue, programCreateStatus } =
+    useProgram();
 
   const { customer } = useCustomer();
   const openTable = useBoolean();
@@ -453,10 +454,21 @@ export default function ProgramForm({ handleClear, typeProgram }) {
             {renderErros}
           </Stack>
           <Stack alignItems="flex-end" sx={{ mt: 3 }} spacing={2}>
-            <LoadingButton type="submit" variant="contained" loading={isSubmitting} fullWidth>
+            <LoadingButton
+              type="submit"
+              variant="contained"
+              loading={programCreateStatus.loading}
+              fullWidth
+            >
               Salvar
             </LoadingButton>
-            <Button fullWidth variant="outlined" color="warning" onClick={handleClear}>
+            <Button
+              fullWidth
+              variant="outlined"
+              color="warning"
+              onClick={handleClear}
+              disabled={programCreateStatus.loading}
+            >
               Cancelar
             </Button>
           </Stack>
