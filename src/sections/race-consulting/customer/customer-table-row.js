@@ -18,7 +18,7 @@ import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 import { addHours, format } from 'date-fns';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BootstrapInput } from 'src/components/bootstrap-input/bootstrap-input';
 import { ConfirmDialog } from 'src/components/confirm-dialog';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
@@ -43,9 +43,9 @@ export default function CustomerTableRow({
   const deleteCustomer = useBoolean();
 
   const [customerName, setCustomerName] = useState('');
+  const [paymentsSort, setPaymentsSort] = useState(null);
 
   const { payments } = row;
-
   const handleChangeCustomerName = (event) => {
     setCustomerName(event.target.value);
   };
@@ -80,6 +80,16 @@ export default function CustomerTableRow({
     setCustomerName();
   };
 
+  useEffect(() => {
+    if (payments) {
+      const paymentsCopy = [...payments];
+      const result = paymentsCopy.sort(
+        (a, b) => new Date(b.expires_date).getTime() - new Date(a.expires_date).getTime(),
+      );
+      setPaymentsSort(result);
+    }
+  }, [payments]);
+
   return (
     <>
       <TableRow hover selected={selected}>
@@ -99,23 +109,27 @@ export default function CustomerTableRow({
         <TableCell
           sx={{
             whiteSpace: 'nowrap',
-            color: payments
-              ? checkDueDate(payments[0]?.due_date, payments[0]?.payment_date)
+            color: paymentsSort
+              ? checkDueDate(paymentsSort[0]?.due_date, paymentsSort[0]?.payment_date)
               : theme.palette.success.main,
           }}
         >
-          {payments ? format(addHours(new Date(payments[0]?.due_date), 3), 'dd/MM/yyyy') : ''}
+          {paymentsSort
+            ? format(addHours(new Date(paymentsSort[0]?.due_date), 3), 'dd/MM/yyyy')
+            : ''}
         </TableCell>
 
         <TableCell
           sx={{
             whiteSpace: 'nowrap',
-            color: payments
-              ? checkExpiresDate(payments[0]?.expires_date)
+            color: paymentsSort
+              ? checkExpiresDate(paymentsSort[0]?.expires_date)
               : theme.palette.success.main,
           }}
         >
-          {payments ? format(addHours(new Date(payments[0]?.expires_date), 3), 'dd/MM/yyyy') : ''}
+          {paymentsSort
+            ? format(addHours(new Date(paymentsSort[0]?.expires_date), 3), 'dd/MM/yyyy')
+            : ''}
         </TableCell>
 
         <TableCell align="center" sx={{ whiteSpace: 'nowrap' }}>
