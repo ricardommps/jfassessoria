@@ -274,7 +274,7 @@ export function callCloneTraining(trainingData) {
     dispatch(slice.actions.cloneTrainingStart());
     try {
       const data = { ...trainingData };
-      const response = await axios.post(API_ENDPOINTS.training.register, data);
+      const response = await axios.post(API_ENDPOINTS.training.clone, data);
       dispatch(slice.actions.cloneTrainingStartSuccess(response.data));
     } catch (error) {
       console.error(error);

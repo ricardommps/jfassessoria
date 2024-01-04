@@ -9,15 +9,17 @@ import Button from '@mui/material/Button';
 import FormControl from '@mui/material/FormControl';
 import IconButton from '@mui/material/IconButton';
 import MenuItem from '@mui/material/MenuItem';
+import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ConfirmDialog } from 'src/components/confirm-dialog';
 import { usePopover } from 'src/components/custom-popover';
 import CustomPopover from 'src/components/custom-popover/custom-popover';
 import Iconify from 'src/components/iconify/iconify';
 import { useBoolean } from 'src/hooks/use-boolean';
+import useTraining from 'src/hooks/use-training';
 import { getModuleName } from 'src/utils/training-modules';
 
 import { BootstrapInput } from '../program/styles';
@@ -42,7 +44,10 @@ export default function TrainingItem({
   const confirm = useBoolean();
   const deleteTraining = useBoolean();
 
+  const { cloneTraining } = useTraining();
+
   const [trainingName, setTrainingName] = useState('');
+  const [qntCopy, setQntCopy] = useState(1);
 
   const addDefaultSrc = (ev) => {
     ev.target.src = 'https://supertreinosapp.com/img/TREINO-BANNER-PADRAO.jpg';
@@ -54,12 +59,15 @@ export default function TrainingItem({
 
   const handleCloneTraining = () => {
     confirm.onFalse();
-    const payload = Object.assign({}, training);
-    delete payload.id;
-    payload.datePublished = null;
-    payload.published = false;
-    payload.programId = programId;
-    payload.finished = false;
+    const payload = {
+      training: Object.assign({}, training),
+      qnt: qntCopy,
+    };
+    delete payload.training.id;
+    payload.training.datePublished = null;
+    payload.training.published = false;
+    payload.training.programId = programId;
+    payload.training.finished = false;
     onCloneTraining(payload);
   };
 
@@ -67,6 +75,12 @@ export default function TrainingItem({
     deleteTraining.onFalse();
     setTrainingName(null);
   };
+
+  useEffect(() => {
+    if (cloneTraining) {
+      setQntCopy(1);
+    }
+  }, [cloneTraining]);
 
   return (
     <>
@@ -161,9 +175,21 @@ export default function TrainingItem({
         onClose={confirm.onFalse}
         title="Copiar"
         content={
-          <>
-            Tem certeza que deseja copiar o treino<strong> {training.name} </strong>?
-          </>
+          <Stack spacing={3}>
+            <Typography variant="body2">
+              Tem certeza que deseja copiar o treino<strong> {training.name} </strong>?
+            </Typography>
+            <TextField
+              id="qnt-copy"
+              label="Quantidade de cópias"
+              variant="outlined"
+              type="number"
+              value={qntCopy}
+              onChange={(e) => {
+                setQntCopy(e.target.value);
+              }}
+            />
+          </Stack>
         }
         action={
           <Button

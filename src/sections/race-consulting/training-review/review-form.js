@@ -105,19 +105,15 @@ export default function ReviewForm({ training, handleCloseForm }) {
                     value={training?.tariningdesc}
                   />
                   <Divider />
-                  {(training?.trainingname === 'FORCA' || training?.unrealized) && (
-                    <>
-                      <TextField
-                        id="comments"
-                        label="Observações do aluno"
-                        multiline
-                        rows={6}
-                        disabled
-                        value={training?.comments}
-                      />
-                      <Divider />
-                    </>
-                  )}
+                  <TextField
+                    id="comments"
+                    label="Observações do aluno"
+                    multiline
+                    rows={6}
+                    disabled
+                    value={training?.comments}
+                  />
+                  <Divider />
                   {(training?.trainingname !== 'FORCA' || training?.unrealized) && (
                     <Box>
                       <Stack direction="row" alignItems="center" sx={{ mb: 1 }}>
