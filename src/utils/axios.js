@@ -30,6 +30,9 @@ export const API_ENDPOINTS = {
   feedbacktraining: {
     save: '/api/v2/trainingfeedback',
   },
+  medias: {
+    root: '/api/v2/media',
+  },
   metrics: {
     performance: '/api/v2/metrics/performance',
     find: '/api/v2/metrics/find',
@@ -62,6 +65,7 @@ export const API_ENDPOINTS = {
     register: '/api/v2/training',
     send: '/api/v2/training/sendTraining',
     delete: '/api/v2/training',
+    clone: '/api/v2/training/clone',
   },
   payment: {
     list: '/api/v2/payment',
