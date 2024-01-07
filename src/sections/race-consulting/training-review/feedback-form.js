@@ -50,6 +50,7 @@ export default function FeedBackForm({
   const {
     handleSubmit,
     formState: { isSubmitting, errors },
+    ßßß,
   } = methods;
 
   const onSubmit = useCallback(async (data) => {
@@ -109,7 +110,9 @@ export default function FeedBackForm({
       {(trainingname === 'HIIT_CURTO' ||
         trainingname === 'HIITT_LONGO' ||
         trainingname === 'LL2_INTERVALADO' ||
-        trainingname === 'COMPETICAO') && <PacesForm />}
+        trainingname === 'COMPETICAO' ||
+        trainingname === 'SPRINT' ||
+        trainingname === 'HIT_ELEVACAO') && <PacesForm />}
     </>
   );
 
