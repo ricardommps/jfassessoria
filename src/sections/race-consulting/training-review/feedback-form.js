@@ -58,8 +58,10 @@ export default function FeedBackForm({
       if (
         trainingname === 'HIIT_CURTO' ||
         trainingname === 'HIITT_LONGO' ||
-        trainingname === 'LL2_INTERVALADO' || // Sprint - HIT com elevacao
-        trainingname === 'COMPETICAO'
+        trainingname === 'LL2_INTERVALADO' ||
+        trainingname === 'COMPETICAO' ||
+        trainingname === 'SPRINT' ||
+        trainingname === 'HIT_ELEVACAO'
       ) {
         const { paces } = payload;
         if (paces.length) {
