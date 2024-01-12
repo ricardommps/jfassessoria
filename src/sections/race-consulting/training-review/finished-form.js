@@ -21,7 +21,6 @@ export default function FinishedForm({ training, editForm, onCancel }) {
   const NewTrainingSchema = Yup.object().shape({
     distance: Yup.number().required('Distância obrigatório'),
     duration: Yup.string().required('Duração obrigatório'),
-    pace: Yup.string().required('Pace obrigatório'),
     rpe: Yup.string().required('RPE obrigatório'),
     trimp: Yup.string().required('Trimp obrigatório'),
   });

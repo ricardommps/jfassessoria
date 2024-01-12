@@ -4,6 +4,7 @@ import createWebStorage from 'redux-persist/lib/storage/createWebStorage';
 import customerReducer from './slices/customers';
 import feedbackTrainingReducer from './slices/feedback-training';
 import finishedTrainingReducer from './slices/finished-training';
+import mediasReducer from './slices/medias';
 import metricsReducer from './slices/metrics';
 import paymentReducer from './slices/payment';
 import programReducer from './slices/program';
@@ -43,4 +44,5 @@ export const rootReducer = combineReducers({
   finishedTraining: finishedTrainingReducer,
   feedbackTraining: feedbackTrainingReducer,
   metrics: metricsReducer,
+  medias: mediasReducer,
 });

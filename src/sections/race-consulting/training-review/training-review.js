@@ -124,10 +124,12 @@ export function TrainingReview({ open, onClose, customerId, actionType, ...other
               direction={{ xs: 'column-reverse', md: 'row' }}
               sx={{ p: 3 }}
             >
-              <TrainingList
-                handleSelectedTraining={handleSelectedTraining}
-                actionType={actionType}
-              />
+              {!currentTrainingId && (
+                <TrainingList
+                  handleSelectedTraining={handleSelectedTraining}
+                  actionType={actionType}
+                />
+              )}
               <Review currentTrainingId={currentTrainingId} handleCloseForm={handleCloseForm} />
             </Stack>
           )}

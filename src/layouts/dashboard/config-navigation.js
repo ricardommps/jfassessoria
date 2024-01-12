@@ -51,7 +51,7 @@ export function useNavData() {
       // OVERVIEW
       // ----------------------------------------------------------------------
       {
-        subheader: 'overview v5.0.0',
+        subheader: 'Joana Foltz Assessoria Esportiva',
         items: [
           { title: 'Dashboard', path: paths.dashboard.root, icon: ICONS.dashboard },
           {
