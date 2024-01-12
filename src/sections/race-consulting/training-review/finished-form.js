@@ -21,15 +21,14 @@ export default function FinishedForm({ training, editForm, onCancel }) {
   const NewTrainingSchema = Yup.object().shape({
     distance: Yup.number().required('Distância obrigatório'),
     duration: Yup.string().required('Duração obrigatório'),
-    pace: Yup.string().required('Pace obrigatório'),
     rpe: Yup.string().required('RPE obrigatório'),
     trimp: Yup.string().required('Trimp obrigatório'),
   });
 
   const defaultValues = useMemo(
     () => ({
-      distance: training?.distance || null,
-      duration: training?.duration || null,
+      distance: Math.trunc(Number(training?.distance)) || null,
+      duration: Math.trunc(Number(training?.duration)) || null,
       rpe: training?.rpe || null,
       trimp: training?.trimp || null,
       link: training?.link || null,

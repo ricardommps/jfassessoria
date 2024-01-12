@@ -1,3 +1,6 @@
+import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
@@ -5,10 +8,10 @@ import Typography from '@mui/material/Typography';
 import { enqueueSnackbar } from 'notistack';
 import { useEffect } from 'react';
 import EmptyContent from 'src/components/empty-content/empty-content';
-import Scrollbar from 'src/components/scrollbar/scrollbar';
 import useFinishedTraining from 'src/hooks/use-finished-training';
 
 import ReviewForm from './review-form';
+import TrainingDetails from './training-details';
 export default function Review({ currentTrainingId, handleCloseForm }) {
   const { onTrainingReview, trainingReviewStatus, trainingReview } = useFinishedTraining();
 
@@ -31,25 +34,48 @@ export default function Review({ currentTrainingId, handleCloseForm }) {
   }, [trainingReviewStatus]);
 
   return (
-    <Stack
-      spacing={2}
-      component={Paper}
-      variant="outlined"
-      sx={{
-        p: 2.5,
-        minWidth: '50%',
-        flexShrink: 0,
-        borderRadius: 2,
-        typography: 'body2',
-        borderStyle: 'dashed',
-      }}
-    >
-      <Stack spacing={0.5}>
-        <Typography variant="h6">
-          {!currentTrainingId ? 'Selecione um treino para feedback' : 'Feedback do treino'}
-        </Typography>
-      </Stack>
-      <Scrollbar>
+    <>
+      {currentTrainingId && (
+        <Stack
+          sx={{
+            minWidth: '50%',
+            flexShrink: 0,
+          }}
+        >
+          <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2, pb: 2 }}>
+            <Button
+              color="inherit"
+              sx={{ mr: 1 }}
+              startIcon={<ArrowCircleLeftIcon />}
+              onClick={handleCloseForm}
+            >
+              Voltar
+            </Button>
+          </Box>
+          <Stack>
+            <TrainingDetails training={trainingReview} />
+          </Stack>
+        </Stack>
+      )}
+      <Stack
+        spacing={2}
+        component={Paper}
+        variant="outlined"
+        sx={{
+          p: 2.5,
+          minWidth: '50%',
+          flexShrink: 0,
+          borderRadius: 2,
+          typography: 'body2',
+          borderStyle: 'dashed',
+        }}
+      >
+        <Stack spacing={0.5}>
+          <Typography variant="h6">
+            {!currentTrainingId ? 'Selecione um treino para feedback' : 'Feedback do treino'}
+          </Typography>
+        </Stack>
+
         {!currentTrainingId && (
           <EmptyContent
             imgUrl="/assets/icons/empty/ic_content.svg"
@@ -69,7 +95,7 @@ export default function Review({ currentTrainingId, handleCloseForm }) {
             <ReviewForm training={trainingReview} handleCloseForm={handleCloseForm} />
           </Stack>
         )}
-      </Scrollbar>
-    </Stack>
+      </Stack>
+    </>
   );
 }

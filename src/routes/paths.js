@@ -26,5 +26,9 @@ export const paths = {
       create: (type, id) => `${ROOTS.DASHBOARD}/metrics/create/${type}/${id}`,
       edit: (id) => `${ROOTS.DASHBOARD}/metrics/edit/${id}`,
     },
+    medias: {
+      root: `${ROOTS.DASHBOARD}/medias`,
+      new: `${ROOTS.DASHBOARD}/medias/new`,
+    },
   },
 };
