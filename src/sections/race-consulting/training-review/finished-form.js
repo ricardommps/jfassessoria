@@ -27,8 +27,8 @@ export default function FinishedForm({ training, editForm, onCancel }) {
 
   const defaultValues = useMemo(
     () => ({
-      distance: training?.distance || null,
-      duration: training?.duration || null,
+      distance: Math.trunc(Number(training?.distance)) || null,
+      duration: Math.trunc(Number(training?.duration)) || null,
       rpe: training?.rpe || null,
       trimp: training?.trimp || null,
       link: training?.link || null,
