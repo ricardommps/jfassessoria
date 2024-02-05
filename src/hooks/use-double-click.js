@@ -24,6 +24,6 @@ export function useDoubleClick({ click, doubleClick, timeout = 250 }) {
         doubleClick(event);
       }
     },
-    [click, doubleClick, timeout]
+    [click, doubleClick, timeout],
   );
 }
