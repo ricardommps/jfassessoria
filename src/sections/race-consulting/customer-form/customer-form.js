@@ -38,6 +38,7 @@ export default function CustomerForm({ handleCloseNewCustomer, isMobile = false 
     customerCreate,
     onListCustomersReview,
     updateCustomerSuccess,
+    customerError,
   } = useCustomer();
 
   const [loading, setLoading] = useState(false);
@@ -149,6 +150,18 @@ export default function CustomerForm({ handleCloseNewCustomer, isMobile = false 
       handleCancel();
     }
   }, [updateCustomerSuccess]);
+
+  useEffect(() => {
+    if (customerError) {
+      setLoading(false);
+      onListCustomersReview();
+      enqueueSnackbar('Não foi possível executar esta operação. Tente novamente mais tarde.', {
+        autoHideDuration: 8000,
+        variant: 'error',
+      });
+      handleCancel();
+    }
+  }, [customerError]);
 
   useEffect(() => {
     if (customer) {

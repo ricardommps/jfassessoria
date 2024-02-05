@@ -20,4 +20,3 @@ export default function ImageList({ open, onClose, ...other }) {
     </Dialog>
   );
 }
-//https://codesandbox.io/p/devbox/next-image-gallery-4lkte?file=%2F.env.example

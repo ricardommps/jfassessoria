@@ -25,6 +25,7 @@ import CustomPopover, { usePopover } from 'src/components/custom-popover';
 import Iconify from 'src/components/iconify';
 import SvgColor from 'src/components/svg-color/svg-color';
 import { useBoolean } from 'src/hooks/use-boolean';
+import { useRouter } from 'src/routes/hook';
 
 export default function CustomerTableRow({
   row,
@@ -39,6 +40,7 @@ export default function CustomerTableRow({
   handleOpenMetrics,
 }) {
   const theme = useTheme();
+  const router = useRouter();
   const popover = usePopover();
   const deleteCustomer = useBoolean();
 
@@ -164,6 +166,7 @@ export default function CustomerTableRow({
         {row.active && (
           <MenuItem
             onClick={() => {
+              // router.push(paths.dashboard.program.root(row.id));
               handleOpenProgram(row.id);
               popover.onClose();
             }}

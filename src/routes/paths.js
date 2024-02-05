@@ -30,5 +30,9 @@ export const paths = {
       root: `${ROOTS.DASHBOARD}/medias`,
       new: `${ROOTS.DASHBOARD}/medias/new`,
     },
+    program: {
+      root: (id) => `${ROOTS.DASHBOARD}/program/${id}`,
+      create: (id) => `${ROOTS.DASHBOARD}/program/create/${id}`,
+    },
   },
 };

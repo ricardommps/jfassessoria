@@ -1,3 +1,4 @@
+import Badge from '@mui/material/Badge';
 import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
 import IconButton from '@mui/material/IconButton';
@@ -51,14 +52,25 @@ export default function TrainingDetails({ training }) {
 
   const renderIntensities = () => {
     const intensities = training.intensities.map((intensities) => JSON.parse(intensities));
-    const intensitiesValues = intensities.map((intensities) => intensities.value);
+    const intensitiesValues = intensities.map((intensities) => {
+      if (intensities.value) {
+        return intensities.value;
+      }
+      return intensities.intensitie;
+    });
     const noEmptyValues = intensitiesValues.filter((str) => str !== '');
     return (
-      <>
+      <Box display="grid" gap={2} gridTemplateColumns="repeat(3, 1fr)" width={'50px'} pt={3}>
         {noEmptyValues.map((item, index) => (
-          <Chip label={item} key={`intensities-key-${index}`} />
+          <Badge badgeContent={index + 1} color="info" key={`intensities-badge-key-${index}`}>
+            <Chip
+              label={`${item} ${training.unitmeasurement === 'pace' ? 'min' : 'km/h'}`}
+              key={`intensities-key-${index}`}
+              sx={{ width: '100px' }}
+            />
+          </Badge>
         ))}
-      </>
+      </Box>
     );
   };
   function toHoursAndMinutes(totalMinutes) {
@@ -123,7 +135,7 @@ export default function TrainingDetails({ training }) {
             multiline
             rows={6}
             disabled
-            value={training?.comment || ''}
+            value={training?.comments || ''}
           />
         </Stack>
 
@@ -132,9 +144,7 @@ export default function TrainingDetails({ training }) {
             <Typography variant="body2" sx={{ flexGrow: 1 }} color={'text.primary'}>
               Intensidade dos esforços({training?.unitmeasurement})
             </Typography>
-            <Box display="grid" gap={2} gridTemplateColumns="repeat(2, 1fr)" sx={{ p: 3 }}>
-              {renderIntensities()}
-            </Box>
+            {renderIntensities()}
           </Stack>
         )}
         {(training?.trainingname !== 'FORCA' || training?.unrealized) && (

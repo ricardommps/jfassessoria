@@ -1,44 +1,49 @@
 import { yupResolver } from '@hookform/resolvers/yup';
+import LoadingButton from '@mui/lab/LoadingButton';
+import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import Stack from '@mui/material/Stack';
+import { alpha } from '@mui/material/styles';
+import Switch from '@mui/material/Switch';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Unstable_Grid2';
-import { useCallback, useMemo } from 'react';
+import { m } from 'framer-motion';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
+import { varFade } from 'src/components/animate';
 import FormProvider, { RHFTextField } from 'src/components/hook-form';
-import { useBoolean } from 'src/hooks/use-boolean';
+import Image from 'src/components/image';
+import useMedia from 'src/hooks/use-media';
 import { useResponsive } from 'src/hooks/use-responsive';
 import * as Yup from 'yup';
 
-import ImageList from './image-list';
-import { RHFImage } from './rhf-image';
+function getId(url) {
+  let regex = /(youtu.*be.*)\/(watch\?v=|embed\/|v|shorts|)(.*?((?=[&#?])|$))/gm;
+  return regex.exec(url)[3];
+}
 export default function MediaNewEditForm() {
   const mdUp = useResponsive('up', 'md');
-  const imageList = useBoolean();
-
+  const { onCreateMedia } = useMedia();
   const NewMediaSchema = Yup.object().shape({
     title: Yup.string().required('Title obrigatório'),
     videoUrl: Yup.string().required('Url do vídeo obrigatória'),
   });
-
   const defaultValues = useMemo(
     () => ({
       title: '',
-      thumbnail:
-        'https://res.cloudinary.com/dtjwulffm/image/upload/c_thumb,w_200,g_face/v1701520618/xnu1bkdbelb913yv0qlb.jpg',
+      thumbnail: null,
       videoUrl: '',
       instrucctions: null,
       blocked: false,
     }),
     [],
   );
-
   const methods = useForm({
     resolver: yupResolver(NewMediaSchema),
     defaultValues,
   });
-
   const {
     reset,
     watch,
@@ -49,18 +54,54 @@ export default function MediaNewEditForm() {
 
   const values = watch();
 
-  const handleClearImage = () => {
-    setValue('thumbnail', '');
-  };
+  const handleChangeBlocked = useCallback(
+    (event) => {
+      setValue('blocked', event.target.checked);
+    },
+    [setValue],
+  );
 
   const onSubmit = useCallback(async (data) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      console.info('DATA', data);
+      const payload = Object.assign({}, data);
+      onCreateMedia(payload);
     } catch (error) {
       console.error(error);
     }
   }, []);
+
+  const renderActions = (
+    <>
+      {mdUp && <Grid md={4} />}
+      <Grid xs={12} md={8} sx={{ display: 'flex', alignItems: 'center' }}>
+        <FormControlLabel
+          control={
+            <Switch
+              checked={Boolean(values.blocked)}
+              color="error"
+              onChange={handleChangeBlocked}
+            />
+          }
+          label="Bloquear"
+          sx={{ flexGrow: 1, pl: 3 }}
+        />
+
+        <Button color="inherit" variant="outlined" size="large">
+          Cancelar
+        </Button>
+
+        <LoadingButton
+          type="submit"
+          variant="contained"
+          size="large"
+          loading={isSubmitting}
+          sx={{ ml: 2 }}
+        >
+          Salvar
+        </LoadingButton>
+      </Grid>
+    </>
+  );
 
   const renderDetails = (
     <>
@@ -83,11 +124,19 @@ export default function MediaNewEditForm() {
             <RHFTextField name="instrucctions" label="Instruções" fullWidth multiline rows={5} />
             <Stack spacing={1.5}>
               <Typography variant="subtitle2">Thumbnail</Typography>
-              <RHFImage
-                name={'thumbnail'}
-                handleClearImage={handleClearImage}
-                onClick={imageList.onTrue}
-              />
+              {values.thumbnail && (
+                <m.div variants={varFade().inUp}>
+                  <Image
+                    alt="darkmode"
+                    src={values.thumbnail}
+                    style={{ width: 200, height: 200 }}
+                    sx={{
+                      boxShadow: (theme) =>
+                        `-40px 40px 80px ${alpha(theme.palette.common.black, 0.24)}`,
+                    }}
+                  />
+                </m.div>
+              )}
             </Stack>
           </Stack>
         </Card>
@@ -95,12 +144,24 @@ export default function MediaNewEditForm() {
     </>
   );
 
+  useEffect(() => {
+    if (values.videoUrl) {
+      const idVideo = getId(values.videoUrl);
+      if (idVideo) {
+        const thumbnail = `http://img.youtube.com/vi/${idVideo}/0.jpg`;
+        setValue('thumbnail', thumbnail);
+      } else {
+        setValue('thumbnail', null);
+      }
+    }
+  }, [values.videoUrl]);
+
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
       <Grid container spacing={3}>
         {renderDetails}
+        {renderActions}
       </Grid>
-      {imageList.value && <ImageList open={imageList.value} onClose={imageList.onFalse} />}
     </FormProvider>
   );
 }
