@@ -23,6 +23,7 @@ export default function useCustomer() {
     deleteCustomerStatus,
     customersReview,
     customersReviewStatus,
+    customerError,
   } = useSelector((state) => state.customer);
 
   const onCreateCustomer = useCallback(
@@ -83,5 +84,6 @@ export default function useCustomer() {
     customersReview,
     customersReviewStatus,
     onListCustomersReview,
+    customerError,
   };
 }

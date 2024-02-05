@@ -26,6 +26,7 @@ const initialState = {
     empty: false,
     error: null,
   },
+  customerError: false,
 };
 
 const slice = createSlice({
@@ -137,6 +138,10 @@ const slice = createSlice({
       state.deleteCustomerStatus.loading = false;
       state.deleteCustomerStatus.error = null;
     },
+    customerError(state) {
+      state.updateCustomerSuccess = null;
+      state.customerError = true;
+    },
   },
 });
 
@@ -198,6 +203,7 @@ export function updateCustomer(customerUpadate, customerId) {
       const response = await axios.put(`${API_ENDPOINTS.customer}/${customerId}`, dataUpdate);
       dispatch(slice.actions.updateCustomerSuccess(response.data));
     } catch (error) {
+      dispatch(slice.actions.customerError());
       console.error(error);
     }
   };

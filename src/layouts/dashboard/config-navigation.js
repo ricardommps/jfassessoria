@@ -60,6 +60,12 @@ export function useNavData() {
             path: paths.dashboard.customersRacing,
             icon: ICONS.runner,
           },
+          {
+            title: 'Mídias',
+            titleMini: 'Mídias',
+            path: paths.dashboard.medias.root,
+            icon: ICONS.file,
+          },
         ],
       },
     ],

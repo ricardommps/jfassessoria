@@ -303,7 +303,7 @@ export default function ProgramForm({ handleClear, typeProgram }) {
                   sx={{
                     textAlign: 'left',
                     justifyContent: 'left',
-                    borderBottom: (theme) => `dashed 1px ${theme.palette.divider}`,
+                    borderBottom: (theme) => `solid 1px ${theme.palette.divider}`,
                   }}
                 >
                   <Stack
@@ -316,7 +316,7 @@ export default function ProgramForm({ handleClear, typeProgram }) {
                     onClick={() => handleOpenTableSpeed('pace')}
                   >
                     <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                      Pace
+                      Pace do PV
                     </Typography>
                     {values.pace ? <>{values.pace}</> : <>Clique aqui para selecionar um valor</>}
                   </Stack>
@@ -327,7 +327,7 @@ export default function ProgramForm({ handleClear, typeProgram }) {
                   sx={{
                     textAlign: 'left',
                     justifyContent: 'left',
-                    borderBottom: (theme) => `dashed 1px ${theme.palette.divider}`,
+                    borderBottom: (theme) => `solid 1px ${theme.palette.divider}`,
                   }}
                 >
                   <Stack sx={{ typography: 'body2', width: '50%', maxWidth: '50%' }}>
@@ -365,7 +365,7 @@ export default function ProgramForm({ handleClear, typeProgram }) {
                   sx={{
                     textAlign: 'left',
                     justifyContent: 'left',
-                    borderBottom: (theme) => `dashed 1px ${theme.palette.divider}`,
+                    borderBottom: (theme) => `solid 1px ${theme.palette.divider}`,
                   }}
                 >
                   <Stack sx={{ typography: 'body2', width: '50%', maxWidth: '50%' }}>
@@ -406,7 +406,11 @@ export default function ProgramForm({ handleClear, typeProgram }) {
             </Typography>
             <Stack mt={1}>
               <ReferenceMonthDate value={values.referenceMonth} />
+            </Stack>
+            <Stack mt={1}>
               <RHFTextField name="test" label="Teste realizado" variant="standard" />
+            </Stack>
+            <Stack mt={4}>
               <TestDate value={values.dateTest} />
             </Stack>
           </Box>

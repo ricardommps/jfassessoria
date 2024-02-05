@@ -3,7 +3,6 @@ import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import PropTypes from 'prop-types'; // @mui
 
 //
 import LinkItem from './link-item';
@@ -70,17 +69,6 @@ export default function CustomBreadcrumbs({
     </Box>
   );
 }
-
-CustomBreadcrumbs.propTypes = {
-  sx: PropTypes.object,
-  action: PropTypes.node,
-  links: PropTypes.array,
-  heading: PropTypes.string,
-  moreLink: PropTypes.array,
-  activeLast: PropTypes.bool,
-};
-
-// ----------------------------------------------------------------------
 
 function Separator() {
   return (

@@ -35,6 +35,7 @@ export default function TrainingForm({ handleCancel }) {
     () => ({
       programId: training?.programId || program.id,
       name: training?.name || '',
+      subtitle: training?.subtitle || '',
       description: training?.description || '',
       coverPath: training?.coverPath || '',
       datePublished: training?.datePublished || null,
@@ -153,7 +154,9 @@ export default function TrainingForm({ handleCancel }) {
                     ))}
                   </RHFSelect>
                 )}
-
+                <Stack>
+                  <RHFTextField name="subtitle" label="Subtítulo" />
+                </Stack>
                 <Stack mt={1}>
                   <Controller
                     name="datePublished"
