@@ -38,6 +38,7 @@ export default function CustomerChangePassword() {
     changePasswordSuccess,
     changePasswordStatus,
     onChangePassword,
+    onClearCustome,
   } = useCustomer();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -82,6 +83,7 @@ export default function CustomerChangePassword() {
   );
 
   const handleCancel = () => {
+    onClearCustome();
     router.replace(paths.dashboard.customersRacing);
   };
   useEffect(() => {
@@ -104,16 +106,18 @@ export default function CustomerChangePassword() {
         autoHideDuration: 3000,
         variant: 'success',
       });
+      onClearCustome();
       router.replace(paths.dashboard.customersRacing);
     }
   }, [changePasswordSuccess]);
 
   useEffect(() => {
-    if (changePasswordStatus.error?.message) {
+    if (changePasswordStatus.error) {
       enqueueSnackbar('Não foi possivel atualizar a senha, tente novamente', {
         autoHideDuration: 3000,
         variant: 'error',
       });
+      onClearCustome();
       router.replace(paths.dashboard.customersRacing);
     }
   }, [changePasswordStatus.error]);

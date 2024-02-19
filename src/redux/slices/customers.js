@@ -118,6 +118,7 @@ const slice = createSlice({
     updateCustomerSuccess(state, action) {
       state.updateCustomerSuccess = action.payload;
     },
+
     clearCustomer(state) {
       state.customer = null;
       state.customerStatus.loading = false;
@@ -125,6 +126,9 @@ const slice = createSlice({
       state.customerStatus.error = null;
       state.customerCreate = null;
       state.updateCustomer = null;
+      state.changePasswordSuccess = null;
+      state.changePasswordStatus.loading = false;
+      state.changePasswordStatus.error = null;
     },
     deleteCustomerStart(state) {
       state.deleteCustomer = null;
