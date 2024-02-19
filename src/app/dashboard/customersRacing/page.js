@@ -11,7 +11,7 @@ export default function Page() {
 import { RaceConsultingView } from 'src/sections/race-consulting/view';
 
 export const metadata = {
-  title: 'Dashboard: Clientes Assessoria de Corrida',
+  title: 'Dashboard: Clientes Assessoria',
 };
 
 export default function Page() {

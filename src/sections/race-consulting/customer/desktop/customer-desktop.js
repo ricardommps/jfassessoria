@@ -110,6 +110,13 @@ export default function CustomerDesktop({
     [router],
   );
 
+  const handleOpenChangePassword = useCallback(
+    (id) => {
+      router.push(paths.dashboard.customerChangePassword(id));
+    },
+    [router],
+  );
+
   useEffect(() => {
     onListCustomersReview();
   }, []);
@@ -208,6 +215,7 @@ export default function CustomerDesktop({
                   handleOpenReview={handleOpenReview}
                   handleOpenAllDone={handleOpenAllDone}
                   handleOpenMetrics={handleOpenMetrics}
+                  handleOpenChangePassword={handleOpenChangePassword}
                 />
               </Card>
             </Scrollbar>

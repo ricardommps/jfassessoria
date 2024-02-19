@@ -9,9 +9,9 @@ import { useResponsive } from 'src/hooks/use-responsive';
 import useTraining from 'src/hooks/use-training';
 import { hideScroll } from 'src/theme/css';
 
+import CustomerForm from '../customer-form/customer-form';
 import CustomerDesktop from '../customer/desktop/customer-desktop';
 import CustomerMobile from '../customer/mobile/customer-mobile';
-import CustomerForm from '../customer-form/customer-form';
 import Archiveds from '../program/archived/archiveds';
 import Program from '../program/program';
 import Training from '../training/training';
@@ -69,7 +69,7 @@ export default function RaceConsultingView() {
           mb: { xs: 3, md: 5 },
         }}
       >
-        Assessoria de Corrida
+        Assessoria
       </Typography>
       <Stack
         spacing={3}

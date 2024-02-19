@@ -27,6 +27,11 @@ const initialState = {
     error: null,
   },
   customerError: false,
+  changePasswordSuccess: null,
+  changePasswordStatus: {
+    loading: false,
+    error: false,
+  },
 };
 
 const slice = createSlice({
@@ -142,6 +147,33 @@ const slice = createSlice({
       state.updateCustomerSuccess = null;
       state.customerError = true;
     },
+    changePasswordStart(state) {
+      state.changePasswordSuccess = null;
+      state.changePasswordStatus.loading = false;
+      state.changePasswordStatus.error = false;
+    },
+    changePasswordFailure(state, action) {
+      state.changePasswordSuccess = null;
+      state.changePasswordStatus.loading = false;
+      state.changePasswordStatus.error = action.payload;
+      state.customer = null;
+      state.customerStatus.loading = false;
+      state.customerStatus.empty = false;
+      state.customerStatus.error = null;
+      state.customerCreate = null;
+      state.updateCustomer = null;
+    },
+    changePasswordSuccess(state, action) {
+      state.changePasswordSuccess = action.payload;
+      state.changePasswordStatus.loading = false;
+      state.changePasswordStatus.error = false;
+      state.customer = null;
+      state.customerStatus.loading = false;
+      state.customerStatus.empty = false;
+      state.customerStatus.error = null;
+      state.customerCreate = null;
+      state.updateCustomer = null;
+    },
   },
 });
 
@@ -223,6 +255,21 @@ export function deleteCustomerReq(customerId) {
       dispatch(slice.actions.deleteCustomerSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.deleteCustomerFailure(error));
+    }
+  };
+}
+
+export function changePassword(updatePassword, customerId) {
+  return async (dispatch) => {
+    dispatch(slice.actions.changePasswordStart());
+    try {
+      const data = { ...updatePassword };
+      delete data.confirmNewPassword;
+      const response = await axios.patch(`${API_ENDPOINTS.changePassword}/${customerId}`, data);
+      dispatch(slice.actions.changePasswordSuccess(response.data));
+    } catch (error) {
+      dispatch(slice.actions.changePasswordFailure(error));
+      console.error(error);
     }
   };
 }

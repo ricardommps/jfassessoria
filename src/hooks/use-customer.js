@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 import {
+  changePassword,
   clearCustomer,
   createCustomer,
   deleteCustomerReq,
@@ -24,6 +25,8 @@ export default function useCustomer() {
     customersReview,
     customersReviewStatus,
     customerError,
+    changePasswordSuccess,
+    changePasswordStatus,
   } = useSelector((state) => state.customer);
 
   const onCreateCustomer = useCallback(
@@ -66,6 +69,13 @@ export default function useCustomer() {
     [dispatch],
   );
 
+  const onChangePassword = useCallback(
+    (updatePassword, customerId) => {
+      dispatch(changePassword(updatePassword, customerId));
+    },
+    [dispatch],
+  );
+
   return {
     customers,
     customersStatus,
@@ -85,5 +95,8 @@ export default function useCustomer() {
     customersReviewStatus,
     onListCustomersReview,
     customerError,
+    onChangePassword,
+    changePasswordSuccess,
+    changePasswordStatus,
   };
 }
