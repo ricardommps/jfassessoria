@@ -5,6 +5,7 @@ import DeleteSweepIcon from '@mui/icons-material/DeleteSweep';
 import InsightsIcon from '@mui/icons-material/Insights';
 import PlaylistAddCheckCircleIcon from '@mui/icons-material/PlaylistAddCheckCircle';
 import ReviewsIcon from '@mui/icons-material/Reviews';
+import VpnKeyIcon from '@mui/icons-material/VpnKey';
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -38,6 +39,7 @@ export default function CustomerTableRow({
   handleOpenReview,
   handleOpenAllDone,
   handleOpenMetrics,
+  handleOpenChangePassword,
 }) {
   const theme = useTheme();
   const router = useRouter();
@@ -162,6 +164,15 @@ export default function CustomerTableRow({
         >
           <SvgColor src="/assets/icons/navbar/ic_user.svg" sx={{ mr: 1 }} />
           Cadastro
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            handleOpenChangePassword(row.id);
+            popover.onClose();
+          }}
+        >
+          <VpnKeyIcon sx={{ mr: 1 }} />
+          Gerar senha
         </MenuItem>
         {row.active && (
           <MenuItem

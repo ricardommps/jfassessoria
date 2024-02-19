@@ -26,6 +26,7 @@ export const API_ENDPOINTS = {
     register: '/api/auth/register',
   },
   customer: '/api/v2/customer',
+  changePassword: '/api/v2/customer/newPassword',
   customerAll: '/api/v2/customer/all',
   feedbacktraining: {
     save: '/api/v2/trainingfeedback',

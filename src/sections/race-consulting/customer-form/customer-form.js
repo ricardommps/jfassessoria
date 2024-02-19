@@ -116,6 +116,13 @@ export default function CustomerForm({ handleCloseNewCustomer, isMobile = false 
     [setValue],
   );
 
+  const handleChangeEmail = useCallback(
+    (event) => {
+      setValue('email', event.target.value.toLowerCase());
+    },
+    [setValue],
+  );
+
   const renderErros = (
     <>
       {errors && (
@@ -221,7 +228,13 @@ export default function CustomerForm({ handleCloseNewCustomer, isMobile = false 
               <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
                 <>
                   <RHFTextField name="name" label="Nome *" variant="standard" />
-                  <RHFTextField name="email" label="Email *" variant="standard" />
+                  <RHFTextField
+                    name="email"
+                    label="Email *"
+                    variant="standard"
+                    type="email"
+                    onChange={handleChangeEmail}
+                  />
                   <Stack mt={2}>
                     <RHFSwitch
                       name="isRunner"

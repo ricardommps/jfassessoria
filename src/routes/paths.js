@@ -19,6 +19,7 @@ export const paths = {
   // DASHBOARD
   dashboard: {
     root: ROOTS.DASHBOARD,
+    customerChangePassword: (id) => `${ROOTS.DASHBOARD}/customer-change-password/${id}`,
     security: `${ROOTS.DASHBOARD}/security`,
     customersRacing: `${ROOTS.DASHBOARD}/customersRacing`,
     metrics: {
