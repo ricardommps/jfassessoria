@@ -1,4 +1,5 @@
 'use client';
+// eslint-disable-next-line simple-import-sort/imports
 import Container from '@mui/material/Container';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
