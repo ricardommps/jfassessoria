@@ -29,7 +29,7 @@ import {
   BaseHeader,
   Beginner,
   Intermediary,
-  ListItem
+  ListItem,
 } from './styles';
 
 export default function ProgramItem({
