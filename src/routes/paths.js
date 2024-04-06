@@ -30,10 +30,14 @@ export const paths = {
     medias: {
       root: `${ROOTS.DASHBOARD}/medias`,
       new: `${ROOTS.DASHBOARD}/medias/new`,
+      edit: (id) => `${ROOTS.DASHBOARD}/medias/${id}/edit`,
     },
     program: {
       root: (id) => `${ROOTS.DASHBOARD}/program/${id}`,
       create: (id) => `${ROOTS.DASHBOARD}/program/create/${id}`,
+    },
+    feedBack: {
+      root: (id) => `${ROOTS.DASHBOARD}/feedback/${id}`,
     },
   },
 };

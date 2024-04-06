@@ -36,7 +36,7 @@ export default function Training() {
     cloneTraining,
     onClearTraining,
     updateTrainingSuccess,
-    onListTrainings,
+    onTrainingsList,
     trainingCreate,
     sendTrainingSuccess,
     sendTrainingStatus,
@@ -58,6 +58,10 @@ export default function Training() {
   });
 
   const [currentExtrapolation, setCurrentExtrapolation] = useState(null);
+
+  const refreshList = useCallback(() => {
+    onTrainingsList(program.id);
+  }, [program]);
 
   const handleOpenSend = (training, event) => {
     event.stopPropagation();
@@ -112,17 +116,16 @@ export default function Training() {
     confirm.onFalse();
     setAction(null);
     setProgramsIdSelected([]);
-    const payload = Object.assign({}, openSend.training);
-    delete payload.id;
-    delete payload.programId;
-    payload.finished = false;
-    payload.programsId = [...programsIdSelected];
+    const payload = {
+      trainingId: openSend.training.id,
+      programsId: [...programsIdSelected],
+    };
     onSendTraining(payload);
   };
 
   useEffect(() => {
     if (updateTrainingSuccess) {
-      onListTrainings(program.id);
+      refreshList();
       enqueueSnackbar('Update success!', { autoHideDuration: 3000, variant: 'success' });
       handleCancel();
     }
@@ -130,7 +133,7 @@ export default function Training() {
 
   useEffect(() => {
     if (trainingCreate) {
-      onListTrainings(program.id);
+      refreshList();
       enqueueSnackbar('Treino criado com sucesso!', {
         autoHideDuration: 8000,
         variant: 'success',
@@ -141,7 +144,7 @@ export default function Training() {
 
   useEffect(() => {
     if (cloneTraining) {
-      onListTrainings(program.id);
+      refreshList();
       enqueueSnackbar('Treino clonado com sucesso!', {
         autoHideDuration: 8000,
         variant: 'success',
@@ -153,7 +156,7 @@ export default function Training() {
   useEffect(() => {
     if (sendTrainingSuccess) {
       setNewTraining(false);
-      onListTrainings(program.id);
+      refreshList();
       enqueueSnackbar(
         sendTrainingSuccess.status === 200
           ? 'Programa enviado com sucesso!'
@@ -169,7 +172,7 @@ export default function Training() {
 
   useEffect(() => {
     if (deleteTraining) {
-      onListTrainings(program.id);
+      refreshList();
       enqueueSnackbar('Treino deletado com sucesso!', {
         autoHideDuration: 8000,
         variant: 'success',
@@ -377,6 +380,7 @@ export default function Training() {
                         programId={program?.id}
                         handleOpenSend={handleOpenSend}
                         sendTrainingStatus={sendTrainingStatus}
+                        refreshList={refreshList}
                       />
                     </Stack>
                   </>

@@ -23,7 +23,7 @@ const defaultFilters = {
 };
 
 export default function MediaListView() {
-  const table = useTable({ defaultRowsPerPage: 10 });
+  const table = useTable({ defaultRowsPerPage: 5 });
   const router = useRouter();
   const { onGetListMedias, medias, mediasStatus } = useMedia();
 
@@ -50,6 +50,13 @@ export default function MediaListView() {
   const handleGoBack = useCallback(() => {
     router.back();
   }, []);
+
+  const handleEditRow = useCallback(
+    (id) => {
+      router.push(paths.dashboard.medias.edit(id));
+    },
+    [router],
+  );
 
   useEffect(() => {
     initialize();
@@ -113,6 +120,7 @@ export default function MediaListView() {
           tableData={tableData}
           dataFiltered={dataFiltered}
           notFound={notFound}
+          handleEditRow={handleEditRow}
         />
       </Stack>
     </Container>

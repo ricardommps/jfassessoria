@@ -17,16 +17,22 @@ import { Controller, useForm } from 'react-hook-form';
 import { useTablePvContext } from 'src/components/drawer-table-pv';
 import { RHFSelect, RHFTextField } from 'src/components/hook-form';
 import FormProvider from 'src/components/hook-form/form-provider';
+import Iconify from 'src/components/iconify/iconify';
+import Scrollbar from 'src/components/scrollbar';
+import SelectMedia from 'src/components/select-media';
+import { useBoolean } from 'src/hooks/use-boolean';
 import useProgram from 'src/hooks/use-program';
 import useTraining from 'src/hooks/use-training';
 import { trainingModules } from 'src/utils/training-modules';
 import * as Yup from 'yup';
 
-import VideosForm from './videos-form';
+import MediasView from './medias-view';
+
 export default function TrainingForm({ handleCancel }) {
   const tablePv = useTablePvContext();
   const { training, onUpdateTraining, onCreateTraining } = useTraining();
   const { program } = useProgram();
+  const listMedias = useBoolean();
 
   const NewTrainingSchema = Yup.object().shape({
     name: Yup.string().required('Titulo obrigatório'),
@@ -36,6 +42,8 @@ export default function TrainingForm({ handleCancel }) {
       programId: training?.programId || program.id,
       name: training?.name || '',
       subtitle: training?.subtitle || '',
+      heating: training?.heating || '',
+      recovery: training?.recovery || '',
       description: training?.description || '',
       coverPath: training?.coverPath || '',
       datePublished: training?.datePublished || null,
@@ -44,6 +52,9 @@ export default function TrainingForm({ handleCancel }) {
       videos: training?.videos || null,
       hide: training?.hide || false,
       finished: training?.finished || false,
+      medias: training?.medias || [],
+      mediaOrder: training?.mediaOrder || [],
+      exerciseInfo: training?.exerciseInfo || [],
     }),
     [],
   );
@@ -67,15 +78,22 @@ export default function TrainingForm({ handleCancel }) {
   const onSubmit = useCallback(
     async (data) => {
       try {
+        const newData = Object.assign({}, data);
+        const mediasID = newData.medias.map((item) => item.id);
         if (training) {
-          const payload = Object.assign({}, data);
+          const payload = newData;
+          payload.medias = mediasID;
           delete payload.id;
-          delete payload.programId;
+          // delete payload.programId;
           onUpdateTraining(payload, training.id);
           reset({ ...defaultValues });
         } else {
-          onCreateTraining(data);
-          reset({ ...defaultValues });
+          delete newData.medias;
+          const payload = {
+            trainig: newData,
+            medias: mediasID,
+          };
+          onCreateTraining(payload);
         }
       } catch (error) {
         console.error(error);
@@ -90,6 +108,36 @@ export default function TrainingForm({ handleCancel }) {
     },
     [setValue],
   );
+
+  const handleSaveMedias = (leftList) => {
+    setValue('medias', leftList);
+    orderMedias(leftList);
+    listMedias.onFalse();
+  };
+
+  const handleReorderMedias = (newMedias) => {
+    setValue('medias', newMedias);
+    orderMedias(newMedias);
+  };
+
+  const handleSaveExerciseInfo = (data) => {
+    const exerciseInfo = values.exerciseInfo;
+    const currentIndex = exerciseInfo.findIndex((item) => item.id === data.id);
+
+    const newExerciseInfo = [...values.exerciseInfo];
+
+    if (currentIndex === -1) {
+      newExerciseInfo.push(data);
+    } else {
+      newExerciseInfo[currentIndex] = data;
+    }
+    setValue('exerciseInfo', newExerciseInfo);
+  };
+
+  const orderMedias = (medias) => {
+    const mediasID = medias.map((item) => item.id);
+    setValue('mediaOrder', mediasID);
+  };
 
   const renderErros = (
     <>
@@ -182,7 +230,7 @@ export default function TrainingForm({ handleCancel }) {
                       />
                     )}
                   />
-                  <Stack mt={1}>
+                  <Stack mt={2}>
                     <Controller
                       name="trainingDateOther"
                       control={control}
@@ -210,10 +258,44 @@ export default function TrainingForm({ handleCancel }) {
                     />
                   </Stack>
                 </Stack>
-
-                <RHFTextField name="description" label="Descrição" multiline rows={6} />
+                <RHFTextField name="heating" label="Aquecimento" multiline rows={3} />
+                <RHFTextField name="description" label="Parte principal" multiline rows={6} />
+                <RHFTextField name="recovery" label="Desaquecimento" multiline rows={3} />
                 <Stack>
-                  <VideosForm />
+                  {values.medias.length > 0 && (
+                    <Box
+                      sx={{
+                        overflowY: 'auto',
+                        maxHeight: '40vh',
+                        display: 'flex',
+                        flexGrow: 1,
+                        flexDirection: 'column',
+                      }}
+                    >
+                      <Scrollbar>
+                        <MediasView
+                          medias={values.medias}
+                          handleReorderMedias={handleReorderMedias}
+                          mediaOrder={values.mediaOrder}
+                          handleSaveExerciseInfo={handleSaveExerciseInfo}
+                          exerciseInfo={values.exerciseInfo}
+                        />
+                      </Scrollbar>
+                    </Box>
+                  )}
+                  <Box pt={1}>
+                    <Button
+                      size="small"
+                      color="primary"
+                      startIcon={<Iconify icon="mingcute:add-line" />}
+                      sx={{ flexShrink: 0 }}
+                      onClick={listMedias.onTrue}
+                    >
+                      {values.medias.length > 0
+                        ? 'Editar Exercícios Selecionados'
+                        : 'Selecionar Exercícios'}
+                    </Button>
+                  </Box>
                 </Stack>
                 <Stack alignItems="flex-start" sx={{ mb: 1 }}>
                   <FormControlLabel
@@ -244,6 +326,14 @@ export default function TrainingForm({ handleCancel }) {
           </FormProvider>
         </Grid>
       </Grid>
+      {listMedias?.value && (
+        <SelectMedia
+          open={listMedias.value}
+          onClose={listMedias.onFalse}
+          onSelectMedias={handleSaveMedias}
+          mediasSelected={values.medias}
+        />
+      )}
     </>
   );
 }

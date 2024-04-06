@@ -12,12 +12,11 @@ import useFinishedTraining from 'src/hooks/use-finished-training';
 
 import ReviewForm from './review-form';
 import TrainingDetails from './training-details';
-export default function Review({ currentTrainingId, handleCloseForm }) {
+export default function Review({ currentTrainingId, handleCloseForm, type }) {
   const { onTrainingReview, trainingReviewStatus, trainingReview } = useFinishedTraining();
-
   useEffect(() => {
     if (currentTrainingId) {
-      onTrainingReview(currentTrainingId);
+      onTrainingReview(currentTrainingId, type);
     }
   }, [currentTrainingId]);
 
@@ -53,7 +52,11 @@ export default function Review({ currentTrainingId, handleCloseForm }) {
             </Button>
           </Box>
           <Stack>
-            <TrainingDetails training={trainingReview} />
+            <TrainingDetails
+              training={trainingReview?.training}
+              finished={trainingReview?.finished}
+              program={trainingReview?.program}
+            />
           </Stack>
         </Stack>
       )}
@@ -92,7 +95,7 @@ export default function Review({ currentTrainingId, handleCloseForm }) {
         )}
         {!trainingReviewStatus.loading && trainingReview && (
           <Stack>
-            <ReviewForm training={trainingReview} handleCloseForm={handleCloseForm} />
+            <ReviewForm trainingReview={trainingReview} handleCloseForm={handleCloseForm} />
           </Stack>
         )}
       </Stack>

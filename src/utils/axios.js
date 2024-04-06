@@ -44,6 +44,7 @@ export const API_ENDPOINTS = {
   finishedtraining: {
     listByReview: '/api/v2/finishedtraining/review',
     trainingReview: '/api/v2/finishedtraining/review/training',
+    trainingReviewId: '/api/v2/finishedtraining/review/trainingId',
     update: '/api/v2/finishedtraining/update',
     allDone: '/api/v2/finishedtraining/review/done',
   },
@@ -62,11 +63,16 @@ export const API_ENDPOINTS = {
   },
   training: {
     list: '/api/v2/training/program',
-    details: '/api/v2/training',
+    trainings: '/api/v2/training/trainings',
+    details: '/api/v2/training/new',
+    update: '/api/v2/training/update',
     register: '/api/v2/training',
+    create: '/api/v2/training/newCreate',
     send: '/api/v2/training/sendTraining',
-    delete: '/api/v2/training',
+    sendNew: '/api/v2/training/sendTrainingNew',
+    delete: '/api/v2/training/delete',
     clone: '/api/v2/training/clone',
+    clonewithmedias: '/api/v2/training/clonewithmedias',
   },
   payment: {
     list: '/api/v2/payment',

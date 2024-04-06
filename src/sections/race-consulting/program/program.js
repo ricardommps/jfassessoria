@@ -59,7 +59,7 @@ export default function Program({ isMobile = false }) {
     hideProgramStatus,
   } = useProgram();
 
-  const { onShowTraining, onListTrainings, onClearTrainings } = useTraining();
+  const { onShowTraining, onTrainingsList, onClearTrainings } = useTraining();
   const popover = usePopover();
 
   const [newProduct, setNewProduct] = useState(false);
@@ -134,7 +134,7 @@ export default function Program({ isMobile = false }) {
     if (id) {
       onProgramById(id);
       onShowTraining(true);
-      onListTrainings(id);
+      onTrainingsList(id);
     }
   };
 
@@ -151,6 +151,7 @@ export default function Program({ isMobile = false }) {
   const handleCloseProgram = () => {
     onClearPrograms();
     handleClear();
+    onListCustomersReview();
   };
 
   const handleClear = () => {

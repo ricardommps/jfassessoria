@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import {
-  callCloneTraining,
+  callCloneTrainingNew,
   callShowTraining,
   clearTraining,
   clearTrainings,
@@ -8,6 +8,7 @@ import {
   deleteTrainingReq,
   getTrainingById,
   getTrainings,
+  listTrainings,
   sendTraining,
   updateTraining,
 } from 'src/redux/slices/training';
@@ -36,6 +37,13 @@ export default function useTraining() {
     [dispatch],
   );
 
+  const onTrainingsList = useCallback(
+    (programId) => {
+      dispatch(listTrainings(programId));
+    },
+    [dispatch],
+  );
+
   const onCreateTraining = useCallback(
     (newTraining) => {
       dispatch(createTraining(newTraining));
@@ -44,8 +52,8 @@ export default function useTraining() {
   );
 
   const onCloneTraining = useCallback(
-    (newTraining) => {
-      dispatch(callCloneTraining(newTraining));
+    (trainingId, qntCopy) => {
+      dispatch(callCloneTrainingNew(trainingId, qntCopy));
     },
     [dispatch],
   );
@@ -117,5 +125,6 @@ export default function useTraining() {
     onDeleteTraining,
     deleteTraining,
     deleteTrainingStatus,
+    onTrainingsList,
   };
 }

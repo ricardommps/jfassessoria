@@ -209,11 +209,23 @@ export function getTrainings(programId) {
   };
 }
 
+export function listTrainings(programId) {
+  return async (dispatch) => {
+    dispatch(slice.actions.getTrainingsStart());
+    try {
+      const response = await axios.get(`${API_ENDPOINTS.training.trainings}/${programId}`);
+      dispatch(slice.actions.getTrainingsSuccess(response.data));
+    } catch (error) {
+      dispatch(slice.actions.getTrainingsFailure(error));
+    }
+  };
+}
+
 export function getTrainingById(trainingId) {
   return async (dispatch) => {
     dispatch(slice.actions.getTrainingStart());
     try {
-      const response = await axios.get(`${API_ENDPOINTS.training.register}/${trainingId}`);
+      const response = await axios.get(`${API_ENDPOINTS.training.details}/${trainingId}`);
       dispatch(slice.actions.getTrainingSuccess(response.data));
     } catch (error) {
       console.error(error);
@@ -227,7 +239,7 @@ export function createTraining(trainingData) {
     try {
       dispatch(slice.actions.createTrainingStart());
       const data = { ...trainingData };
-      const response = await axios.post(API_ENDPOINTS.training.register, data);
+      const response = await axios.post(API_ENDPOINTS.training.create, data);
       dispatch(slice.actions.createTrainingSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.createTrainingFailure(error));
@@ -241,7 +253,7 @@ export function updateTraining(trainingUpadate, trainingId) {
     try {
       const dataUpdate = { ...trainingUpadate };
       const response = await axios.put(
-        `${API_ENDPOINTS.training.register}/${trainingId}`,
+        `${API_ENDPOINTS.training.update}/${trainingId}`,
         dataUpdate,
       );
       dispatch(slice.actions.updateTrainingSuccess(response.data));
@@ -274,7 +286,22 @@ export function callCloneTraining(trainingData) {
     dispatch(slice.actions.cloneTrainingStart());
     try {
       const data = { ...trainingData };
-      const response = await axios.post(API_ENDPOINTS.training.clone, data);
+      const response = await axios.post(API_ENDPOINTS.training.clonewithmedias, data);
+      dispatch(slice.actions.cloneTrainingStartSuccess(response.data));
+    } catch (error) {
+      console.error(error);
+      dispatch(slice.actions.cloneTrainingStartFailure(error));
+    }
+  };
+}
+
+export function callCloneTrainingNew(trainingId, qntCopy) {
+  return async (dispatch) => {
+    dispatch(slice.actions.cloneTrainingStart());
+    try {
+      const response = await axios.get(
+        `${API_ENDPOINTS.training.clonewithmedias}/${trainingId}?qntCopy=${qntCopy}`,
+      );
       dispatch(slice.actions.cloneTrainingStartSuccess(response.data));
     } catch (error) {
       console.error(error);
@@ -288,7 +315,7 @@ export function sendTraining(sendPayload) {
     dispatch(slice.actions.sendTrainingStart());
     try {
       const data = { ...sendPayload };
-      const response = await axios.post(API_ENDPOINTS.training.send, data);
+      const response = await axios.post(API_ENDPOINTS.training.sendNew, data);
       dispatch(slice.actions.sendTrainingSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.sendTrainingFailure(error));

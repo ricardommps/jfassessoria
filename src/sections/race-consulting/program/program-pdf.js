@@ -192,11 +192,16 @@ const useStyles = () =>
           fontSize: 14,
           fontFamily: 'Roboto',
         },
+        column: {
+          display: 'flex',
+          flexDirection: 'column',
+          paddingBottom: 10,
+        },
       }),
     [],
   );
 
-export default function ProgramPdf({ program, notificationPdf, currentExtrapolation }) {
+export default function ProgramPdf({ program, currentExtrapolation }) {
   const styles = useStyles();
   function isOdd(num) {
     return num % 2;
@@ -257,6 +262,22 @@ export default function ProgramPdf({ program, notificationPdf, currentExtrapolat
       </View>
     );
   };
+
+  const renderExerciseInfo = (exerciseInfo, media) => {
+    const exerciseInfoById = exerciseInfo?.filter((item) => item.id === media.id)[0];
+    if (exerciseInfoById) {
+      return (
+        <View style={styles.column}>
+          {exerciseInfoById.reps && <Text>Range de repetuções: {exerciseInfoById.reps}</Text>}
+          {exerciseInfoById.reset && (
+            <Text>Intervalo de recuperação: {exerciseInfoById.reset}</Text>
+          )}
+          {exerciseInfoById.rir && <Text>Repetições reserva: {exerciseInfoById.rir}</Text>}
+        </View>
+      );
+    }
+    return null;
+  };
   const trainings = [...program.trainings].sort(sortFunction);
   return (
     <Document>
@@ -307,7 +328,7 @@ export default function ProgramPdf({ program, notificationPdf, currentExtrapolat
           <View style={styles.tableRowB}>
             <Text style={styles.tableHeadingA}>Data</Text>
             <Text style={styles.tableHeadingC}>Módulo</Text>
-            <Text style={styles.tableHeadingB}>Descriçao</Text>
+            <Text style={styles.tableHeadingB}>Exercícios</Text>
           </View>
 
           {trainings.length > 0 &&
@@ -326,16 +347,51 @@ export default function ProgramPdf({ program, notificationPdf, currentExtrapolat
                 </View>
                 <View style={styles.serviceAmount}>
                   <Text>{getModuleName(item.name)}</Text>
+                  {item.subtitle && <Text>{item.subtitle}</Text>}
                 </View>
                 <View style={styles.serviceDescription}>
-                  <Text>{item.description}</Text>
+                  {item.heating && (
+                    <View style={{ paddingBottom: 10 }}>
+                      <Text style={{ fontWeight: 'bold', fontSize: 14, fontFamily: 'Roboto' }}>
+                        Aquecimento
+                      </Text>
+                      <Text>{item.heating}</Text>
+                    </View>
+                  )}
+
+                  <View>
+                    {(item.description?.length > 0 || item.medias.length > 0) && (
+                      <Text style={{ fontWeight: 'bold', fontSize: 14, fontFamily: 'Roboto' }}>
+                        Parte principal
+                      </Text>
+                    )}
+                    {item.description?.length > 0 && (
+                      <Text style={{ paddingBottom: 10 }}>{item.description}</Text>
+                    )}
+                    {item.medias.length > 0 && (
+                      <>
+                        {item.medias.map((media, index) => (
+                          <View key={index}>
+                            <Text>{media.title}</Text>
+                            {renderExerciseInfo(item.exerciseInfo, media)}
+                          </View>
+                        ))}
+                      </>
+                    )}
+                  </View>
+                  {item.recovery && (
+                    <View style={{ paddingBottom: 10 }}>
+                      <Text style={{ fontWeight: 'bold', fontSize: 14, fontFamily: 'Roboto' }}>
+                        Desaquecimento
+                      </Text>
+                      <Text>{item.recovery}</Text>
+                    </View>
+                  )}
                 </View>
               </View>
             ))}
         </View>
         <View style={styles.footer}>
-          {notificationPdf && <Text>{notificationPdf}</Text>}
-
           <Text>Dúvidas? &bull; (49)99805-8840</Text>
         </View>
       </Page>

@@ -9,7 +9,7 @@ import { useTablePvContext } from 'src/components/drawer-table-pv';
 import useFinishedTraining from 'src/hooks/use-finished-training';
 
 import FeedBackForm from './feedback-form';
-export default function ReviewForm({ training, handleCloseForm }) {
+export default function ReviewForm({ trainingReview, handleCloseForm }) {
   const tablePv = useTablePvContext();
   const { updateFinishedTraining } = useFinishedTraining();
   const renderUnrealized = (
@@ -43,7 +43,7 @@ export default function ReviewForm({ training, handleCloseForm }) {
   }, [updateFinishedTraining]);
   return (
     <>
-      {training?.unrealized && <> {renderUnrealized}</>}
+      {trainingReview?.finished?.unrealized && <> {renderUnrealized}</>}
 
       <Stack>
         <Typography sx={{ fontSize: 'smaller', color: '#777', marginBottom: 2 }}>
@@ -65,9 +65,9 @@ export default function ReviewForm({ training, handleCloseForm }) {
                 </Typography>
               </Stack>
               <FeedBackForm
-                training={training}
-                finishedTrainingId={training.finishedid}
-                trainingname={training.trainingname}
+                trainingReview={trainingReview}
+                finishedTrainingId={trainingReview.finished.id}
+                trainingname={trainingReview.training.name}
                 handleCloseForm={handleCloseForm}
               />
             </Box>

@@ -1,6 +1,7 @@
 import Badge from '@mui/material/Badge';
 import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
+import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import ListItemText from '@mui/material/ListItemText';
 import Paper from '@mui/material/Paper';
@@ -10,39 +11,25 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { useCallback, useState } from 'react';
 import Iconify from 'src/components/iconify/iconify';
+import Scrollbar from 'src/components/scrollbar';
 import TextMaxLine from 'src/components/text-max-line/text-max-line';
 import { getModuleName } from 'src/utils/training-modules';
 
 import FinishedForm from './finished-form';
-export default function TrainingDetails({ training }) {
+import MediasList from './media-list';
+export default function TrainingDetails({ training, finished, program }) {
   const theme = useTheme();
   const [editForm, showEditForm] = useState(false);
 
   const handleEditForm = useCallback(() => {
     showEditForm((prev) => !prev);
   }, []);
-  const renderDescription = (
-    <TextField
-      variant="standard"
-      id="description"
-      label="Descrição"
-      multiline
-      rows={5}
-      disabled
-      value={training?.tariningdesc}
-      sx={{
-        '& .MuiInputBase-input.Mui-disabled': {
-          WebkitTextFillColor: theme.palette.text.primary,
-        },
-      }}
-    />
-  );
 
   const renderLink = (
     <TextMaxLine
       asLink
       target="_blank"
-      href={training?.link}
+      href={finished?.link}
       color="primary"
       sx={{ maxWidth: 200 }}
     >
@@ -51,7 +38,7 @@ export default function TrainingDetails({ training }) {
   );
 
   const renderIntensities = () => {
-    const intensities = training.intensities.map((intensities) => JSON.parse(intensities));
+    const intensities = finished.intensities.map((intensities) => JSON.parse(intensities));
     const intensitiesValues = intensities.map((intensities) => {
       if (intensities.value) {
         return intensities.value;
@@ -64,7 +51,7 @@ export default function TrainingDetails({ training }) {
         {noEmptyValues.map((item, index) => (
           <Badge badgeContent={index + 1} color="info" key={`intensities-badge-key-${index}`}>
             <Chip
-              label={`${item} ${training.unitmeasurement === 'pace' ? 'min' : 'km/h'}`}
+              label={`${item} ${finished.unitmeasurement === 'pace' ? 'min' : 'km/h'}`}
               key={`intensities-key-${index}`}
               sx={{ width: '100px' }}
             />
@@ -96,35 +83,98 @@ export default function TrainingDetails({ training }) {
       <Stack spacing={0.5}>
         <Typography variant="h6">Detalhes do treino</Typography>
       </Stack>
-      <Stack spacing={2}>
+      <Stack spacing={1}>
         <Typography variant="subtitle1" component="div">
-          {`Móludo: ${getModuleName(training?.trainingname)}`}
+          {getModuleName(training?.name)}
         </Typography>
-        {renderDescription}
-      </Stack>
-      <Stack direction="row" alignItems="center" sx={{ mb: 1 }}>
-        <Typography variant="h6" sx={{ flexGrow: 1 }}>
-          Informações do aluno
-        </Typography>
-        {(training?.trainingname !== 'FORCA' || training?.unrealized) && (
-          <IconButton
-            onClick={handleEditForm}
-            disabled={editForm}
-            color={'primary'}
-            sx={{
-              '&.Mui-disabled': {
-                color: theme.palette.text.disabled,
-              },
-            }}
-          >
-            <Iconify icon="solar:pen-bold" />
-          </IconButton>
+        {training?.subtitle && (
+          <Typography variant="subtitle2" component="div">
+            {training?.subtitle}
+          </Typography>
         )}
       </Stack>
+      {training?.heating && (
+        <>
+          <Divider sx={{ borderStyle: 'dashed' }} />
+          <Stack maxHeight={'20vh'}>
+            <Typography align="center" fontWeight={'bold'} variant="h5">
+              Aquecimento
+            </Typography>
+            <Scrollbar>
+              <Typography sx={{ whiteSpace: 'pre-line' }}>{training?.heating}</Typography>
+            </Scrollbar>
+          </Stack>
+        </>
+      )}
+      {(training?.description || training?.medias.length > 0) && (
+        <>
+          <Divider sx={{ borderStyle: 'dashed' }} />
+          <Typography align="center" fontWeight={'bold'} variant="h5">
+            {!program.type || program.type === 1 ? 'Descrição' : 'Parte principal'}
+          </Typography>
+
+          {training?.description && (
+            <Stack maxHeight={'20vh'}>
+              <Scrollbar>
+                <Typography sx={{ whiteSpace: 'pre-line' }}>{training?.description}</Typography>
+              </Scrollbar>
+            </Stack>
+          )}
+
+          {training?.medias && training?.medias.length > 0 && (
+            <Box pt={2}>
+              <Stack pt={2}>
+                <MediasList
+                  mediaOrder={training?.mediaOrder}
+                  medias={training?.medias}
+                  exerciseInfo={training?.exerciseInfo}
+                />
+              </Stack>
+            </Box>
+          )}
+          {training?.recovery && (
+            <>
+              <Divider sx={{ borderStyle: 'dashed' }} />
+              <Stack maxHeight={'20vh'}>
+                <Typography align="center" fontWeight={'bold'} variant="h5">
+                  Desaquecimento
+                </Typography>
+                <Scrollbar>
+                  <Typography sx={{ whiteSpace: 'pre-line' }} pt={1}>
+                    {training?.recovery}
+                  </Typography>
+                </Scrollbar>
+              </Stack>
+            </>
+          )}
+        </>
+      )}
+      {(!program?.type || program?.type === 1) && (
+        <Stack direction="row" alignItems="center" sx={{ mb: 1 }}>
+          <Typography variant="h6" sx={{ flexGrow: 1 }}>
+            Informações do aluno
+          </Typography>
+          {(training?.name !== 'FORCA' || training?.unrealized) && (
+            <IconButton
+              onClick={handleEditForm}
+              disabled={editForm}
+              color={'primary'}
+              sx={{
+                '&.Mui-disabled': {
+                  color: theme.palette.text.disabled,
+                },
+              }}
+            >
+              <Iconify icon="solar:pen-bold" />
+            </IconButton>
+          )}
+        </Stack>
+      )}
+
       <Stack>
-        {training?.typetraining && (
+        {finished?.typetraining && (
           <Typography variant="subtitle1" sx={{ flexGrow: 1 }} color={theme.palette.warning.light}>
-            Treino {training?.typetraining}
+            Treino {finished?.typetraining}
           </Typography>
         )}
 
@@ -135,25 +185,25 @@ export default function TrainingDetails({ training }) {
             multiline
             rows={6}
             disabled
-            value={training?.comments || ''}
+            value={finished?.comments || ''}
           />
         </Stack>
 
-        {training?.intensities?.length > 0 && (
+        {finished?.intensities?.length > 0 && (
           <Stack pt={2}>
             <Typography variant="body2" sx={{ flexGrow: 1 }} color={'text.primary'}>
-              Intensidade dos esforços({training?.unitmeasurement})
+              Intensidade dos esforços({finished?.unitmeasurement})
             </Typography>
             {renderIntensities()}
           </Stack>
         )}
-        {(training?.trainingname !== 'FORCA' || training?.unrealized) && (
+        {(training?.name !== 'FORCA' || finished?.unrealized) && (
           <>
             {!editForm && (
               <Stack spacing={1.5} direction="column" pt={2}>
                 <ListItemText
-                  primary={`Distância em metros: ${Number(training?.distance)}`}
-                  secondary={`${Number(training?.distance) / 1000} km`}
+                  primary={`Distância em metros: ${Number(finished?.distance)}`}
+                  secondary={`${Number(finished?.distance) / 1000} km`}
                   primaryTypographyProps={{
                     typography: 'body2',
                     color: 'text.primary',
@@ -166,8 +216,8 @@ export default function TrainingDetails({ training }) {
                   }}
                 />
                 <ListItemText
-                  primary={`Tempo total em minutos: ${Number(training?.duration)}`}
-                  secondary={toHoursAndMinutes(Number(training?.duration))}
+                  primary={`Tempo total em minutos: ${Number(finished?.duration)}`}
+                  secondary={toHoursAndMinutes(Number(finished?.duration))}
                   primaryTypographyProps={{
                     typography: 'body2',
                     color: 'text.primary',
@@ -179,9 +229,9 @@ export default function TrainingDetails({ training }) {
                     component: 'span',
                   }}
                 />
-                {training?.pace && (
+                {finished?.pace && (
                   <ListItemText
-                    primary={`Pace médio da sessão: ${training?.pace}`}
+                    primary={`Pace médio da sessão: ${finished?.pace}`}
                     primaryTypographyProps={{
                       typography: 'body2',
                       color: 'text.primary',
@@ -195,7 +245,7 @@ export default function TrainingDetails({ training }) {
                   />
                 )}
                 <ListItemText
-                  primary={`RPE: ${training?.rpe}`}
+                  primary={`RPE: ${finished?.rpe}`}
                   primaryTypographyProps={{
                     typography: 'body2',
                     color: 'text.primary',
@@ -208,7 +258,7 @@ export default function TrainingDetails({ training }) {
                   }}
                 />
                 <ListItemText
-                  primary={`Trimp: ${training?.trimp}`}
+                  primary={`Trimp: ${finished?.trimp}`}
                   primaryTypographyProps={{
                     typography: 'body2',
                     color: 'text.primary',
@@ -220,7 +270,7 @@ export default function TrainingDetails({ training }) {
                     component: 'span',
                   }}
                 />
-                {training?.link && (
+                {finished?.link && (
                   <ListItemText
                     primary={renderLink}
                     primaryTypographyProps={{
@@ -238,7 +288,13 @@ export default function TrainingDetails({ training }) {
               </Stack>
             )}
             {editForm && (
-              <FinishedForm training={training} editForm={editForm} onCancel={handleEditForm} />
+              <FinishedForm
+                training={training}
+                finished={finished}
+                program={program}
+                editForm={editForm}
+                onCancel={handleEditForm}
+              />
             )}
           </>
         )}

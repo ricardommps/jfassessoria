@@ -17,13 +17,15 @@ import FormProvider, { RHFTextField } from 'src/components/hook-form';
 import Image from 'src/components/image';
 import useMedia from 'src/hooks/use-media';
 import { useResponsive } from 'src/hooks/use-responsive';
+import { RouterLink } from 'src/routes/components';
+import { paths } from 'src/routes/paths';
 import * as Yup from 'yup';
 
 function getId(url) {
   let regex = /(youtu.*be.*)\/(watch\?v=|embed\/|v|shorts|)(.*?((?=[&#?])|$))/gm;
   return regex.exec(url)[3];
 }
-export default function MediaNewEditForm() {
+export default function MediaNewEditForm({ currentMedia }) {
   const mdUp = useResponsive('up', 'md');
   const { onCreateMedia } = useMedia();
   const NewMediaSchema = Yup.object().shape({
@@ -32,11 +34,11 @@ export default function MediaNewEditForm() {
   });
   const defaultValues = useMemo(
     () => ({
-      title: '',
-      thumbnail: null,
-      videoUrl: '',
-      instrucctions: null,
-      blocked: false,
+      title: currentMedia?.title || '',
+      thumbnail: currentMedia?.thumbnail || null,
+      videoUrl: currentMedia?.videoUrl || '',
+      instrucctions: currentMedia?.instrucctions || null,
+      blocked: currentMedia?.blocked || false,
     }),
     [],
   );
@@ -45,11 +47,10 @@ export default function MediaNewEditForm() {
     defaultValues,
   });
   const {
-    reset,
     watch,
     setValue,
     handleSubmit,
-    formState: { isSubmitting, isValid },
+    formState: { isSubmitting },
   } = methods;
 
   const values = watch();
@@ -86,7 +87,13 @@ export default function MediaNewEditForm() {
           sx={{ flexGrow: 1, pl: 3 }}
         />
 
-        <Button color="inherit" variant="outlined" size="large">
+        <Button
+          component={RouterLink}
+          href={paths.dashboard.medias.root}
+          variant="outlined"
+          color="inherit"
+          size="large"
+        >
           Cancelar
         </Button>
 
@@ -108,7 +115,7 @@ export default function MediaNewEditForm() {
       {mdUp && (
         <Grid md={4}>
           <Typography variant="h6" sx={{ mb: 0.5 }}>
-            Media
+            Mídia
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }}>
             Título *, Thumbnail, Url do vídeo(Youtube) * , instruções

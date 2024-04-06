@@ -15,7 +15,7 @@ import FormProvider from 'src/components/hook-form/form-provider';
 import useFinishedTraining from 'src/hooks/use-finished-training';
 import * as Yup from 'yup';
 
-export default function FinishedForm({ training, editForm, onCancel }) {
+export default function FinishedForm({ training, finished, editForm, onCancel }) {
   const { onUpdateFinishedTraining, updateFinishedTrainingStatus } = useFinishedTraining();
 
   const NewTrainingSchema = Yup.object().shape({
@@ -27,13 +27,13 @@ export default function FinishedForm({ training, editForm, onCancel }) {
 
   const defaultValues = useMemo(
     () => ({
-      distance: Math.trunc(Number(training?.distance)) || null,
-      duration: Math.trunc(Number(training?.duration)) || null,
-      rpe: training?.rpe || null,
-      trimp: training?.trimp || null,
-      link: training?.link || null,
-      trainingId: training?.trainingid || null,
-      id: training?.finishedid || null,
+      distance: Math.trunc(Number(finished?.distance)) || null,
+      duration: Math.trunc(Number(finished?.duration)) || null,
+      rpe: finished?.rpe || null,
+      trimp: finished?.trimp || null,
+      link: finished?.link || null,
+      trainingId: training?.id || null,
+      id: finished?.id || null,
     }),
     [],
   );
@@ -88,12 +88,12 @@ export default function FinishedForm({ training, editForm, onCancel }) {
 
   const handleCancel = () => {
     onCancel();
-    reset(training);
+    reset();
   };
 
   const handleOpenLink = () => {
-    if (training.link.length > 0) {
-      window.open(training.link, '_blank', 'noreferrer');
+    if (finished.link.length > 0) {
+      window.open(finished.link, '_blank', 'noreferrer');
     }
   };
   return (
