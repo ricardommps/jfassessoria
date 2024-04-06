@@ -2,6 +2,7 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import NearMeIcon from '@mui/icons-material/NearMe';
+import ReviewsIcon from '@mui/icons-material/Reviews';
 import { Stack } from '@mui/material';
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
@@ -18,11 +19,14 @@ import { ConfirmDialog } from 'src/components/confirm-dialog';
 import { usePopover } from 'src/components/custom-popover';
 import CustomPopover from 'src/components/custom-popover/custom-popover';
 import Iconify from 'src/components/iconify/iconify';
+import Label from 'src/components/label';
 import { useBoolean } from 'src/hooks/use-boolean';
 import useTraining from 'src/hooks/use-training';
+import { useRouter } from 'src/routes/hook';
 import { getModuleName } from 'src/utils/training-modules';
 
 import { BootstrapInput } from '../program/styles';
+import FeedBack from './feedback';
 import {
   BasecColumnAction,
   BasecInfoColumn1,
@@ -34,14 +38,16 @@ import {
 export default function TrainingItem({
   training,
   onTrainingById,
-  programId,
   onCloneTraining,
   onSendTrainig,
   onDeleteTraining,
   sendTrainingStatus,
+  refreshList,
 }) {
+  const router = useRouter();
   const popover = usePopover();
   const confirm = useBoolean();
+  const feedBack = useBoolean();
   const deleteTraining = useBoolean();
 
   const { cloneTraining } = useTraining();
@@ -49,31 +55,23 @@ export default function TrainingItem({
   const [trainingName, setTrainingName] = useState('');
   const [qntCopy, setQntCopy] = useState(1);
 
-  const addDefaultSrc = (ev) => {
-    ev.target.src = 'https://supertreinosapp.com/img/TREINO-BANNER-PADRAO.jpg';
-  };
-
   const handleChangeTrainingName = (event) => {
     setTrainingName(event.target.value);
   };
 
   const handleCloneTraining = () => {
     confirm.onFalse();
-    const payload = {
-      training: Object.assign({}, training),
-      qnt: qntCopy,
-    };
-    delete payload.training.id;
-    payload.training.datePublished = null;
-    payload.training.published = false;
-    payload.training.programId = programId;
-    payload.training.finished = false;
-    onCloneTraining(payload);
+    onCloneTraining(training.id, qntCopy);
   };
 
   const handleCloseDeleteTraining = () => {
     deleteTraining.onFalse();
     setTrainingName(null);
+  };
+
+  const handleCloseFeedBack = () => {
+    feedBack.onFalse();
+    refreshList();
   };
 
   useEffect(() => {
@@ -82,29 +80,54 @@ export default function TrainingItem({
     }
   }, [cloneTraining]);
 
+  const statusTrainingColor = () => {
+    if (training.finished) {
+      return '#FFAB00 !important';
+    }
+
+    if (training.published) {
+      return '#00b826 !important';
+    }
+
+    if (training.published === false) {
+      return '#f44336 !important';
+    }
+    return 'transparent !important';
+  };
+
   return (
     <>
       <Stack key={training.id}>
-        <ListItem published={training.published}>
-          <img
-            onError={addDefaultSrc}
-            src={training?.cover_url || 'https://supertreinosapp.com/img/TREINO-BANNER-PADRAO.jpg'}
-          />
+        <ListItem statusColor={statusTrainingColor()}>
           <BasecInfoColumn1>
-            <Stack direction="row">
+            <Stack direction="column">
+              {training?.finished && !training?.finished_review && (
+                <Stack
+                  direction="row"
+                  alignItems="center"
+                  justifyContent="space-between"
+                  sx={{ p: 1 }}
+                >
+                  <Label variant="soft" color="info">
+                    Aguardando FeedBack
+                  </Label>
+                </Stack>
+              )}
+
               <BasecInfoTitle>{getModuleName(training.name)} </BasecInfoTitle>
+              <BasecInfoSubTitle>{training.subtitle}</BasecInfoSubTitle>
             </Stack>
 
             <BasecInfoSubTitle>{training.description}</BasecInfoSubTitle>
             <BasecInfoSubTitle bold>
               {' '}
-              {training.datePublished &&
-                format(new Date(training.datePublished), 'dd/MM/yyyy', { locale: ptBR })}
+              {training.date_published &&
+                format(new Date(training.date_published), 'dd/MM/yyyy', { locale: ptBR })}
               {training.trainingDateOther && (
                 <>
                   {' ou '}
-                  {training.trainingDateOther &&
-                    format(new Date(training.trainingDateOther), 'dd/MM/yyyy', { locale: ptBR })}
+                  {training.training_date_other &&
+                    format(new Date(training.training_date_other), 'dd/MM/yyyy', { locale: ptBR })}
                 </>
               )}
             </BasecInfoSubTitle>
@@ -158,6 +181,18 @@ export default function TrainingItem({
           <NearMeIcon sx={{ fontSize: '22px', width: '22px', height: '30px' }} />
           Enviar
         </MenuItem>
+
+        {training.finished && (
+          <MenuItem
+            onClick={(e) => {
+              feedBack.onTrue();
+              popover.onClose();
+            }}
+          >
+            <ReviewsIcon sx={{ fontSize: '22px', width: '22px', height: '30px' }} />
+            FeedBack
+          </MenuItem>
+        )}
 
         <MenuItem
           onClick={() => {
@@ -242,6 +277,14 @@ export default function TrainingItem({
           </Button>
         }
       />
+      {feedBack.value && (
+        <FeedBack
+          open={feedBack.value}
+          onClose={handleCloseFeedBack}
+          trainingId={training.id}
+          type="training"
+        />
+      )}
     </>
   );
 }

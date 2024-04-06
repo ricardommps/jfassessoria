@@ -207,7 +207,7 @@ export default function CustomerForm({ handleCloseNewCustomer, isMobile = false 
           </Typography>
         </Stack>
 
-        <Stack spacing={2} sx={{ width: !isMobile ? '25vw' : '84vw', py: 1, height: '60vh' }}>
+        <Stack spacing={3} sx={{ width: !isMobile ? '25vw' : '84vw', py: 1, height: '60vh' }}>
           <Scrollbar>
             {customerStatus?.loading && (
               <Box
@@ -234,6 +234,7 @@ export default function CustomerForm({ handleCloseNewCustomer, isMobile = false 
                     variant="standard"
                     type="email"
                     onChange={handleChangeEmail}
+                    sx={{ mt: 2 }}
                   />
                   <Stack mt={2}>
                     <RHFSwitch

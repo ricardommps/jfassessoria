@@ -14,7 +14,7 @@ import * as Yup from 'yup';
 
 import PacesForm from './paces-form';
 export default function FeedBackForm({
-  training,
+  trainingReview,
   finishedTrainingId,
   trainingname,
   handleCloseForm,
@@ -35,9 +35,9 @@ export default function FeedBackForm({
   };
   const defaultValues = useMemo(
     () => ({
-      descriptionFeedback: training?.descriptionfeedback || null,
-      paces: formatedPace(training?.paces) || null,
-      finishedTrainingId: training?.finishedTrainingId || finishedTrainingId,
+      descriptionFeedback: trainingReview?.feedback?.descriptionFeedback || null,
+      paces: formatedPace(trainingReview?.finished?.paces) || null,
+      finishedTrainingId: trainingReview?.finished?.id || finishedTrainingId,
     }),
     [],
   );
@@ -50,7 +50,6 @@ export default function FeedBackForm({
   const {
     handleSubmit,
     formState: { isSubmitting, errors },
-    ßßß,
   } = methods;
 
   const onSubmit = useCallback(async (data) => {
@@ -77,10 +76,10 @@ export default function FeedBackForm({
       } else {
         delete payload.paces;
       }
-      if (!training.feedbackid) {
+      if (!trainingReview?.feedback?.id) {
         onFeedbackSave(payload);
       } else {
-        payload.id = training.feedbackid;
+        payload.id = trainingReview?.feedback?.id;
         onFeedbackUpdate(payload);
       }
     } catch (err) {

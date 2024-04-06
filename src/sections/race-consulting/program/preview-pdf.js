@@ -11,7 +11,7 @@ import useProgram from 'src/hooks/use-program';
 import { extrapolation } from 'src/utils/extrapolation';
 
 import ProgramPdf from './program-pdf';
-export default function PreviewPdf({ open, onClose, programId, notificationPdf }) {
+export default function PreviewPdf({ open, onClose, programId }) {
   const { viewPdfStatus, viewPdf, onViewPdf } = useProgram();
   useEffect(() => {
     onViewPdf(programId);
@@ -58,11 +58,7 @@ export default function PreviewPdf({ open, onClose, programId, notificationPdf }
           )}
           {viewPdf && !viewPdfStatus.loading && pdfReady && (
             <PDFViewer width="100%" height="100%" style={{ border: 'none' }}>
-              <ProgramPdf
-                program={viewPdf}
-                notificationPdf={notificationPdf}
-                currentExtrapolation={currentExtrapolation}
-              />
+              <ProgramPdf program={viewPdf} currentExtrapolation={currentExtrapolation} />
             </PDFViewer>
           )}
         </Box>

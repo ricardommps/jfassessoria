@@ -25,9 +25,9 @@ export const ActionsHeader = styled('div')(() => ({
   },
 }));
 
-export const ListItem = styled('div')(({ published }) => ({
+export const ListItem = styled('div')(({ statusColor }) => ({
   borderLeft: '5px solid !important',
-  borderLeftColor: published ? '#00b826 !important' : '#f44336 !important',
+  borderLeftColor: statusColor,
   backgroundColor: alpha('#333', 0.3),
   padding: 0,
   position: 'relative',
@@ -45,7 +45,6 @@ export const ListItem = styled('div')(({ published }) => ({
   '& img': {
     float: 'left',
     width: '106px',
-    height: '60px',
     borderRadius: '4px',
   },
 }));

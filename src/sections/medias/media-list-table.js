@@ -12,6 +12,7 @@ import {
   TableEmptyRows,
   TableHeadCustom,
   TableNoData,
+  TablePaginationCustom,
   TableSelectedAction,
 } from 'src/components/table';
 
@@ -24,23 +25,22 @@ const TABLE_HEAD = [
   { id: '', width: 88 },
 ];
 
-export default function MediaListTable({ table, tableData, dataFiltered, notFound }) {
+export default function MediaListTable({
+  table,
+  tableData,
+  dataFiltered,
+  notFound,
+  handleEditRow,
+}) {
   const theme = useTheme();
   const {
     dense,
     page,
-    order,
-    orderBy,
     rowsPerPage,
     //
     selected,
-    onSelectRow,
     onSelectAllRows,
     //
-    onSort,
-    onChangeDense,
-    onChangePage,
-    onChangeRowsPerPage,
   } = table;
 
   const denseHeight = dense ? 58 : 78;
@@ -123,7 +123,7 @@ export default function MediaListTable({ table, tableData, dataFiltered, notFoun
               {dataFiltered
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row) => (
-                  <MediaTableRow key={row.id} row={row} />
+                  <MediaTableRow key={row.id} row={row} handleEditRow={handleEditRow} />
                 ))}
 
               <TableEmptyRows
@@ -142,6 +142,15 @@ export default function MediaListTable({ table, tableData, dataFiltered, notFoun
             </TableBody>
           </Table>
         </TableContainer>
+        <TablePaginationCustom
+          count={dataFiltered.length}
+          page={table.page}
+          rowsPerPage={table.rowsPerPage}
+          onPageChange={table.onChangePage}
+          onRowsPerPageChange={table.onChangeRowsPerPage}
+          //
+          dense={table.dense}
+        />
       </Box>
     </>
   );

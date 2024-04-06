@@ -28,8 +28,8 @@ export default function useFinishedTraining() {
   );
 
   const onTrainingReview = useCallback(
-    (id) => {
-      dispatch(getTrainingReview(id));
+    (id, type) => {
+      dispatch(getTrainingReview(id, type));
     },
     [dispatch],
   );

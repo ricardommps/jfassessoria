@@ -1,21 +1,17 @@
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import NearMeIcon from '@mui/icons-material/NearMe';
 import PrintIcon from '@mui/icons-material/Print';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import Alert from '@mui/material/Alert';
-import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import FormControl from '@mui/material/FormControl';
 import IconButton from '@mui/material/IconButton';
 import MenuItem from '@mui/material/MenuItem';
 import Stack from '@mui/material/Stack';
-import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import format from 'date-fns/format';
 import { ptBR } from 'date-fns/locale';
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import { ConfirmDialog } from 'src/components/confirm-dialog';
 import { usePopover } from 'src/components/custom-popover';
 import CustomPopover from 'src/components/custom-popover/custom-popover';
@@ -32,9 +28,8 @@ import {
   BasecInfoTitle,
   BaseHeader,
   Beginner,
-  BootstrapInput,
   Intermediary,
-  ListItem,
+  ListItem
 } from './styles';
 
 export default function ProgramItem({
@@ -42,22 +37,15 @@ export default function ProgramItem({
   onCloneProgram,
   onSelectedProgram,
   onSendProgram,
-  onDeleteProgram,
   cloneProgramStatus,
   sendProgramStatus,
   onHideProgram,
 }) {
   const confirm = useBoolean();
   const view = useBoolean();
-  const notification = useBoolean();
-  const deleteProgram = useBoolean();
   const hideProgram = useBoolean();
 
   const popover = usePopover();
-
-  const [notificationPdf, setNotificationPdf] = useState(null);
-
-  const [programName, setProgramName] = useState('');
 
   const loadingAction = cloneProgramStatus.loading || sendProgramStatus.loading;
 
@@ -91,44 +79,6 @@ export default function ProgramItem({
     );
   };
 
-  const handleChangeProgramName = (event) => {
-    setProgramName(event.target.value);
-  };
-
-  const handleOpenNotification = (e) => {
-    e.stopPropagation();
-    notification.onTrue();
-  };
-
-  const handleNotificationPdf = (event) => {
-    setNotificationPdf(event.target.value);
-  };
-
-  const handleConfirmNotification = () => {
-    view.onTrue();
-    notification.onFalse();
-  };
-
-  const notificationContent = () => {
-    return (
-      <Stack>
-        <Typography>
-          Caso deseje exibir uma notificação no rodapé do pdf, digite no campo abaixo
-        </Typography>
-        <TextField
-          autoFocus
-          margin="dense"
-          id="name"
-          label="Notificação"
-          fullWidth
-          multiline
-          rows={4}
-          onChange={handleNotificationPdf}
-        />
-      </Stack>
-    );
-  };
-
   const handleCloneProgram = useCallback(async () => {
     try {
       const payload = Object.assign({}, program);
@@ -152,11 +102,6 @@ export default function ProgramItem({
       console.error(error);
     }
   }, []);
-
-  const handleCloseDeleteProgram = () => {
-    deleteProgram.onFalse();
-    setProgramName(null);
-  };
 
   return (
     <>
@@ -227,8 +172,8 @@ export default function ProgramItem({
         </MenuItem>
         {program.trainings.length > 0 && program.trainings.some((it) => it.published) && (
           <MenuItem
-            onClick={(e) => {
-              handleOpenNotification(e);
+            onClick={() => {
+              view.onTrue();
               popover.onClose();
             }}
           >
@@ -246,17 +191,6 @@ export default function ProgramItem({
         >
           <VisibilityOffIcon sx={{ fontSize: '22px', width: '22px', height: '30px' }} />
           Arquivar
-        </MenuItem>
-
-        <MenuItem
-          onClick={() => {
-            deleteProgram.onTrue();
-            popover.onClose();
-          }}
-          sx={{ color: 'error.main' }}
-        >
-          <DeleteIcon sx={{ fontSize: '22px', width: '22px', height: '30px' }} />
-          Deletar
         </MenuItem>
       </CustomPopover>
       <ConfirmDialog
@@ -310,66 +244,7 @@ export default function ProgramItem({
           </Button>
         }
       />
-
-      <ConfirmDialog
-        open={deleteProgram.value}
-        onClose={handleCloseDeleteProgram}
-        title={`DELERAR ${program.name}`}
-        content={
-          <>
-            <Typography>
-              Este programa será excluído definitivamente, juntamente com todos os seus treinos.
-            </Typography>
-            <Alert variant="filled" severity="error" sx={{ margin: '15px 0' }}>
-              Aviso: esta ação não é reversível. Por favor, tenha certeza.
-            </Alert>
-            <FormControl variant="standard" sx={{ width: '100%' }}>
-              <Typography>
-                Digite o nome do programa{' '}
-                <Box component="span" fontWeight="bold" color="#FF5630">
-                  {program.name}
-                </Box>{' '}
-                para continuar:
-              </Typography>
-              <BootstrapInput onChange={handleChangeProgramName} />
-            </FormControl>
-          </>
-        }
-        action={
-          <Button
-            variant="contained"
-            color="error"
-            onClick={() => {
-              setProgramName(null);
-              onDeleteProgram(program.id);
-              deleteProgram.onFalse();
-            }}
-            disabled={program.name.trim() !== programName?.trim()}
-          >
-            DELETAR
-          </Button>
-        }
-      />
-
-      <ConfirmDialog
-        open={notification.value}
-        onClose={notification.onFalse}
-        title={'Avisos'}
-        content={notificationContent()}
-        action={
-          <Button variant="contained" color="error" onClick={handleConfirmNotification}>
-            Salvar
-          </Button>
-        }
-      />
-      {view.value && (
-        <PreviewPdf
-          open={view.value}
-          onClose={view.onFalse}
-          programId={program.id}
-          notificationPdf={notificationPdf}
-        />
-      )}
+      {view.value && <PreviewPdf open={view.value} onClose={view.onFalse} programId={program.id} />}
     </>
   );
 }

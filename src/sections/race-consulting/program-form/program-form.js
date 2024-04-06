@@ -13,6 +13,7 @@ import Typography from '@mui/material/Typography';
 import PropTypes from 'prop-types';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import ExertionZone from 'src/components/exertion-zone/exertion-zone';
 import { RHFSelect, RHFTextField } from 'src/components/hook-form';
 import FormProvider from 'src/components/hook-form/form-provider';
 import Iconify from 'src/components/iconify/iconify';
@@ -57,6 +58,7 @@ export default function ProgramForm({ handleClear, typeProgram }) {
 
   const { customer } = useCustomer();
   const openTable = useBoolean();
+  const exertionZone = useBoolean();
 
   const [currentExtrapolation, setCurrentExtrapolation] = useState(null);
   const [showEstrapolativeTable, setShowEstrapolativeTable] = useState(false);
@@ -111,7 +113,7 @@ export default function ProgramForm({ handleClear, typeProgram }) {
     watch,
     setValue,
     handleSubmit,
-    formState: { isSubmitting, errors },
+    formState: { errors },
   } = methods;
 
   const values = watch();
@@ -235,6 +237,9 @@ export default function ProgramForm({ handleClear, typeProgram }) {
       getExtrapolationByPv();
     }
   }, [values.pv]);
+
+  const exertionZoneVisible =
+    values.pv && values.vla && values.paceVla && values.vlan && values.paceVlan && values.pace;
 
   return (
     <>
@@ -438,6 +443,15 @@ export default function ProgramForm({ handleClear, typeProgram }) {
               </IconButton>
             </Stack>
           )}
+
+          {exertionZoneVisible && (
+            <Stack spacing={1.5} direction="row" mt={3}>
+              <Typography>Zona de esforço</Typography>
+              <IconButton sx={{ padding: 0 }} onClick={exertionZone.onTrue}>
+                <Iconify icon="eva:info-outline" />
+              </IconButton>
+            </Stack>
+          )}
           <Stack pt={3}>
             <RHFTextField name="warningPdf" label="Aviso - PDF" multiline rows={6} />
           </Stack>
@@ -532,6 +546,18 @@ export default function ProgramForm({ handleClear, typeProgram }) {
           onClose={openTable.onFalse}
           actionType={actionType}
           handleTableSelected={handleTableSelected}
+        />
+      )}
+      {exertionZone.value && (
+        <ExertionZone
+          open={exertionZone.value}
+          onClose={exertionZone.onFalse}
+          pv={values.pv}
+          pace={values.pace}
+          vla={values.vla}
+          paceVla={values.paceVla}
+          vlan={values.vlan}
+          paceVlan={values.paceVlan}
         />
       )}
     </>

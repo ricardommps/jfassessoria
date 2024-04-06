@@ -1,9 +1,10 @@
 import Box from '@mui/material/Box';
-export default function MediaThumbnail() {
+
+export default function MediaThumbnail({ thumbnail }) {
   return (
     <Box
       component="img"
-      src={'http://img.youtube.com/vi/2glJKuLyRhE/0.jpg'}
+      src={thumbnail || 'https://supertreinosapp.com/img/TREINO-BANNER-PADRAO.jpg'}
       sx={{
         width: 120,
         height: 120,

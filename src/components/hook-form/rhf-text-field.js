@@ -30,6 +30,7 @@ export default function RHFTextField({ name, helperText, type, ...other }) {
           error={!!error}
           helperText={error ? error?.message : helperText}
           {...other}
+          variant="outlined"
         />
       )}
     />

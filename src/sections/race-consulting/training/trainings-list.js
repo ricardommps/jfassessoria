@@ -9,7 +9,7 @@ const defaultFilters = {
   name: '',
 };
 
-export default function TrainingsList({ programId, handleOpenSend, sendTrainingStatus }) {
+export default function TrainingsList({ handleOpenSend, sendTrainingStatus, refreshList }) {
   const { trainings, onTrainingById, onCloneTraining, onDeleteTraining } = useTraining();
   const [filters, setFilters] = useState(defaultFilters);
 
@@ -34,11 +34,11 @@ export default function TrainingsList({ programId, handleOpenSend, sendTrainingS
             key={training.id}
             training={training}
             onTrainingById={onTrainingById}
-            programId={programId}
             onCloneTraining={onCloneTraining}
             onSendTrainig={handleOpenSend}
             onDeleteTraining={onDeleteTraining}
             sendTrainingStatus={sendTrainingStatus}
+            refreshList={refreshList}
           />
         ))}
       </Grid>

@@ -231,16 +231,18 @@ export default function CustomerTableRow({
           <InsightsIcon sx={{ fontSize: '22px', width: '22px', height: '30px' }} />
           Métricas
         </MenuItem>
-        <MenuItem
-          onClick={() => {
-            deleteCustomer.onTrue();
-            popover.onClose();
-          }}
-          sx={{ color: 'error.main' }}
-        >
-          <DeleteIcon sx={{ fontSize: '22px', width: '22px', height: '30px' }} />
-          Deletar
-        </MenuItem>
+        {false && (
+          <MenuItem
+            onClick={() => {
+              deleteCustomer.onTrue();
+              popover.onClose();
+            }}
+            sx={{ color: 'error.main' }}
+          >
+            <DeleteIcon sx={{ fontSize: '22px', width: '22px', height: '30px' }} />
+            Deletar
+          </MenuItem>
+        )}
       </CustomPopover>
       <ConfirmDialog
         open={deleteCustomer.value}

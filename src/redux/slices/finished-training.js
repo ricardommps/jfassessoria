@@ -163,11 +163,13 @@ export function getListByReview(customerId) {
   };
 }
 
-export function getTrainingReview(id) {
+export function getTrainingReview(id, type) {
   return async (dispatch) => {
     dispatch(slice.actions.getTrainingReviewStart());
     try {
-      const response = await axios.get(`${API_ENDPOINTS.finishedtraining.trainingReview}/${id}`);
+      let url = `${API_ENDPOINTS.finishedtraining.trainingReview}/${id}`;
+      if (type === 'training') url = `${API_ENDPOINTS.finishedtraining.trainingReviewId}/${id}`;
+      const response = await axios.get(url);
       dispatch(slice.actions.getTrainingReviewSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.getTrainingReviewFailure(error));
