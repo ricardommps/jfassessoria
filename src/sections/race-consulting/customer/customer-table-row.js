@@ -7,6 +7,7 @@ import PlaylistAddCheckCircleIcon from '@mui/icons-material/PlaylistAddCheckCirc
 import ReviewsIcon from '@mui/icons-material/Reviews';
 import VpnKeyIcon from '@mui/icons-material/VpnKey';
 import Alert from '@mui/material/Alert';
+import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Chip from '@mui/material/Chip';
@@ -26,7 +27,6 @@ import CustomPopover, { usePopover } from 'src/components/custom-popover';
 import Iconify from 'src/components/iconify';
 import SvgColor from 'src/components/svg-color/svg-color';
 import { useBoolean } from 'src/hooks/use-boolean';
-import { useRouter } from 'src/routes/hook';
 
 export default function CustomerTableRow({
   row,
@@ -42,7 +42,6 @@ export default function CustomerTableRow({
   handleOpenChangePassword,
 }) {
   const theme = useTheme();
-  const router = useRouter();
   const popover = usePopover();
   const deleteCustomer = useBoolean();
 
@@ -102,6 +101,7 @@ export default function CustomerTableRow({
         </TableCell>
 
         <TableCell sx={{ display: 'flex', alignItems: 'center', padding: '23px' }}>
+          <Avatar alt={row.name} src={row.avatar ? row.avatar : row.name} sx={{ mr: 2 }} />
           <ListItemText
             primary={row.name}
             secondary={row.email}
