@@ -66,6 +66,12 @@ export function useNavData() {
             path: paths.dashboard.medias.root,
             icon: ICONS.file,
           },
+          {
+            title: 'Avaliações',
+            titleMini: 'Avaliações',
+            path: paths.dashboard.rating.root,
+            icon: ICONS.label,
+          },
         ],
       },
     ],
