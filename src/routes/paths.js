@@ -39,5 +39,8 @@ export const paths = {
     feedBack: {
       root: (id) => `${ROOTS.DASHBOARD}/feedback/${id}`,
     },
+    rating: {
+      root: `${ROOTS.DASHBOARD}/rating`,
+    },
   },
 };

@@ -8,6 +8,7 @@ import mediasReducer from './slices/medias';
 import metricsReducer from './slices/metrics';
 import paymentReducer from './slices/payment';
 import programReducer from './slices/program';
+import ratingReducer from './slices/rating';
 import trainingReducer from './slices/training';
 import userReducer from './slices/user';
 
@@ -45,4 +46,5 @@ export const rootReducer = combineReducers({
   feedbackTraining: feedbackTrainingReducer,
   metrics: metricsReducer,
   medias: mediasReducer,
+  rating: ratingReducer,
 });

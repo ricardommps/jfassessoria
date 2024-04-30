@@ -95,4 +95,7 @@ export const API_ENDPOINTS = {
     details: '/api/product/details',
     search: '/api/product/search',
   },
+  rating: {
+    root: '/api/v2/rating',
+  },
 };
