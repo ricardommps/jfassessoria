@@ -9,6 +9,7 @@ import { useCallback, useEffect, useState } from 'react';
 import Iconify from 'src/components/iconify/iconify';
 import Scrollbar from 'src/components/scrollbar/scrollbar';
 import { useSettingsContext } from 'src/components/settings';
+import useAnamnese from 'src/hooks/use-anamnese';
 import { useBoolean } from 'src/hooks/use-boolean';
 import useCustomer from 'src/hooks/use-customer';
 import useProgram from 'src/hooks/use-program';
@@ -16,6 +17,7 @@ import useTraining from 'src/hooks/use-training';
 import { useRouter } from 'src/routes/hook';
 import { paths } from 'src/routes/paths';
 
+import { AnamneseView } from '../../anamnese-view/anamnese-view';
 import Payment from '../../payment/payment';
 import { TrainingReview } from '../../training-review/training-review';
 import { CustomersList } from './customer-list';
@@ -30,6 +32,9 @@ export default function CustomerDesktop({
   const settings = useSettingsContext();
   const openPayment = useBoolean();
   const openReview = useBoolean();
+  const openAnamnese = useBoolean();
+
+  const { onClearAnamnese } = useAnamnese();
 
   const {
     onCustomerById,
@@ -49,6 +54,7 @@ export default function CustomerDesktop({
   } = useProgram();
   const { onShowTraining, onClearTrainings } = useTraining();
   const [customerSelected, setCustomerSelected] = useState(null);
+  const [anamneseSelected, setAnamneseSelected] = useState(null);
   const [customerReview, setCustomerReview] = useState(null);
   const [actionType, setActionType] = useState(null);
 
@@ -62,6 +68,17 @@ export default function CustomerDesktop({
   const handleOpenAllDone = (customerId) => {
     setCustomerReview(customerId);
     setActionType('done');
+  };
+
+  const handleOpenAnamnese = (customerId) => {
+    setAnamneseSelected(customerId);
+  };
+
+  const handleCloseAnamnese = () => {
+    setAnamneseSelected(false);
+    onClearAnamnese();
+    openAnamnese.onFalse();
+    onListCustomersReview();
   };
 
   const handleCloseReview = () => {
@@ -159,6 +176,11 @@ export default function CustomerDesktop({
     }
   }, [customerReview]);
 
+  useEffect(() => {
+    if (anamneseSelected) {
+      openAnamnese.onTrue();
+    }
+  }, [anamneseSelected]);
   const getWidth = () => {
     if (customerForm || programs || openArchived) {
       if (isNavMini) {
@@ -216,6 +238,7 @@ export default function CustomerDesktop({
                   handleOpenAllDone={handleOpenAllDone}
                   handleOpenMetrics={handleOpenMetrics}
                   handleOpenChangePassword={handleOpenChangePassword}
+                  handleOpenAnamnese={handleOpenAnamnese}
                 />
               </Card>
             </Scrollbar>
@@ -235,6 +258,13 @@ export default function CustomerDesktop({
           onClose={handleCloseReview}
           customerId={customerReview}
           actionType={actionType}
+        />
+      )}
+      {openAnamnese.value && (
+        <AnamneseView
+          open={openAnamnese.value}
+          onClose={handleCloseAnamnese}
+          customerId={anamneseSelected}
         />
       )}
     </>

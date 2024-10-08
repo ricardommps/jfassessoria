@@ -20,6 +20,9 @@ export const API_ENDPOINTS = {
   user: {
     changePassword: '/api/v2/user',
   },
+  anamnese: {
+    byCustomer: '/api/v2/anamnese',
+  },
   auth: {
     me: '/api/v2/user/me',
     login: '/api/v2/auth',

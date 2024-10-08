@@ -40,6 +40,7 @@ export default function CustomerTableRow({
   handleOpenAllDone,
   handleOpenMetrics,
   handleOpenChangePassword,
+  handleOpenAnamnese,
 }) {
   const theme = useTheme();
   const popover = usePopover();
@@ -98,6 +99,17 @@ export default function CustomerTableRow({
       <TableRow hover selected={selected}>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>
           <Chip label={row.active ? 'Ativo' : 'Inativo'} color={row.active ? 'primary' : 'error'} />
+        </TableCell>
+
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>
+          {row.hasanamneses && (
+            <IconButton onClick={() => handleOpenAnamnese(row.id)}>
+              <SvgColor
+                src="/assets/icons/custom/healthIcon.svg"
+                sx={{ color: row.anamnesisread ? 'success.main' : 'warning.main' }}
+              />
+            </IconButton>
+          )}
         </TableCell>
 
         <TableCell sx={{ display: 'flex', alignItems: 'center', padding: '23px' }}>

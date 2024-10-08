@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux';
 import createWebStorage from 'redux-persist/lib/storage/createWebStorage';
 
+import anamneseReducer from './slices/anamnese';
 import customerReducer from './slices/customers';
 import feedbackTrainingReducer from './slices/feedback-training';
 import finishedTrainingReducer from './slices/finished-training';
@@ -47,4 +48,5 @@ export const rootReducer = combineReducers({
   metrics: metricsReducer,
   medias: mediasReducer,
   rating: ratingReducer,
+  anamnese: anamneseReducer,
 });
