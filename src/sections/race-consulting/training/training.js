@@ -201,7 +201,7 @@ export default function Training() {
         {program && (
           <Stack>
             <Stack p={2}>
-              <Typography variant="h3">Treinamentos</Typography>
+              <Typography variant="h3">Treinos</Typography>
               {(!program.type || program.type === 1) && (
                 <Accordion>
                   <AccordionSummary

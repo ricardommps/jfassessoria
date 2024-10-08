@@ -23,6 +23,7 @@ import CustomerTableToolbar from '../customer-table-toolbar';
 
 const TABLE_HEAD = [
   { id: 'active', label: 'Status', width: 80 },
+  { id: 'hasanamneses', label: 'Anamnese', width: 30 },
   { id: 'name', label: 'Name' },
   { id: 'dueDate', label: 'Próximo vencimento', width: 320 },
   { id: 'expiresDate', label: 'Expiração', width: 320 },
@@ -46,6 +47,7 @@ export function CustomersList({
   handleOpenAllDone,
   handleOpenMetrics,
   handleOpenChangePassword,
+  handleOpenAnamnese,
 }) {
   const table = useTable();
 
@@ -123,6 +125,7 @@ export function CustomersList({
                   handleOpenAllDone={handleOpenAllDone}
                   handleOpenMetrics={handleOpenMetrics}
                   handleOpenChangePassword={handleOpenChangePassword}
+                  handleOpenAnamnese={handleOpenAnamnese}
                 />
               ))}
 
