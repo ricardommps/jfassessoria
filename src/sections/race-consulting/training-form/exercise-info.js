@@ -12,10 +12,17 @@ import { useForm } from 'react-hook-form';
 import { RHFTextField } from 'src/components/hook-form';
 import FormProvider from 'src/components/hook-form/form-provider';
 import * as Yup from 'yup';
-export default function ExerciseInfo({ open, onClose, title, id, onSave, exerciseInfoById }) {
+export default function ExerciseInfo({
+  open,
+  onClose,
+  title,
+  id,
+  onSave,
+  hideRir,
+  exerciseInfoById,
+}) {
   const exerciseInfoSchema = Yup.object().shape({
     reps: Yup.string().required('Campo obrigatório'),
-    reset: Yup.string().required('Campo obrigatório'),
   });
 
   const defaultValues = useMemo(
@@ -70,7 +77,9 @@ export default function ExerciseInfo({ open, onClose, title, id, onSave, exercis
                   variant="standard"
                   type={'number'}
                 />
-                <RHFTextField name="rir" label="Repetições de reserva" variant="standard" />
+                {!hideRir && (
+                  <RHFTextField name="rir" label="Repetições de reserva" variant="standard" />
+                )}
               </Box>
             </>
           </>

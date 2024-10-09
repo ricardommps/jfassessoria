@@ -14,14 +14,23 @@ const defaultFilters = {
   title: '',
 };
 
-export default function SelectMedia({ open, onClose, onSelectMedias, mediasSelected, ...other }) {
+export default function SelectMedia({
+  open,
+  onClose,
+  onSelectMedias,
+  mediasSelected,
+  isStretches,
+  ...other
+}) {
   const { onGetListMedias, medias } = useMedia();
 
   const [left, setLeft] = useState([]);
 
   const [right, setRight] = useState([]);
 
-  const [mediasFiltered, setMediasFiltered] = useState(null);
+  const [mediasFiltered, setMediasFiltered] = useState([]);
+
+  const [newMedias, setNewMedias] = useState([]);
 
   const [filters, setFilters] = useState(defaultFilters);
   const dataFiltered = applyFilter({
@@ -31,7 +40,7 @@ export default function SelectMedia({ open, onClose, onSelectMedias, mediasSelec
 
   const initialize = useCallback(async () => {
     try {
-      onGetListMedias();
+      onGetListMedias(isStretches);
     } catch (error) {
       console.error(error);
     }
@@ -42,12 +51,25 @@ export default function SelectMedia({ open, onClose, onSelectMedias, mediasSelec
   }, [initialize]);
 
   useEffect(() => {
-    const mediasID = mediasSelected.map((item) => item.id);
-    const selected = medias.filter((item) => mediasID.includes(item.id));
-    const removed = removeItems(medias, mediasID);
-    setLeft(selected);
-    setMediasFiltered(removed);
+    if (medias) {
+      if (!isStretches) {
+        const filtered = medias?.filter((item) => !item.tags.includes('Alongamentos'));
+        setNewMedias(filtered);
+      } else {
+        setNewMedias(medias);
+      }
+    }
   }, [medias]);
+
+  useEffect(() => {
+    if (newMedias) {
+      const mediasID = mediasSelected.map((item) => item.id);
+      const selected = newMedias.filter((item) => mediasID.includes(item.id));
+      const removed = removeItems(newMedias, mediasID);
+      setLeft(selected);
+      setMediasFiltered(removed);
+    }
+  }, [newMedias]);
 
   return (
     <Dialog open={open} {...other} maxWidth={'lg'}>
@@ -58,7 +80,7 @@ export default function SelectMedia({ open, onClose, onSelectMedias, mediasSelec
           </Stack>
         </Stack>
       </DialogTitle>
-      {medias && (
+      {newMedias && (
         <TransferList
           medias={mediasFiltered}
           left={left}

@@ -27,12 +27,14 @@ import { trainingModules } from 'src/utils/training-modules';
 import * as Yup from 'yup';
 
 import MediasView from './medias-view';
+import StretchesView from './stretches-view';
 
 export default function TrainingForm({ handleCancel }) {
   const tablePv = useTablePvContext();
   const { training, onUpdateTraining, onCreateTraining } = useTraining();
   const { program } = useProgram();
   const listMedias = useBoolean();
+  const isStretches = useBoolean();
 
   const NewTrainingSchema = Yup.object().shape({
     name: Yup.string().required('Titulo obrigatório'),
@@ -54,6 +56,7 @@ export default function TrainingForm({ handleCancel }) {
       finished: training?.finished || false,
       medias: training?.medias || [],
       mediaOrder: training?.mediaOrder || [],
+      stretchesOrder: training?.stretchesOrder || [],
       exerciseInfo: training?.exerciseInfo || [],
     }),
     [],
@@ -110,14 +113,26 @@ export default function TrainingForm({ handleCancel }) {
   );
 
   const handleSaveMedias = (leftList) => {
-    setValue('medias', leftList);
+    const newMedias = [...values.medias, ...leftList];
+    setValue('medias', newMedias);
     orderMedias(leftList);
     listMedias.onFalse();
   };
 
+  const handleSaveStretches = (leftList) => {
+    setValue('medias', leftList);
+    orderStretches(leftList);
+    isStretches.onFalse();
+  };
+
   const handleReorderMedias = (newMedias) => {
-    setValue('medias', newMedias);
+    //setValue('medias', newMedias);
     orderMedias(newMedias);
+  };
+
+  const handleReorderStretches = (itens) => {
+    //setValue('medias', itens);
+    orderStretches(filterStretches(itens));
   };
 
   const handleSaveExerciseInfo = (data) => {
@@ -135,8 +150,23 @@ export default function TrainingForm({ handleCancel }) {
   };
 
   const orderMedias = (medias) => {
-    const mediasID = medias.map((item) => item.id);
+    const newMedias = filterMedias(medias);
+    const mediasID = newMedias.map((item) => item.id);
     setValue('mediaOrder', mediasID);
+  };
+
+  const orderStretches = (stretches) => {
+    const newMedias = filterStretches(stretches);
+    const stretchesID = newMedias.map((item) => item.id);
+    setValue('stretchesOrder', stretchesID);
+  };
+
+  const filterMedias = (medias) => {
+    return medias?.filter((item) => !item.tags.includes('Alongamentos'));
+  };
+
+  const filterStretches = (medias) => {
+    return medias?.filter((item) => item.tags.includes('Alongamentos'));
   };
 
   const renderErros = (
@@ -259,10 +289,55 @@ export default function TrainingForm({ handleCancel }) {
                   </Stack>
                 </Stack>
                 <RHFTextField name="heating" label="Aquecimento" multiline rows={3} />
+                {(!program?.type || program?.type === 1) && (
+                  <Box
+                    component="fieldset"
+                    sx={{
+                      borderWidth: '2px',
+                      borderStyle: 'groove',
+                      borderColor: 'rgba(145, 158, 171, 0.2)',
+                      borderRadius: '8px',
+                    }}
+                  >
+                    <legend>
+                      <Typography fontSize={'12px'} color={'#919EAB'}>
+                        Alongamentos ativos e educativos de corrida
+                      </Typography>
+                    </legend>
+                    {filterStretches(values.medias).length > 0 && (
+                      <Box>
+                        <Scrollbar sx={{ height: 320 }}>
+                          <StretchesView
+                            medias={filterStretches(values.medias)}
+                            handleReorderMedias={handleReorderStretches}
+                            mediaOrder={values.stretchesOrder}
+                            handleSaveExerciseInfo={handleSaveExerciseInfo}
+                            exerciseInfo={values.exerciseInfo}
+                          />
+                        </Scrollbar>
+                      </Box>
+                    )}
+                    <Stack>
+                      <Button
+                        size="small"
+                        color="primary"
+                        startIcon={<Iconify icon="mingcute:add-line" />}
+                        sx={{ flexShrink: 0 }}
+                        onClick={() => {
+                          listMedias.onFalse();
+                          isStretches.onTrue();
+                        }}
+                      >
+                        Selecionar Alongamentos
+                      </Button>
+                    </Stack>
+                  </Box>
+                )}
+
                 <RHFTextField name="description" label="Parte principal" multiline rows={6} />
                 <RHFTextField name="recovery" label="Desaquecimento" multiline rows={3} />
                 <Stack>
-                  {values.medias.length > 0 && (
+                  {filterMedias(values.medias).length > 0 && (
                     <Box
                       sx={{
                         overflowY: 'auto',
@@ -274,7 +349,7 @@ export default function TrainingForm({ handleCancel }) {
                     >
                       <Scrollbar>
                         <MediasView
-                          medias={values.medias}
+                          medias={filterMedias(values.medias)}
                           handleReorderMedias={handleReorderMedias}
                           mediaOrder={values.mediaOrder}
                           handleSaveExerciseInfo={handleSaveExerciseInfo}
@@ -283,19 +358,24 @@ export default function TrainingForm({ handleCancel }) {
                       </Scrollbar>
                     </Box>
                   )}
-                  <Box pt={1}>
-                    <Button
-                      size="small"
-                      color="primary"
-                      startIcon={<Iconify icon="mingcute:add-line" />}
-                      sx={{ flexShrink: 0 }}
-                      onClick={listMedias.onTrue}
-                    >
-                      {values.medias.length > 0
-                        ? 'Editar Exercícios Selecionados'
-                        : 'Selecionar Exercícios'}
-                    </Button>
-                  </Box>
+                  {program?.type === 2 && (
+                    <Box pt={1}>
+                      <Button
+                        size="small"
+                        color="primary"
+                        startIcon={<Iconify icon="mingcute:add-line" />}
+                        sx={{ flexShrink: 0 }}
+                        onClick={() => {
+                          isStretches.onFalse();
+                          listMedias.onTrue();
+                        }}
+                      >
+                        {filterMedias(values.medias).length > 0
+                          ? 'Editar Exercícios Selecionados'
+                          : 'Selecionar Exercícios'}
+                      </Button>
+                    </Box>
+                  )}
                 </Stack>
                 <Stack alignItems="flex-start" sx={{ mb: 1 }}>
                   <FormControlLabel
@@ -331,7 +411,16 @@ export default function TrainingForm({ handleCancel }) {
           open={listMedias.value}
           onClose={listMedias.onFalse}
           onSelectMedias={handleSaveMedias}
-          mediasSelected={values.medias}
+          mediasSelected={filterMedias(values.medias)}
+        />
+      )}
+      {isStretches?.value && (
+        <SelectMedia
+          open={isStretches.value}
+          onClose={isStretches.onFalse}
+          onSelectMedias={handleSaveStretches}
+          mediasSelected={filterStretches(values.medias)}
+          isStretches={true}
         />
       )}
     </>

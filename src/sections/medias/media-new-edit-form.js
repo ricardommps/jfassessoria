@@ -1,12 +1,16 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import LoadingButton from '@mui/lab/LoadingButton';
+import Autocomplete from '@mui/material/Autocomplete';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
+import Chip from '@mui/material/Chip';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 import { alpha } from '@mui/material/styles';
 import Switch from '@mui/material/Switch';
+import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Unstable_Grid2';
 import { m } from 'framer-motion';
@@ -14,12 +18,16 @@ import { useCallback, useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { varFade } from 'src/components/animate';
 import FormProvider, { RHFTextField } from 'src/components/hook-form';
+import Iconify from 'src/components/iconify';
 import Image from 'src/components/image';
+import { useBoolean } from 'src/hooks/use-boolean';
 import useMedia from 'src/hooks/use-media';
 import { useResponsive } from 'src/hooks/use-responsive';
 import { RouterLink } from 'src/routes/components';
 import { paths } from 'src/routes/paths';
 import * as Yup from 'yup';
+
+export const _tags = ['Alongamentos', 'Aquecimentos'];
 
 function getId(url) {
   let regex = /(youtu.*be.*)\/(watch\?v=|embed\/|v|shorts|)(.*?((?=[&#?])|$))/gm;
@@ -28,6 +36,8 @@ function getId(url) {
 export default function MediaNewEditForm({ currentMedia }) {
   const mdUp = useResponsive('up', 'md');
   const { onCreateMedia } = useMedia();
+  const toggleTags = useBoolean(true);
+
   const NewMediaSchema = Yup.object().shape({
     title: Yup.string().required('Title obrigatório'),
     videoUrl: Yup.string().required('Url do vídeo obrigatória'),
@@ -39,6 +49,7 @@ export default function MediaNewEditForm({ currentMedia }) {
       videoUrl: currentMedia?.videoUrl || '',
       instrucctions: currentMedia?.instrucctions || null,
       blocked: currentMedia?.blocked || false,
+      tags: currentMedia?.tags || [],
     }),
     [],
   );
@@ -62,6 +73,10 @@ export default function MediaNewEditForm({ currentMedia }) {
     [setValue],
   );
 
+  const handleChangeTags = useCallback((newValue) => {
+    setValue('tags', newValue);
+  }, []);
+
   const onSubmit = useCallback(async (data) => {
     try {
       const payload = Object.assign({}, data);
@@ -70,6 +85,55 @@ export default function MediaNewEditForm({ currentMedia }) {
       console.error(error);
     }
   }, []);
+
+  const renderTags = (
+    <Stack spacing={1.5}>
+      <Stack
+        direction="row"
+        alignItems="center"
+        justifyContent="space-between"
+        sx={{ typography: 'subtitle2' }}
+      >
+        Tags
+        <IconButton size="small" onClick={toggleTags.onToggle}>
+          <Iconify
+            icon={toggleTags.value ? 'eva:arrow-ios-upward-fill' : 'eva:arrow-ios-downward-fill'}
+          />
+        </IconButton>
+      </Stack>
+
+      {toggleTags.value && (
+        <Autocomplete
+          multiple
+          freeSolo
+          options={_tags.map((option) => option)}
+          getOptionLabel={(option) => option}
+          defaultValue={_tags.slice(0, 3)}
+          value={values.tags}
+          onChange={(event, newValue) => {
+            handleChangeTags(newValue);
+          }}
+          renderOption={(props, option) => (
+            <li {...props} key={option}>
+              {option}
+            </li>
+          )}
+          renderTags={(value, getTagProps) =>
+            value.map((option, index) => (
+              <Chip
+                {...getTagProps({ index })}
+                size="small"
+                variant="soft"
+                label={option}
+                key={option}
+              />
+            ))
+          }
+          renderInput={(params) => <TextField {...params} placeholder="#Adicionar Tags" />}
+        />
+      )}
+    </Stack>
+  );
 
   const renderActions = (
     <>
@@ -145,12 +209,12 @@ export default function MediaNewEditForm({ currentMedia }) {
                 </m.div>
               )}
             </Stack>
+            {renderTags}
           </Stack>
         </Card>
       </Grid>
     </>
   );
-
   useEffect(() => {
     if (values.videoUrl) {
       const idVideo = getId(values.videoUrl);
