@@ -20,18 +20,15 @@ export default function SelectMedia({
   onSelectMedias,
   mediasSelected,
   isStretches,
+  mediaOrder, // Usamos mediaOrder para ordenar
   ...other
 }) {
   const { onGetListMedias, medias } = useMedia();
 
   const [left, setLeft] = useState([]);
-
   const [right, setRight] = useState([]);
-
   const [mediasFiltered, setMediasFiltered] = useState([]);
-
   const [newMedias, setNewMedias] = useState([]);
-
   const [filters, setFilters] = useState(defaultFilters);
   const dataFiltered = applyFilter({
     inputData: mediasFiltered,
@@ -44,7 +41,7 @@ export default function SelectMedia({
     } catch (error) {
       console.error(error);
     }
-  }, []);
+  }, [isStretches, onGetListMedias]);
 
   useEffect(() => {
     initialize();
@@ -59,17 +56,23 @@ export default function SelectMedia({
         setNewMedias(medias);
       }
     }
-  }, [medias]);
+  }, [medias, isStretches]);
 
   useEffect(() => {
     if (newMedias) {
       const mediasID = mediasSelected.map((item) => item.id);
       const selected = newMedias.filter((item) => mediasID.includes(item.id));
       const removed = removeItems(newMedias, mediasID);
-      setLeft(selected);
+
+      // Ordenar o left com base no mediaOrder
+      const orderedLeft = selected.sort(
+        (a, b) => mediaOrder.indexOf(a.id) - mediaOrder.indexOf(b.id),
+      );
+
+      setLeft(orderedLeft);
       setMediasFiltered(removed);
     }
-  }, [newMedias]);
+  }, [newMedias, mediasSelected, mediaOrder]);
 
   return (
     <Dialog open={open} {...other} maxWidth={'lg'}>

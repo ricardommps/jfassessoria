@@ -113,8 +113,7 @@ export default function TrainingForm({ handleCancel }) {
   );
 
   const handleSaveMedias = (leftList) => {
-    const newMedias = [...values.medias, ...leftList];
-    setValue('medias', newMedias);
+    setValue('medias', leftList);
     orderMedias(leftList);
     listMedias.onFalse();
   };
@@ -412,6 +411,7 @@ export default function TrainingForm({ handleCancel }) {
           onClose={listMedias.onFalse}
           onSelectMedias={handleSaveMedias}
           mediasSelected={filterMedias(values.medias)}
+          mediaOrder={values.mediaOrder}
         />
       )}
       {isStretches?.value && (
@@ -421,6 +421,7 @@ export default function TrainingForm({ handleCancel }) {
           onSelectMedias={handleSaveStretches}
           mediasSelected={filterStretches(values.medias)}
           isStretches={true}
+          mediaOrder={values.stretchesOrder}
         />
       )}
     </>
