@@ -1,5 +1,10 @@
 import { useCallback } from 'react';
-import { createMedia, getListMedias, getMediaById } from 'src/redux/slices/medias';
+import {
+  createMedia,
+  getListMedias,
+  getMediaById,
+  getMediasWithStretchTag,
+} from 'src/redux/slices/medias';
 import { useDispatch, useSelector } from 'src/redux/store';
 export default function useMedia() {
   const dispatch = useDispatch();
@@ -7,9 +12,16 @@ export default function useMedia() {
     (state) => state.medias,
   );
 
-  const onGetListMedias = useCallback(() => {
-    dispatch(getListMedias());
-  }, [dispatch]);
+  const onGetListMedias = useCallback(
+    (isStretches) => {
+      if (isStretches) {
+        dispatch(getMediasWithStretchTag());
+      } else {
+        dispatch(getListMedias());
+      }
+    },
+    [dispatch],
+  );
 
   const onCreateMedia = useCallback(
     (payload) => {

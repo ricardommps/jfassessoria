@@ -466,6 +466,18 @@ export function getListMedias() {
   };
 }
 
+export function getMediasWithStretchTag() {
+  return async (dispatch) => {
+    dispatch(slice.actions.getAllMediasStart());
+    try {
+      const response = await axios.get(`${API_ENDPOINTS.medias.root}/stretchTag`);
+      dispatch(slice.actions.getAllMediasSuccess(response.data));
+    } catch (error) {
+      dispatch(slice.actions.getAllMediasFailure(error));
+    }
+  };
+}
+
 export function createMedia(payload) {
   return async (dispatch) => {
     dispatch(slice.actions.createMediaStart());
