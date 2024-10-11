@@ -13,6 +13,11 @@ import { useCallback, useState } from 'react';
 import Iconify from 'src/components/iconify/iconify';
 import Scrollbar from 'src/components/scrollbar';
 import TextMaxLine from 'src/components/text-max-line/text-max-line';
+import {
+  convertMetersToKilometersFormat,
+  convertPaceToSpeed,
+  convertSecondsToHourMinuteFormat,
+} from 'src/utils/convertValues';
 import { getModuleName } from 'src/utils/training-modules';
 
 import FinishedForm from './finished-form';
@@ -66,6 +71,34 @@ export default function TrainingDetails({ training, finished, program }) {
 
     return `${hours}h${minutes > 0 ? ` ${minutes}m` : ''}`;
   }
+
+  const renderDistance = () => {
+    if (finished?.distance) {
+      return `${Number(finished?.distance) / 1000} km`;
+    }
+    if (finished?.distanceInMeters) {
+      return convertMetersToKilometersFormat(finished?.distanceInMeters);
+    }
+  };
+
+  const renderTotalTime = () => {
+    if (finished?.duration) {
+      return toHoursAndMinutes(Number(finished?.duration));
+    }
+    if (finished?.durationInSeconds) {
+      return convertSecondsToHourMinuteFormat(finished?.durationInSeconds);
+    }
+  };
+
+  const renderPace = () => {
+    if (finished?.pace.length > 0) {
+      return finished?.pace;
+    }
+    if (finished?.paceInSeconds) {
+      return convertPaceToSpeed(finished?.paceInSeconds);
+    }
+  };
+
   return (
     <Stack
       spacing={2}
@@ -202,8 +235,8 @@ export default function TrainingDetails({ training, finished, program }) {
             {!editForm && (
               <Stack spacing={1.5} direction="column" pt={2}>
                 <ListItemText
-                  primary={`Distância em metros: ${Number(finished?.distance)}`}
-                  secondary={`${Number(finished?.distance) / 1000} km`}
+                  primary={`Distância em metros`}
+                  secondary={renderDistance()}
                   primaryTypographyProps={{
                     typography: 'body2',
                     color: 'text.primary',
@@ -216,8 +249,8 @@ export default function TrainingDetails({ training, finished, program }) {
                   }}
                 />
                 <ListItemText
-                  primary={`Tempo total em minutos: ${Number(finished?.duration)}`}
-                  secondary={toHoursAndMinutes(Number(finished?.duration))}
+                  primary={`Tempo total`}
+                  secondary={renderTotalTime()}
                   primaryTypographyProps={{
                     typography: 'body2',
                     color: 'text.primary',
@@ -229,9 +262,10 @@ export default function TrainingDetails({ training, finished, program }) {
                     component: 'span',
                   }}
                 />
-                {finished?.pace && (
+                {(finished?.pace.length > 0 || finished?.paceInSeconds > 0) && (
                   <ListItemText
-                    primary={`Pace médio da sessão: ${finished?.pace}`}
+                    primary={`Pace médio da sessão`}
+                    secondary={renderPace()}
                     primaryTypographyProps={{
                       typography: 'body2',
                       color: 'text.primary',
@@ -245,7 +279,8 @@ export default function TrainingDetails({ training, finished, program }) {
                   />
                 )}
                 <ListItemText
-                  primary={`RPE: ${finished?.rpe}`}
+                  primary={`RPE`}
+                  secondary={finished?.rpe}
                   primaryTypographyProps={{
                     typography: 'body2',
                     color: 'text.primary',
@@ -258,7 +293,8 @@ export default function TrainingDetails({ training, finished, program }) {
                   }}
                 />
                 <ListItemText
-                  primary={`Trimp: ${finished?.trimp}`}
+                  primary={`Trimp`}
+                  secondary={finished?.trimp}
                   primaryTypographyProps={{
                     typography: 'body2',
                     color: 'text.primary',
