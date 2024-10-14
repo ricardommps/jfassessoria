@@ -23,6 +23,11 @@ export const API_ENDPOINTS = {
   anamnese: {
     byCustomer: '/api/v2/anamnese',
   },
+  notifications: {
+    root: '/api/v2/notification',
+    all: 'api/v2/notification/all',
+    readAt: 'api/v2/notification/readAt',
+  },
   auth: {
     me: '/api/v2/user/me',
     login: '/api/v2/auth',

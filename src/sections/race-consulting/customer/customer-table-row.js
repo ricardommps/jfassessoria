@@ -3,6 +3,7 @@ import AssignmentIcon from '@mui/icons-material/Assignment';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DeleteSweepIcon from '@mui/icons-material/DeleteSweep';
 import InsightsIcon from '@mui/icons-material/Insights';
+import NotificationsIcon from '@mui/icons-material/Notifications';
 import PlaylistAddCheckCircleIcon from '@mui/icons-material/PlaylistAddCheckCircle';
 import ReviewsIcon from '@mui/icons-material/Reviews';
 import VpnKeyIcon from '@mui/icons-material/VpnKey';
@@ -41,6 +42,7 @@ export default function CustomerTableRow({
   handleOpenMetrics,
   handleOpenChangePassword,
   handleOpenAnamnese,
+  handleOpenNotifications,
 }) {
   const theme = useTheme();
   const popover = usePopover();
@@ -185,6 +187,15 @@ export default function CustomerTableRow({
         >
           <VpnKeyIcon sx={{ mr: 1 }} />
           Gerar senha
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            handleOpenNotifications(row.id);
+            popover.onClose();
+          }}
+        >
+          <NotificationsIcon sx={{ fontSize: '22px', width: '22px', height: '30px' }} />
+          Notificações
         </MenuItem>
         {row.active && (
           <MenuItem

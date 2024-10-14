@@ -48,6 +48,7 @@ export function CustomersList({
   handleOpenMetrics,
   handleOpenChangePassword,
   handleOpenAnamnese,
+  handleOpenNotifications,
 }) {
   const table = useTable();
 
@@ -126,6 +127,7 @@ export function CustomersList({
                   handleOpenMetrics={handleOpenMetrics}
                   handleOpenChangePassword={handleOpenChangePassword}
                   handleOpenAnamnese={handleOpenAnamnese}
+                  handleOpenNotifications={handleOpenNotifications}
                 />
               ))}
 

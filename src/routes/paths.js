@@ -42,5 +42,10 @@ export const paths = {
     rating: {
       root: `${ROOTS.DASHBOARD}/rating`,
     },
+    notification: {
+      root: (id) => `${ROOTS.DASHBOARD}/notification/${id}`,
+      create: (id, notificationId) =>
+        `${ROOTS.DASHBOARD}/notification/${id}/create${notificationId ? `/${notificationId}` : ''}`,
+    },
   },
 };
