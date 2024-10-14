@@ -19,7 +19,8 @@ import { paths } from 'src/routes/paths';
 import MediaListTable from '../media-list-table';
 
 const defaultFilters = {
-  name: '',
+  title: '',
+  tags: [],
 };
 
 export default function MediaListView() {
@@ -56,6 +57,17 @@ export default function MediaListView() {
       router.push(paths.dashboard.medias.edit(id));
     },
     [router],
+  );
+
+  const handleFilters = useCallback(
+    (name, value) => {
+      table.onResetPage();
+      setFilters((prevState) => ({
+        ...prevState,
+        [name]: value,
+      }));
+    },
+    [table],
   );
 
   useEffect(() => {
@@ -121,6 +133,8 @@ export default function MediaListView() {
           dataFiltered={dataFiltered}
           notFound={notFound}
           handleEditRow={handleEditRow}
+          filters={filters}
+          handleFilters={handleFilters}
         />
       </Stack>
     </Container>
@@ -128,7 +142,7 @@ export default function MediaListView() {
 }
 
 function applyFilter({ inputData, comparator, filters }) {
-  const { name } = filters;
+  const { title, tags } = filters;
 
   const stabilizedThis = inputData.map((el, index) => [el, index]);
 
@@ -140,10 +154,14 @@ function applyFilter({ inputData, comparator, filters }) {
 
   inputData = stabilizedThis.map((el) => el[0]);
 
-  if (name) {
+  if (title) {
     inputData = inputData.filter(
-      (customer) => customer.name.toLowerCase().indexOf(name.toLowerCase()) !== -1,
+      (media) => media.title.toLowerCase().indexOf(title.toLowerCase()) !== -1,
     );
+  }
+
+  if (tags.length) {
+    inputData = inputData.filter((media) => tags.some((tag) => media.tags.includes(tag)));
   }
   return inputData;
 }

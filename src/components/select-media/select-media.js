@@ -12,6 +12,7 @@ import TransferList from './transfer-list';
 
 const defaultFilters = {
   title: '',
+  tags: [],
 };
 
 export default function SelectMedia({
@@ -20,7 +21,8 @@ export default function SelectMedia({
   onSelectMedias,
   mediasSelected,
   isStretches,
-  mediaOrder, // Usamos mediaOrder para ordenar
+  mediaOrder,
+  tags,
   ...other
 }) {
   const { onGetListMedias, medias } = useMedia();
@@ -33,6 +35,7 @@ export default function SelectMedia({
   const dataFiltered = applyFilter({
     inputData: mediasFiltered,
     filters,
+    tags: tags,
   });
 
   const initialize = useCallback(async () => {
@@ -50,7 +53,9 @@ export default function SelectMedia({
   useEffect(() => {
     if (medias) {
       if (!isStretches) {
-        const filtered = medias?.filter((item) => !item.tags.includes('Alongamentos'));
+        const filtered = medias?.filter(
+          (item) => !item.tags.includes('Alongamento ativo', 'Alongamento passivo', 'Alongamentos'),
+        );
         setNewMedias(filtered);
       } else {
         setNewMedias(medias);
@@ -85,7 +90,7 @@ export default function SelectMedia({
       </DialogTitle>
       {newMedias && (
         <TransferList
-          medias={mediasFiltered}
+          medias={dataFiltered}
           left={left}
           setLeft={setLeft}
           right={right}
@@ -107,13 +112,17 @@ export default function SelectMedia({
   );
 }
 
-function applyFilter({ inputData, filters }) {
+function applyFilter({ inputData, filters, tags }) {
   const { title } = filters;
 
   if (title) {
     inputData = inputData.filter(
       (program) => program.title.toLowerCase().indexOf(title.toLowerCase()) !== -1,
     );
+  }
+
+  if (tags?.length) {
+    inputData = inputData.filter((media) => tags.some((tag) => media.tags.includes(tag)));
   }
   return inputData;
 }

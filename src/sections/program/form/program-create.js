@@ -5,6 +5,7 @@ import { useState } from 'react';
 
 import ProgramCreateToolbar from './program-create-toolbar';
 import ProgramGymForm from './program-gym-form';
+import ProgramRunningForm from './program-running-form';
 export default function ProgramCreate({ customer }) {
   const [typeProgram, setTypeProgram] = useState(1);
   return (
@@ -19,6 +20,7 @@ export default function ProgramCreate({ customer }) {
               Novo programa de {typeProgram === 1 ? 'corrida' : 'força'}
             </Typography>
             <Typography variant="h6">{customer.name}</Typography>
+            {typeProgram === 1 && <ProgramRunningForm typeProgram={typeProgram} />}
             {typeProgram === 2 && <ProgramGymForm typeProgram={typeProgram} />}
           </Card>
         </Grid>
