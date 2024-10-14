@@ -1,4 +1,4 @@
-import Box from '@mui/material/Box';
+import Card from '@mui/material/Card';
 import IconButton from '@mui/material/IconButton';
 import { useTheme } from '@mui/material/styles';
 import Table from '@mui/material/Table';
@@ -17,11 +17,13 @@ import {
 } from 'src/components/table';
 
 import MediaTableRow from './media-table-row';
+import MediaTableToolbar from './media-table-toolbar';
 
 const TABLE_HEAD = [
   { id: 'title', label: 'Name', width: 300 },
   { id: 'instrucctions', label: 'Instruções' },
   { id: 'blocked', label: 'Status', width: 120 },
+  { id: 'tags', label: 'Tags', width: 120 },
   { id: '', width: 88 },
 ];
 
@@ -31,6 +33,8 @@ export default function MediaListTable({
   dataFiltered,
   notFound,
   handleEditRow,
+  filters,
+  handleFilters,
 }) {
   const theme = useTheme();
   const {
@@ -47,52 +51,48 @@ export default function MediaListTable({
 
   return (
     <>
-      <Box
-        sx={{
-          position: 'relative',
-          m: theme.spacing(-2, -3, -3, -3),
-        }}
-      >
-        <TableSelectedAction
-          dense={dense}
-          numSelected={selected.length}
-          rowCount={tableData.length}
-          onSelectAllRows={(checked) =>
-            onSelectAllRows(
-              checked,
-              tableData.map((row) => row.id),
-            )
-          }
-          action={
-            <>
-              <Tooltip title="Share">
-                <IconButton color="primary">
-                  <Iconify icon="solar:share-bold" />
-                </IconButton>
-              </Tooltip>
-
-              <Tooltip title="Delete">
-                <IconButton color="primary">
-                  <Iconify icon="solar:trash-bin-trash-bold" />
-                </IconButton>
-              </Tooltip>
-            </>
-          }
-          sx={{
-            pl: 1,
-            pr: 2,
-            top: 16,
-            left: 24,
-            right: 24,
-            width: 'auto',
-            borderRadius: 1.5,
-          }}
-        />
+      <Card>
+        <MediaTableToolbar filters={filters} onFilters={handleFilters} />
         <TableContainer
           sx={{
             p: theme.spacing(0, 3, 3, 3),
           }}
         >
+          <TableSelectedAction
+            dense={dense}
+            numSelected={selected.length}
+            rowCount={tableData.length}
+            onSelectAllRows={(checked) =>
+              onSelectAllRows(
+                checked,
+                tableData.map((row) => row.id),
+              )
+            }
+            action={
+              <>
+                <Tooltip title="Share">
+                  <IconButton color="primary">
+                    <Iconify icon="solar:share-bold" />
+                  </IconButton>
+                </Tooltip>
+
+                <Tooltip title="Delete">
+                  <IconButton color="primary">
+                    <Iconify icon="solar:trash-bin-trash-bold" />
+                  </IconButton>
+                </Tooltip>
+              </>
+            }
+            sx={{
+              pl: 1,
+              pr: 2,
+              top: 16,
+              left: 24,
+              right: 24,
+              width: 'auto',
+              borderRadius: 1.5,
+            }}
+          />
           <Table
             size={dense ? 'small' : 'medium'}
             sx={{
@@ -151,7 +151,7 @@ export default function MediaListTable({
           //
           dense={table.dense}
         />
-      </Box>
+      </Card>
     </>
   );
 }

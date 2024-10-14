@@ -123,7 +123,7 @@ export default function NotificationList({ notification, id }) {
         <ConfirmDialog
           open={onDelete.value}
           onClose={onDelete.onFalse}
-          title={'Deseja DELETAR a notificaçãp?'}
+          title={'Deseja DELETAR a notificação?'}
           action={
             <LoadingButton
               variant="contained"

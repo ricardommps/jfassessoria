@@ -25,9 +25,8 @@ import useMedia from 'src/hooks/use-media';
 import { useResponsive } from 'src/hooks/use-responsive';
 import { RouterLink } from 'src/routes/components';
 import { paths } from 'src/routes/paths';
+import { _tags } from 'src/utils/tags';
 import * as Yup from 'yup';
-
-export const _tags = ['Alongamentos', 'Aquecimentos'];
 
 function getId(url) {
   let regex = /(youtu.*be.*)\/(watch\?v=|embed\/|v|shorts|)(.*?((?=[&#?])|$))/gm;
@@ -80,7 +79,12 @@ export default function MediaNewEditForm({ currentMedia }) {
   const onSubmit = useCallback(async (data) => {
     try {
       const payload = Object.assign({}, data);
-      onCreateMedia(payload);
+      if (currentMedia) {
+        delete payload.id;
+        onCreateMedia(payload, currentMedia.id);
+      } else {
+        onCreateMedia(payload);
+      }
     } catch (error) {
       console.error(error);
     }

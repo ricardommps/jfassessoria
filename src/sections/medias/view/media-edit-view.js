@@ -6,14 +6,17 @@ import Container from '@mui/material/Container';
 import Stack from '@mui/material/Stack';
 import { useEffect } from 'react';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
+import { useSnackbar } from 'src/components/snackbar';
 import useMedia from 'src/hooks/use-media';
-import { useParams } from 'src/routes/hook';
+import { useParams, useRouter } from 'src/routes/hook';
 import { paths } from 'src/routes/paths';
 
 import MediaNewEditForm from '../media-new-edit-form';
 export default function MediaEditView() {
+  const router = useRouter();
   const params = useParams();
-  const { media, onMediaById, mediaStatus } = useMedia();
+  const { enqueueSnackbar } = useSnackbar();
+  const { media, onMediaById, mediaStatus, mediaCreate, mediaCreateStatus } = useMedia();
   const { id } = params;
 
   useEffect(() => {
@@ -21,6 +24,26 @@ export default function MediaEditView() {
       onMediaById(id);
     }
   }, [id]);
+
+  useEffect(() => {
+    if (mediaCreate) {
+      enqueueSnackbar('Mídia editada com sucesso!', {
+        autoHideDuration: 8000,
+        variant: 'success',
+      });
+      router.back();
+    }
+  }, [mediaCreate]);
+
+  useEffect(() => {
+    if (mediaCreateStatus.error) {
+      enqueueSnackbar('Não foi possível executar esta operação. Tente novamente mais tarde.', {
+        autoHideDuration: 8000,
+        variant: 'error',
+      });
+      router.back();
+    }
+  }, [mediaCreateStatus.error]);
 
   return (
     <Container maxWidth={'lg'}>

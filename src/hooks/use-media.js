@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import {
   createMedia,
+  deleteMediaById,
   getListMedias,
   getMediaById,
   getMediasWithStretchTag,
@@ -8,9 +9,16 @@ import {
 import { useDispatch, useSelector } from 'src/redux/store';
 export default function useMedia() {
   const dispatch = useDispatch();
-  const { medias, mediasStatus, mediaCreate, mediaCreateStatus, media, mediaStatus } = useSelector(
-    (state) => state.medias,
-  );
+  const {
+    medias,
+    mediasStatus,
+    mediaCreate,
+    mediaCreateStatus,
+    media,
+    mediaStatus,
+    deleteMedia,
+    deleteStatus,
+  } = useSelector((state) => state.medias);
 
   const onGetListMedias = useCallback(
     (isStretches) => {
@@ -24,8 +32,8 @@ export default function useMedia() {
   );
 
   const onCreateMedia = useCallback(
-    (payload) => {
-      dispatch(createMedia(payload));
+    (payload, mediaId) => {
+      dispatch(createMedia(payload, mediaId));
     },
     [dispatch],
   );
@@ -33,6 +41,13 @@ export default function useMedia() {
   const onMediaById = useCallback(
     (id) => {
       dispatch(getMediaById(id));
+    },
+    [dispatch],
+  );
+
+  const onDeleteMediaById = useCallback(
+    (id) => {
+      dispatch(deleteMediaById(id));
     },
     [dispatch],
   );
@@ -47,5 +62,8 @@ export default function useMedia() {
     onMediaById,
     media,
     mediaStatus,
+    onDeleteMediaById,
+    deleteMedia,
+    deleteStatus,
   };
 }
