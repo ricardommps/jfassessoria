@@ -1,12 +1,15 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import LoadingButton from '@mui/lab/LoadingButton';
 import Alert from '@mui/material/Alert';
+import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import Chip from '@mui/material/Chip';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Stack from '@mui/material/Stack';
 import Switch from '@mui/material/Switch';
+import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Unstable_Grid2';
 import { DatePicker } from '@mui/x-date-pickers';
@@ -23,11 +26,14 @@ import SelectMedia from 'src/components/select-media';
 import { useBoolean } from 'src/hooks/use-boolean';
 import useProgram from 'src/hooks/use-program';
 import useTraining from 'src/hooks/use-training';
+import { _tags } from 'src/utils/tags';
 import { trainingModules } from 'src/utils/training-modules';
 import * as Yup from 'yup';
 
 import MediasView from './medias-view';
 import StretchesView from './stretches-view';
+
+const stretchTags = ['Alongamento ativo', 'Alongamento passivo', 'Alongamentos'];
 
 export default function TrainingForm({ handleCancel }) {
   const tablePv = useTablePvContext();
@@ -35,6 +41,7 @@ export default function TrainingForm({ handleCancel }) {
   const { program } = useProgram();
   const listMedias = useBoolean();
   const isStretches = useBoolean();
+  const toggleTags = useBoolean(true);
 
   const NewTrainingSchema = Yup.object().shape({
     name: Yup.string().required('Titulo obrigatório'),
@@ -58,6 +65,7 @@ export default function TrainingForm({ handleCancel }) {
       mediaOrder: training?.mediaOrder || [],
       stretchesOrder: training?.stretchesOrder || [],
       exerciseInfo: training?.exerciseInfo || [],
+      tags: training?.tags || [],
     }),
     [],
   );
@@ -160,12 +168,16 @@ export default function TrainingForm({ handleCancel }) {
     setValue('stretchesOrder', stretchesID);
   };
 
+  const handleChangeTags = useCallback((newValue) => {
+    setValue('tags', newValue);
+  }, []);
+
   const filterMedias = (medias) => {
-    return medias?.filter((item) => !item.tags.includes('Alongamentos'));
+    return medias?.filter((item) => !stretchTags.some((tag) => item.tags.includes(tag)));
   };
 
   const filterStretches = (medias) => {
-    return medias?.filter((item) => item.tags.includes('Alongamentos'));
+    return medias?.filter((item) => stretchTags.some((tag) => item.tags.includes(tag)));
   };
 
   const renderErros = (
@@ -180,6 +192,41 @@ export default function TrainingForm({ handleCancel }) {
         </>
       )}
     </>
+  );
+
+  const renderTags = (
+    <Stack spacing={1.5}>
+      {toggleTags.value && (
+        <Autocomplete
+          multiple
+          freeSolo
+          options={_tags.map((option) => option)}
+          getOptionLabel={(option) => option}
+          defaultValue={_tags.slice(0, 3)}
+          value={values.tags}
+          onChange={(event, newValue) => {
+            handleChangeTags(newValue);
+          }}
+          renderOption={(props, option) => (
+            <li {...props} key={option}>
+              {option}
+            </li>
+          )}
+          renderTags={(value, getTagProps) =>
+            value.map((option, index) => (
+              <Chip
+                {...getTagProps({ index })}
+                size="small"
+                variant="soft"
+                label={option}
+                key={option}
+              />
+            ))
+          }
+          renderInput={(params) => <TextField {...params} placeholder="#Adicionar Tags" />}
+        />
+      )}
+    </Stack>
   );
 
   useEffect(() => {
@@ -234,6 +281,8 @@ export default function TrainingForm({ handleCancel }) {
                 <Stack>
                   <RHFTextField name="subtitle" label="Subtítulo" />
                 </Stack>
+                {program.type === 2 && <>{renderTags}</>}
+
                 <Stack mt={1}>
                   <Controller
                     name="datePublished"
@@ -412,6 +461,7 @@ export default function TrainingForm({ handleCancel }) {
           onSelectMedias={handleSaveMedias}
           mediasSelected={filterMedias(values.medias)}
           mediaOrder={values.mediaOrder}
+          tags={values.tags}
         />
       )}
       {isStretches?.value && (
