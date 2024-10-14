@@ -17,7 +17,7 @@ import { useResponsive } from 'src/hooks/use-responsive';
 // utils
 
 export default function MediaItem({ media }) {
-  const { title, thumbnail, videoUrl, instrucctions, blocked } = media;
+  const { title, thumbnail, instrucctions, blocked } = media;
   const mdUp = useResponsive('up', 'md');
   const popover = usePopover();
   return (

@@ -127,6 +127,13 @@ export default function CustomerDesktop({
     [router],
   );
 
+  const handleOpenNotifications = useCallback(
+    (id) => {
+      router.push(paths.dashboard.notification.root(id));
+    },
+    [router],
+  );
+
   const handleOpenChangePassword = useCallback(
     (id) => {
       router.push(paths.dashboard.customerChangePassword(id));
@@ -239,6 +246,7 @@ export default function CustomerDesktop({
                   handleOpenMetrics={handleOpenMetrics}
                   handleOpenChangePassword={handleOpenChangePassword}
                   handleOpenAnamnese={handleOpenAnamnese}
+                  handleOpenNotifications={handleOpenNotifications}
                 />
               </Card>
             </Scrollbar>
