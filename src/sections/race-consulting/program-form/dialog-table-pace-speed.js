@@ -20,10 +20,16 @@ export default function DialogTablePaceSpeed({ open, onClose, actionType, handle
   };
 
   const handleSave = () => {
-    handleTableSelected(value.pace);
+    if (actionType === 'vla' || actionType === 'vlan') {
+      handleTableSelected(value.speed);
+    } else {
+      handleTableSelected(value.pace);
+    }
+
     setValue(null);
     onClose();
   };
+
   return (
     <Dialog fullWidth maxWidth="sm" open={open}>
       <DialogTitle sx={{ p: (theme) => theme.spacing(3, 3, 2, 3) }}>
@@ -43,7 +49,9 @@ export default function DialogTablePaceSpeed({ open, onClose, actionType, handle
           )}
           {value && (
             <Chip
-              label={`${actionType.toUpperCase()}: ${value.pace}`}
+              label={`${actionType.toUpperCase()}: ${
+                actionType === 'vla' || actionType === 'vlan' ? value.speed : value.pace
+              }`}
               color="success"
               variant="outlined"
               onDelete={handleDelete}

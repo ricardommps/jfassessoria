@@ -1,10 +1,12 @@
 import { yupResolver } from '@hookform/resolvers/yup';
+import SearchIcon from '@mui/icons-material/Search';
 import LoadingButton from '@mui/lab/LoadingButton';
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import IconButton from '@mui/material/IconButton';
+import InputAdornment from '@mui/material/InputAdornment';
 import ListItemText from '@mui/material/ListItemText';
 import MenuItem from '@mui/material/MenuItem';
 import Stack from '@mui/material/Stack';
@@ -112,6 +114,7 @@ export default function ProgramForm({ handleClear, typeProgram }) {
     reset,
     watch,
     setValue,
+    control,
     handleSubmit,
     formState: { errors },
   } = methods;
@@ -138,12 +141,21 @@ export default function ProgramForm({ handleClear, typeProgram }) {
     if (actionType === 'pace') {
       setValue('pace', item.toString());
     }
+
     if (actionType === 'paceVla') {
       setValue('paceVla', item.toString());
     }
 
     if (actionType === 'paceVlan') {
       setValue('paceVlan', item.toString());
+    }
+
+    if (actionType === 'vla') {
+      setValue('vla', item.toString());
+    }
+
+    if (actionType === 'vlan') {
+      setValue('vlan', item.toString());
     }
     setActionType(null);
   };
@@ -218,6 +230,25 @@ export default function ProgramForm({ handleClear, typeProgram }) {
     [setValue],
   );
 
+  const handleInputChange = (event, type) => {
+    const inputValue = event.target.value;
+    // Normalizar a entrada substituindo vírgulas por pontos para decimais
+    const normalizedValue = inputValue.replace(',', '.');
+
+    // Verificar se o valor é válido antes de definir
+    if (/^\d*\.?\d*$/.test(normalizedValue)) {
+      setValue(type, normalizedValue);
+    }
+
+    if (type === 'pace') {
+      const vlaLevel = Number(values.vlaLevel);
+      const vlanLevel = Number(values.vlanLevel);
+      const resultValueVla = fPercent(values.pv, vlaLevel);
+      const resultValueVlan = fPercent(values.pv, vlanLevel);
+      setValue('vla', resultValueVla.toString());
+      setValue('vlan', resultValueVlan.toString());
+    }
+  };
   const renderErros = (
     <>
       {errors && (
@@ -283,124 +314,134 @@ export default function ProgramForm({ handleClear, typeProgram }) {
 
             {values.pv && values.difficultyLevel && (
               <>
-                <RHFSelect
+                <RHFTextField
                   name="vlaLevel"
                   label="Nível Vla"
                   variant="standard"
-                  onChange={handleChangeVlaLevel}
-                >
-                  <MenuItem value={60}>60%</MenuItem>
-                  <MenuItem value={70}>70%</MenuItem>
-                </RHFSelect>
+                  type="number"
+                  slotProps={{
+                    inputLabel: {
+                      shrink: true,
+                    },
+                  }}
+                  onChange={(e) => handleChangeVlaLevel(e)}
+                />
 
-                <RHFSelect
+                <RHFTextField
                   name="vlanLevel"
                   label="Nível Vlan"
                   variant="standard"
-                  onChange={handleChangeVlanLevel}
-                >
-                  <MenuItem value={70}>70%</MenuItem>
-                  <MenuItem value={80}>80%</MenuItem>
-                </RHFSelect>
-
-                <Stack
-                  direction="row"
-                  sx={{
-                    textAlign: 'left',
-                    justifyContent: 'left',
-                    borderBottom: (theme) => `solid 1px ${theme.palette.divider}`,
+                  type="number"
+                  slotProps={{
+                    inputLabel: {
+                      shrink: true,
+                    },
                   }}
-                >
-                  <Stack
-                    sx={{
-                      typography: 'body2',
-                      cursor: 'pointer',
-                      width: '100%',
-                      maxWidth: '100%',
+                  onChange={(e) => handleChangeVlanLevel(e)}
+                />
+
+                <RHFTextField
+                  name="pace"
+                  label="Pace do PV"
+                  variant="standard"
+                  onChange={(e) => handleInputChange(e, 'pace')}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="search pace"
+                          edge="end"
+                          onClick={() => handleOpenTableSpeed('pace')}
+                        >
+                          <SearchIcon />
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+
+                <Stack direction="row" spacing={2}>
+                  <RHFTextField
+                    name="vla"
+                    label="Vla(km/h)"
+                    variant="standard"
+                    onChange={(e) => handleInputChange(e, 'vla')}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label="search pace"
+                            edge="end"
+                            onClick={() => handleOpenTableSpeed('vla')}
+                          >
+                            <SearchIcon />
+                          </IconButton>
+                        </InputAdornment>
+                      ),
                     }}
-                    onClick={() => handleOpenTableSpeed('pace')}
-                  >
-                    <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                      Pace do PV
-                    </Typography>
-                    {values.pace ? <>{values.pace}</> : <>Clique aqui para selecionar um valor</>}
-                  </Stack>
+                  />
+
+                  <RHFTextField
+                    name="paceVla"
+                    label="Pace - Vla"
+                    variant="standard"
+                    onChange={(e) => handleInputChange(e, 'paceVla')}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label="search pace"
+                            edge="end"
+                            onClick={() => handleOpenTableSpeed('paceVla')}
+                          >
+                            <SearchIcon />
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
                 </Stack>
 
-                <Stack
-                  direction="row"
-                  sx={{
-                    textAlign: 'left',
-                    justifyContent: 'left',
-                    borderBottom: (theme) => `solid 1px ${theme.palette.divider}`,
-                  }}
-                >
-                  <Stack sx={{ typography: 'body2', width: '50%', maxWidth: '50%' }}>
-                    <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                      Vla(km/h)
-                    </Typography>
-                    <Typography>{values.vla}</Typography>
-                  </Stack>
-                  <Stack
-                    sx={{
-                      typography: 'body2',
-                      cursor: values.vla && 'pointer',
-                      width: '50%',
-                      maxWidth: '50%',
+                <Stack direction="row" spacing={2}>
+                  <RHFTextField
+                    name="vlan"
+                    label="Vlan(km/h)"
+                    variant="standard"
+                    onChange={(e) => handleInputChange(e, 'vlan')}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label="search pace"
+                            edge="end"
+                            onClick={() => handleOpenTableSpeed('vlan')}
+                          >
+                            <SearchIcon />
+                          </IconButton>
+                        </InputAdornment>
+                      ),
                     }}
-                    onClick={() => handleOpenTableSpeed('paceVla')}
-                  >
-                    <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                      Pace - Vla
-                    </Typography>
-                    {values.vla && (
-                      <Typography>
-                        {values.paceVla ? (
-                          <>{values.paceVla}</>
-                        ) : (
-                          <>Clique aqui para selecionar um valor</>
-                        )}
-                      </Typography>
-                    )}
-                  </Stack>
-                </Stack>
+                  />
 
-                <Stack
-                  direction="row"
-                  sx={{
-                    textAlign: 'left',
-                    justifyContent: 'left',
-                    borderBottom: (theme) => `solid 1px ${theme.palette.divider}`,
-                  }}
-                >
-                  <Stack sx={{ typography: 'body2', width: '50%', maxWidth: '50%' }}>
-                    <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                      Vlan(km/h)
-                    </Typography>
-                    <Typography>{values.vlan}</Typography>
-                  </Stack>
-                  <Stack
-                    sx={{
-                      typography: 'body2',
-                      cursor: values.vla && 'pointer',
-                      width: '50%',
-                      maxWidth: '50%',
+                  <RHFTextField
+                    name="paceVlan"
+                    label="Pace - Vlan"
+                    variant="standard"
+                    onChange={(e) => handleInputChange(e, 'paceVlan')}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label="search pace"
+                            edge="end"
+                            onClick={() => handleOpenTableSpeed('paceVlan')}
+                          >
+                            <SearchIcon />
+                          </IconButton>
+                        </InputAdornment>
+                      ),
                     }}
-                    onClick={() => handleOpenTableSpeed('paceVlan')}
-                  >
-                    <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                      Pace - Vlan
-                    </Typography>
-                    {values.vla && (
-                      <Typography>
-                        {values.paceVlan ? (
-                          <>{values.paceVlan}</>
-                        ) : (
-                          <>Clique aqui para selecionar um valor</>
-                        )}
-                      </Typography>
-                    )}
-                  </Stack>
+                  />
                 </Stack>
               </>
             )}
