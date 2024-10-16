@@ -289,7 +289,7 @@ export default function Training() {
                           sx={{ flex: 'none' }}
                         />
                         <Typography variant="subtitle2" sx={{ ml: 1 }}>
-                          {paceFormater(program.paceVla)}
+                          {program.paceVla}
                         </Typography>
                       </Stack>
                     </Stack>
@@ -328,7 +328,7 @@ export default function Training() {
                           sx={{ flex: 'none' }}
                         />
                         <Typography variant="subtitle2" sx={{ ml: 1 }}>
-                          {paceFormater(program.paceVlan)}
+                          {program.paceVlan}
                         </Typography>
                       </Stack>
                     </Stack>
