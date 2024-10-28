@@ -14,6 +14,7 @@ export const _tags = [
   'Alongamento ativo',
   'Alongamento passivo',
   'Aquecimento',
+  'Adutordecoxa',
 ];
 
 export const tagOptions = _tags.map((tag) => ({
