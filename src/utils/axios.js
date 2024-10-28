@@ -34,6 +34,7 @@ export const API_ENDPOINTS = {
     register: '/api/auth/register',
   },
   customer: '/api/v2/customer',
+  profile: '/api/v2/customer/profile',
   changePassword: '/api/v2/customer/newPassword',
   customerAll: '/api/v2/customer/all',
   feedbacktraining: {

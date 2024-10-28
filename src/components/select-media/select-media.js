@@ -4,9 +4,10 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogTitle from '@mui/material/DialogTitle';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import useMedia from 'src/hooks/use-media';
 import { removeItems } from 'src/utils/medias';
+import { _tags } from 'src/utils/tags';
 
 import TransferList from './transfer-list';
 
@@ -20,9 +21,10 @@ export default function SelectMedia({
   onClose,
   onSelectMedias,
   mediasSelected,
-  isStretches,
   mediaOrder,
   tags,
+  excludedTags,
+  includedTags,
   ...other
 }) {
   const { onGetListMedias, medias } = useMedia();
@@ -32,44 +34,65 @@ export default function SelectMedia({
   const [mediasFiltered, setMediasFiltered] = useState([]);
   const [newMedias, setNewMedias] = useState([]);
   const [filters, setFilters] = useState(defaultFilters);
-  const dataFiltered = applyFilter({
-    inputData: mediasFiltered,
-    filters,
-    tags: tags,
-  });
 
+  // Aplica os filtros definidos ao `mediasFiltered`
+  const dataFiltered = useMemo(
+    () =>
+      applyFilter({
+        inputData: mediasFiltered,
+        filters,
+        tags: tags,
+      }),
+    [mediasFiltered, filters, tags],
+  );
+
+  // Função para inicializar e buscar mídias com base nas tags
   const initialize = useCallback(async () => {
     try {
-      onGetListMedias(isStretches);
+      if (tags?.length > 0) {
+        await onGetListMedias(tags);
+        return;
+      }
+      if (excludedTags) {
+        const filteredTags = _tags.filter((tag) => !excludedTags.includes(tag));
+        await onGetListMedias(filteredTags);
+      } else if (includedTags) {
+        await onGetListMedias(includedTags);
+      } else {
+        await onGetListMedias();
+      }
     } catch (error) {
       console.error(error);
     }
-  }, [isStretches, onGetListMedias]);
+  }, [includedTags, onGetListMedias, tags, excludedTags]);
 
+  // Chama a função `initialize` ao montar o componente
   useEffect(() => {
     initialize();
   }, [initialize]);
 
+  // Aplica filtros ao `medias` baseado em `excludedTags` e `includedTags`
   useEffect(() => {
     if (medias) {
-      if (!isStretches) {
-        const filtered = medias?.filter(
-          (item) => !item.tags.includes('Alongamento ativo', 'Alongamento passivo', 'Alongamentos'),
-        );
-        setNewMedias(filtered);
+      let filtered;
+      if (excludedTags) {
+        filtered = medias.filter((item) => !item.tags.some((tag) => excludedTags.includes(tag)));
+      } else if (includedTags) {
+        filtered = medias.filter((item) => item.tags.some((tag) => includedTags.includes(tag)));
       } else {
-        setNewMedias(medias);
+        filtered = medias;
       }
+      setNewMedias(filtered);
     }
-  }, [medias, isStretches]);
+  }, [medias, excludedTags, includedTags]);
 
+  // Inicializa `left` e `mediasFiltered` com base em `newMedias` e `mediasSelected`
   useEffect(() => {
     if (newMedias) {
       const mediasID = mediasSelected.map((item) => item.id);
       const selected = newMedias.filter((item) => mediasID.includes(item.id));
       const removed = removeItems(newMedias, mediasID);
 
-      // Ordenar o left com base no mediaOrder
       const orderedLeft = selected.sort(
         (a, b) => mediaOrder.indexOf(a.id) - mediaOrder.indexOf(b.id),
       );
@@ -79,23 +102,25 @@ export default function SelectMedia({
     }
   }, [newMedias, mediasSelected, mediaOrder]);
 
+  // Atualiza `right` com `dataFiltered` antes de renderizar `TransferList`
+  useEffect(() => {
+    setRight(dataFiltered);
+  }, [dataFiltered]);
+
   return (
     <Dialog open={open} {...other} maxWidth={'lg'}>
       <DialogTitle>
         <Stack alignItems="center" direction="column">
-          <Stack alignItems="center">
-            <Typography>Selecione os videos para esse treino</Typography>
-          </Stack>
+          <Typography>Selecione os vídeos para esse treino</Typography>
         </Stack>
       </DialogTitle>
       {newMedias && (
         <TransferList
-          medias={dataFiltered}
+          medias={right} // Utiliza `right` já com `dataFiltered`
           left={left}
           setLeft={setLeft}
           right={right}
           setRight={setRight}
-          dataFiltered={dataFiltered}
           setFilters={setFilters}
         />
       )}
@@ -112,12 +137,13 @@ export default function SelectMedia({
   );
 }
 
+// Função para aplicação de filtros com checagem de tags e título
 function applyFilter({ inputData, filters, tags }) {
   const { title } = filters;
 
   if (title) {
-    inputData = inputData.filter(
-      (program) => program.title.toLowerCase().indexOf(title.toLowerCase()) !== -1,
+    inputData = inputData.filter((media) =>
+      media.title.toLowerCase().includes(title.toLowerCase()),
     );
   }
 

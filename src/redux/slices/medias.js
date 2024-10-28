@@ -147,6 +147,20 @@ export function getMediasWithStretchTag() {
   };
 }
 
+export function getMediasWithTagFiltered(tags = []) {
+  return async (dispatch) => {
+    dispatch(slice.actions.getAllMediasStart());
+    try {
+      // Convert the tags array to a comma-separated string for the query parameter
+      const tagsQuery = tags.join(',');
+      const response = await axios.get(`${API_ENDPOINTS.medias.root}/filtered?tags=${tagsQuery}`);
+      dispatch(slice.actions.getAllMediasSuccess(response.data));
+    } catch (error) {
+      dispatch(slice.actions.getAllMediasFailure(error));
+    }
+  };
+}
+
 export function createMedia(payload, mediaId) {
   return async (dispatch) => {
     dispatch(slice.actions.createMediaStart());

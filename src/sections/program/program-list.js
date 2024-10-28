@@ -1,186 +1,145 @@
-'use client';
-
-import Card from '@mui/material/Card';
+import Stack from '@mui/material/Stack';
 import { alpha } from '@mui/material/styles';
 import Tab from '@mui/material/Tab';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableContainer from '@mui/material/TableContainer';
 import Tabs from '@mui/material/Tabs';
+import Grid from '@mui/material/Unstable_Grid2';
+import PropTypes from 'prop-types';
 import { useCallback, useState } from 'react';
 import Label from 'src/components/label';
-import Scrollbar from 'src/components/scrollbar';
-import {
-  emptyRows,
-  getComparator,
-  TableEmptyRows,
-  TableHeadCustom,
-  TableNoData,
-  TablePaginationCustom,
-  useTable,
-} from 'src/components/table';
+import useProgram from 'src/hooks/use-program';
 
-import ProgramTableRow from './program-table-row';
-import ProgramTableToolbar from './program-table-toolbar';
+import ProgramItem from './program-item';
+import ProgramSearch from './program-search';
 
-const TABLE_HEAD = [
-  { id: 'name', label: 'Nome' },
-  { id: 'type', label: 'Tipo' },
-  { id: 'goal', label: 'Objetivo' },
-  { id: 'referenceMonth', label: 'Mês' },
-  { id: 'pv', label: 'PV' },
-  { id: 'pace', label: 'Pace' },
-  { id: '', width: 88 },
-];
-
-const STATUS_OPTIONS = [
+const TYPE_OPTIONS = [
   { value: 'all', label: 'Todos' },
-  { value: 'active', label: 'Ativo' },
-  { value: 'arquived', label: 'Arquivado' },
+  { value: 1, label: 'Corrida' },
+  { value: 2, label: 'Força' },
 ];
 
 const defaultFilters = {
   name: '',
-  status: 'active',
+  type: 'all',
 };
 
-export default function ProgramList({ tableData }) {
-  const table = useTable({ defaultOrderBy: 'hide' });
+export default function ProgramasList({
+  onSelectedProgram,
+  cloneProgramStatus,
+  handleOpenSend,
+  sendProgramStatus,
+}) {
+  const { programs, onCloneProgram, onDeleteProgram, onHideProgram } = useProgram();
   const [filters, setFilters] = useState(defaultFilters);
+
   const dataFiltered = applyFilter({
-    inputData: tableData,
-    comparator: getComparator(table.order, table.orderBy),
+    inputData: programs,
     filters,
   });
-  const denseHeight = table.dense ? 52 : 72;
-  const canReset = !!filters.name;
-  const notFound = (!dataFiltered.length && canReset) || !dataFiltered.length;
 
-  const handleFilters = useCallback(
-    (name, value) => {
-      table.onResetPage();
-      setFilters((prevState) => ({
-        ...prevState,
-        [name]: value,
-      }));
-    },
-    [table],
-  );
+  const handleFilters = useCallback((name, value) => {
+    setFilters((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  });
 
-  const handleFilterTyoe = useCallback(
+  const handleFilterType = useCallback(
     (event, newValue) => {
-      handleFilters('status', newValue);
+      handleFilters('type', newValue);
     },
     [handleFilters],
   );
 
-  const handleResetFilters = useCallback(() => {
-    setFilters(defaultFilters);
-  }, []);
+  const handleFilterName = useCallback(
+    (event, newValue) => {
+      handleFilters('name', newValue);
+    },
+    [handleFilters],
+  );
 
   return (
-    <>
-      <Card>
-        <Tabs
-          value={filters.status}
-          onChange={handleFilterTyoe}
-          indicatorColor="secondary"
-          sx={{
-            px: 2.5,
-            boxShadow: (theme) => `inset 0 -2px 0 0 ${alpha(theme.palette.grey[500], 0.08)}`,
-          }}
-        >
-          {STATUS_OPTIONS.map((tab) => (
-            <Tab
-              key={tab.value}
-              iconPosition="end"
-              value={tab.value}
-              label={tab.label}
-              icon={
-                <Label
-                  variant={
-                    ((tab.value === 'all' || tab.value === filters.status) && 'filled') || 'soft'
-                  }
-                  color={
-                    (tab.value === 'active' && 'success') ||
-                    (tab.value === 'arquived' && 'error') ||
-                    'default'
-                  }
-                >
-                  {tab.value === 'all' && tableData.length}
-                  {tab.value === 'active' && tableData.filter((item) => !item.hide).length}
-                  {tab.value === 'arquived' && tableData.filter((item) => item.hide).length}
-                </Label>
-              }
+    <Grid container spacing={2} pt={1}>
+      <Grid xs={12} sm={12} md={12}>
+        <>
+          <Stack>
+            {filters && (
+              <Tabs
+                value={filters.type}
+                onChange={handleFilterType}
+                sx={{
+                  px: 2.5,
+                  boxShadow: (theme) => `inset 0 -2px 0 0 ${alpha(theme.palette.grey[500], 0.08)}`,
+                }}
+              >
+                {TYPE_OPTIONS.map((tab) => (
+                  <Tab
+                    key={tab.value}
+                    iconPosition="end"
+                    value={tab.value}
+                    label={tab.label}
+                    icon={
+                      <Label
+                        variant={
+                          ((tab.value === 'all' || tab.value === filters.type) && 'filled') ||
+                          'soft'
+                        }
+                        color={
+                          (tab.value === 1 && 'success') || (tab.value === 2 && 'info') || 'default'
+                        }
+                      >
+                        {tab.value === 'all' && programs.length}
+                        {tab.value === 1 &&
+                          programs.filter((item) => !item?.type || item?.type === 1).length}
+
+                        {tab.value === 2 && programs.filter((item) => item?.type === 2).length}
+                      </Label>
+                    }
+                  />
+                ))}
+              </Tabs>
+            )}
+          </Stack>
+          <ProgramSearch filters={filters} onFilters={handleFilterName} />
+          {dataFiltered?.map((program) => (
+            <ProgramItem
+              key={program.id}
+              program={program}
+              onCloneProgram={onCloneProgram}
+              onSelectedProgram={onSelectedProgram}
+              onSendProgram={handleOpenSend}
+              onDeleteProgram={onDeleteProgram}
+              cloneProgramStatus={cloneProgramStatus}
+              sendProgramStatus={sendProgramStatus}
+              onHideProgram={onHideProgram}
             />
           ))}
-        </Tabs>
-        <ProgramTableToolbar
-          filters={filters}
-          onFilters={handleFilters}
-          canReset={canReset}
-          onResetFilters={handleResetFilters}
-        />
-        <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
-          <Scrollbar>
-            <Table size={table.dense ? 'small' : 'medium'} sx={{ minWidth: 960 }}>
-              <TableHeadCustom order={table.order} orderBy={table.orderBy} headLabel={TABLE_HEAD} />
-              <TableBody>
-                {dataFiltered
-                  .slice(
-                    table.page * table.rowsPerPage,
-                    table.page * table.rowsPerPage + table.rowsPerPage,
-                  )
-                  .map((row) => (
-                    <ProgramTableRow key={row.id} row={row} />
-                  ))}
-                <TableEmptyRows
-                  height={denseHeight}
-                  emptyRows={emptyRows(table.page, table.rowsPerPage, tableData.length)}
-                />
-
-                <TableNoData notFound={notFound} />
-              </TableBody>
-            </Table>
-          </Scrollbar>
-        </TableContainer>
-        <TablePaginationCustom
-          count={dataFiltered.length}
-          page={table.page}
-          rowsPerPage={table.rowsPerPage}
-          onPageChange={table.onChangePage}
-          onRowsPerPageChange={table.onChangeRowsPerPage}
-        />
-      </Card>
-    </>
+        </>
+      </Grid>
+    </Grid>
   );
 }
 
-function applyFilter({ inputData, comparator, filters }) {
-  const { name, status } = filters;
+ProgramasList.propTypes = {
+  onSelectedProgram: PropTypes.func,
+};
 
-  const stabilizedThis = inputData?.map((el, index) => [el, index]);
+function applyFilter({ inputData, filters }) {
+  const { name } = filters;
 
-  stabilizedThis.sort((a, b) => {
-    const program = comparator(a[0], b[0]);
-    if (program !== 0) return program;
-    return a[1] - b[1];
-  });
+  const stabilizedThis = inputData.map((el, index) => [el, index]);
 
   inputData = stabilizedThis.map((el) => el[0]);
 
   if (name) {
     inputData = inputData.filter(
-      (program) => program.name.toLowerCase().indexOf(name.toLowerCase()) !== -1,
+      (customer) => customer.name.toLowerCase().indexOf(name.toLowerCase()) !== -1,
     );
   }
-
-  if (status === 'active') {
-    inputData = inputData.filter((program) => !program.hide);
+  if (filters.type === 1) {
+    inputData = inputData.filter((item) => item.type === 1 || !item.type);
   }
-
-  if (status === 'arquived') {
-    inputData = inputData.filter((program) => program.hide);
+  if (filters.type === 2) {
+    inputData = inputData.filter((item) => item.type === 2);
   }
 
   return inputData;

@@ -55,22 +55,6 @@ const Title = styled('div')(() => ({
   padding: '2px 2px 0 8px',
 }));
 
-const SubTitle = styled('div')(({ bold }) => ({
-  overflow: 'hidden',
-  textOverflow: 'ellipsis',
-  display: '-webkit-box',
-  WebkitLineClamp: '1',
-  WebkitBoxOrient: 'vertical',
-  fontSize: '14px',
-  fontStyle: 'italic',
-  color: '#888',
-  padding: '5px 36px 0 8px',
-  height: 'auto',
-  ...(bold && {
-    fontWeight: 'bold',
-  }),
-}));
-
 const Footer = styled('div')(() => ({
   margin: '2px 10px',
   background: '#333',
@@ -92,7 +76,7 @@ const addDefaultSrc = (ev) => {
   ev.target.src = 'https://supertreinosapp.com/img/TREINO-BANNER-PADRAO.jpg';
 };
 
-export default function MediaViewItem({ media, index, handleSaveExerciseInfo, exerciseInfo }) {
+export default function HeatingViewItem({ media, index, handleSaveExerciseInfo, exerciseInfo }) {
   const player = useBoolean();
   const info = useBoolean();
   const exerciseInfoById = exerciseInfo?.filter((item) => item.id === media.id)[0];
@@ -116,7 +100,6 @@ export default function MediaViewItem({ media, index, handleSaveExerciseInfo, ex
               <TextColum>
                 <Stack direction="column">
                   <Title>{media.title}</Title>
-                  <SubTitle>{media.instrucctions}</SubTitle>
                 </Stack>
               </TextColum>
             </ListItem>
@@ -217,6 +200,7 @@ export default function MediaViewItem({ media, index, handleSaveExerciseInfo, ex
           id={media.id}
           onSave={handleSaveExerciseInfo}
           exerciseInfoById={exerciseInfoById}
+          hideRir={true}
         />
       )}
     </>

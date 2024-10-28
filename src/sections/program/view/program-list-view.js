@@ -1,37 +1,60 @@
 'use client';
-
+import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
+import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { useEffect, useState } from 'react';
-import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
+import { useCallback, useEffect, useState } from 'react';
 import Iconify from 'src/components/iconify';
 import { useSettingsContext } from 'src/components/settings';
 import useCustomer from 'src/hooks/use-customer';
 import useProgram from 'src/hooks/use-program';
 import { RouterLink } from 'src/routes/components';
-import { useParams } from 'src/routes/hook';
+import { useParams, useRouter } from 'src/routes/hook';
 import { paths } from 'src/routes/paths';
 
-import ProgramList from '../program-list';
+import ProgramasList from '../program-list';
 
 export default function ProgramListView() {
   const settings = useSettingsContext();
+  const router = useRouter();
 
   const { customer, onCustomerById } = useCustomer();
-  const { onListPrograms, programs, onListArquivedPrograms, archived } = useProgram();
+  const {
+    onListPrograms,
+    onClearProgram,
+    onListArquivedPrograms,
+    archived,
+    cloneProgramStatus,
+    sendProgramStatus,
+  } = useProgram();
   const params = useParams();
   const { id } = params;
 
-  const [tableData, setTableData] = useState(null);
+  const [openSend, setOpenSend] = useState({
+    open: false,
+    program: null,
+  });
 
-  useEffect(() => {
-    if (programs && archived) {
-      const data = [...programs, ...archived];
-      setTableData(data);
+  const handleGoBack = useCallback(() => {
+    onClearProgram();
+    router.back();
+  }, []);
+
+  const onSelectedProgram = (id) => {
+    if (id) {
+      console.log('--onSelectedProgram--', id);
     }
-  }, [programs, archived]);
+  };
+
+  const handleOpenSend = (program, event) => {
+    event.stopPropagation();
+    setOpenSend({
+      open: true,
+      program: program,
+    });
+  };
 
   useEffect(() => {
     if (id) {
@@ -41,45 +64,37 @@ export default function ProgramListView() {
     }
   }, [id]);
 
-  const renderTitle = (
-    <Stack>
-      <Typography variant="h4" gutterBottom>
-        Programas
-      </Typography>
-      {customer && (
-        <Typography variant="h6" gutterBottom>
-          {customer.name}
-        </Typography>
-      )}
-    </Stack>
-  );
   return (
-    <Container maxWidth={settings.themeStretch ? false : 'lg'}>
-      <CustomBreadcrumbs
-        heading={renderTitle}
-        links={[
-          { name: 'Alunos', href: paths.dashboard.customersRacing },
-          {
-            name: 'Programas',
-            href: paths.dashboard.program.root(id),
-          },
-          { name: 'Lista' },
-        ]}
-        action={
-          <Button
-            component={RouterLink}
-            href={paths.dashboard.program.create(id)}
-            variant="contained"
-            startIcon={<Iconify icon="mingcute:add-line" />}
-          >
-            Novo Programa
-          </Button>
-        }
-        sx={{
-          mb: { xs: 3, md: 5 },
-        }}
+    <Container maxWidth={'lg'}>
+      <Box sx={{ display: 'flex', flexDirection: 'row', pt: 0, pb: 2 }}>
+        <Button
+          color="inherit"
+          sx={{ mr: 1 }}
+          startIcon={<ArrowCircleLeftIcon />}
+          onClick={handleGoBack}
+        >
+          Voltar
+        </Button>
+      </Box>
+      <Stack direction={'row'}>
+        <Typography variant="h4" component="div" sx={{ flexGrow: 1 }}>
+          Programas
+        </Typography>
+        <Button
+          component={RouterLink}
+          href={paths.dashboard.program.create(id)}
+          variant="contained"
+          startIcon={<Iconify icon="mingcute:add-line" />}
+        >
+          Novo
+        </Button>
+      </Stack>
+      <ProgramasList
+        onSelectedProgram={onSelectedProgram}
+        cloneProgramStatus={cloneProgramStatus}
+        sendProgramStatus={sendProgramStatus}
+        handleOpenSend={handleOpenSend}
       />
-      {tableData && <ProgramList tableData={tableData} />}
     </Container>
   );
 }

@@ -23,9 +23,46 @@ import useCustomer from 'src/hooks/use-customer';
 import * as Yup from 'yup';
 
 export const GENDER_OPTIONS = [
-  { label: 'Homem', value: 'Men' },
-  { label: 'Mulher', value: 'Women' },
-  { label: 'Criança', value: 'Kids' },
+  { label: 'Masculino', value: 'Men' },
+  { label: 'Feminino', value: 'Women' },
+  { label: 'Outro', value: 'OTHER' },
+];
+
+export const MARITAL_OPTIONS = [
+  { label: 'Solteiro(a)', value: 'Solteiro' },
+  { label: 'Casado(a)', value: 'Casado' },
+  { label: 'Divorciado(a)', value: 'Divorciado' },
+  { label: 'Viúvo(a)', value: 'Viúvo' },
+];
+
+const ESTADOSBRASILEIROS = [
+  { value: 'AC', label: 'Acre' },
+  { value: 'AL', label: 'Alagoas' },
+  { value: 'AP', label: 'Amapá' },
+  { value: 'AM', label: 'Amazonas' },
+  { value: 'BA', label: 'Bahia' },
+  { value: 'CE', label: 'Ceará' },
+  { value: 'DF', label: 'Distrito Federal' },
+  { value: 'ES', label: 'Espírito Santo' },
+  { value: 'GO', label: 'Goiás' },
+  { value: 'MA', label: 'Maranhão' },
+  { value: 'MT', label: 'Mato Grosso' },
+  { value: 'MS', label: 'Mato Grosso do Sul' },
+  { value: 'MG', label: 'Minas Gerais' },
+  { value: 'PA', label: 'Pará' },
+  { value: 'PB', label: 'Paraíba' },
+  { value: 'PR', label: 'Paraná' },
+  { value: 'PE', label: 'Pernambuco' },
+  { value: 'PI', label: 'Piauí' },
+  { value: 'RJ', label: 'Rio de Janeiro' },
+  { value: 'RN', label: 'Rio Grande do Norte' },
+  { value: 'RS', label: 'Rio Grande do Sul' },
+  { value: 'RO', label: 'Rondônia' },
+  { value: 'RR', label: 'Roraima' },
+  { value: 'SC', label: 'Santa Catarina' },
+  { value: 'SP', label: 'São Paulo' },
+  { value: 'SE', label: 'Sergipe' },
+  { value: 'TO', label: 'Tocantins' },
 ];
 
 export default function CustomerForm({ handleCloseNewCustomer, isMobile = false }) {
@@ -45,17 +82,28 @@ export default function CustomerForm({ handleCloseNewCustomer, isMobile = false 
   const NewCustomerSchema = Yup.object().shape({
     name: Yup.string().required('Titulo obrigatório'),
     email: Yup.string().required('Email obrigatório'),
+    phone: Yup.string().required('Telefone obrigatório'),
+    gender: Yup.string().required('Sexo obrigatório'),
     birthDate: Yup.date().required('Data de Nascimento obrigatório').typeError(''),
   });
   const defaultValues = useMemo(
     () => ({
       name: customer?.name || '',
       email: customer?.email || '',
+      phone: customer?.phone || '',
       isRunner: customer?.isRunner || false,
       isStrength: customer?.isStrength || false,
       gender: customer?.gender || 'Women',
       birthDate: customer?.birthDate || null,
       active: customer?.active || false,
+      maritalStatus: customer?.phone || 'Solteiro',
+      zipCode: customer?.zipCode || '',
+      street: customer?.street || '',
+      streetNumber: customer?.streetNumber || '',
+      complement: customer?.complement || '',
+      city: customer?.city || '',
+      state: customer?.state || '',
+      district: customer?.district || '',
     }),
     [customer],
   );
@@ -207,7 +255,7 @@ export default function CustomerForm({ handleCloseNewCustomer, isMobile = false 
           </Typography>
         </Stack>
 
-        <Stack spacing={3} sx={{ width: !isMobile ? '25vw' : '84vw', py: 1, height: '60vh' }}>
+        <Stack spacing={3}>
           <Scrollbar>
             {customerStatus?.loading && (
               <Box

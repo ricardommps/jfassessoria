@@ -163,10 +163,7 @@ export default function Archiveds({ isMobile = false }) {
               </Stack>
             )}
           </Stack>
-          <Stack
-            spacing={3}
-            sx={{ width: !isMobile ? '25vw' : '90vw', py: 1, height: 'calc(100vh - 340px)' }}
-          >
+          <Stack spacing={3}>
             <Scrollbar>
               <ArchivedList handleOpenSend={handleOpenSend} />
             </Scrollbar>
