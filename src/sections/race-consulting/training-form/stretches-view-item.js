@@ -106,12 +106,71 @@ export default function StretchesViewItem({ media, index, handleSaveExerciseInfo
             <Footer>
               <Stack flexDirection={'row'}>
                 <Stack>
-                  <Typography sx={{ fontSize: '0.75rem' }}>
-                    RANGE DE REPETIÇÕES: {exerciseInfoById?.reps || 0}
-                  </Typography>
-                  <Typography sx={{ fontSize: '0.75rem' }}>
-                    INTERVALO DE RECUPERAÇÃO: {exerciseInfoById?.reset || 0}
-                  </Typography>
+                  <Stack flexDirection="row" spacing={1}>
+                    <Typography sx={{ fontSize: '0.75rem', textTransform: 'uppercase' }}>
+                      MÉTODO:
+                    </Typography>
+                    <Typography
+                      sx={{
+                        fontSize: '0.75rem',
+                        color: 'text.primary',
+                      }}
+                    >
+                      {exerciseInfoById?.method || 0}
+                    </Typography>
+                  </Stack>
+                  <Stack flexDirection="row" spacing={1}>
+                    <Typography sx={{ fontSize: '0.75rem', textTransform: 'uppercase' }}>
+                      RANGE DE REPETIÇÕES:
+                    </Typography>
+                    <Typography
+                      sx={{
+                        fontSize: '0.75rem',
+                        color: 'text.primary',
+                      }}
+                    >
+                      {exerciseInfoById?.reps || 0}
+                    </Typography>
+                  </Stack>
+                  <Stack flexDirection="row" spacing={1}>
+                    <Typography sx={{ fontSize: '0.75rem', textTransform: 'uppercase' }}>
+                      INTERVALO DE RECUPERAÇÃO: {exerciseInfoById?.reset || 0}
+                    </Typography>
+                    <Typography
+                      sx={{
+                        fontSize: '0.75rem',
+                        color: 'text.primary',
+                      }}
+                    >
+                      {exerciseInfoById?.reset || 0}
+                    </Typography>
+                  </Stack>
+                  <Stack flexDirection="row" spacing={1}>
+                    <Typography sx={{ fontSize: '0.75rem', textTransform: 'uppercase' }}>
+                      repetições de reserva: {exerciseInfoById?.rir || 0}
+                    </Typography>
+                    <Typography
+                      sx={{
+                        fontSize: '0.75rem',
+                        color: 'text.primary',
+                      }}
+                    >
+                      {exerciseInfoById?.rir || 0}
+                    </Typography>
+                  </Stack>
+                  <Stack flexDirection="row" spacing={1}>
+                    <Typography sx={{ fontSize: '0.75rem', textTransform: 'uppercase' }}>
+                      Cadência / velocidade de movimento:
+                    </Typography>
+                    <Typography
+                      sx={{
+                        fontSize: '0.75rem',
+                        color: 'text.primary',
+                      }}
+                    >
+                      {exerciseInfoById?.cadence || 0}
+                    </Typography>
+                  </Stack>
                 </Stack>
                 <Box sx={{ flexGrow: 1 }} />
                 <Stack justifyContent={'center'}>

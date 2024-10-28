@@ -211,7 +211,7 @@ export function getCustomerById(customerId) {
   return async (dispatch) => {
     dispatch(slice.actions.getCustomerStart());
     try {
-      const response = await axios.get(`${API_ENDPOINTS.customer}/${customerId}`);
+      const response = await axios.get(`${API_ENDPOINTS.profile}/${customerId}`);
       dispatch(slice.actions.getCustomerSuccess(response.data));
     } catch (error) {
       console.error(error);

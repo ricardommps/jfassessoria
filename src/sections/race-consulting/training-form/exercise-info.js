@@ -12,15 +12,7 @@ import { useForm } from 'react-hook-form';
 import { RHFTextField } from 'src/components/hook-form';
 import FormProvider from 'src/components/hook-form/form-provider';
 import * as Yup from 'yup';
-export default function ExerciseInfo({
-  open,
-  onClose,
-  title,
-  id,
-  onSave,
-  hideRir,
-  exerciseInfoById,
-}) {
+export default function ExerciseInfo({ open, onClose, title, id, onSave, exerciseInfoById }) {
   const exerciseInfoSchema = Yup.object().shape({
     reps: Yup.string().required('Campo obrigatório'),
   });
@@ -31,6 +23,8 @@ export default function ExerciseInfo({
       reps: exerciseInfoById?.reps || '',
       reset: exerciseInfoById?.reset || '',
       rir: exerciseInfoById?.rir || '',
+      method: exerciseInfoById?.method || '',
+      cadence: exerciseInfoById?.cadence || '',
     }),
     [],
   );
@@ -54,11 +48,7 @@ export default function ExerciseInfo({
   };
 
   return (
-    <Dialog
-      sx={{ '& .MuiDialog-paper': { width: '80%', maxHeight: 435 } }}
-      maxWidth="xs"
-      open={open}
-    >
+    <Dialog sx={{ '& .MuiDialog-paper': { width: '80%' } }} maxWidth="xs" open={open}>
       <DialogTitle>
         <Typography>{title}</Typography>
       </DialogTitle>
@@ -70,6 +60,7 @@ export default function ExerciseInfo({
             </Typography>
             <>
               <Box rowGap={3} columnGap={2} display="grid" pt={1}>
+                <RHFTextField name="method" label="Método" variant="standard" />
                 <RHFTextField name="reps" label="Range de repetições" variant="standard" />
                 <RHFTextField
                   name="reset"
@@ -77,9 +68,12 @@ export default function ExerciseInfo({
                   variant="standard"
                   type={'number'}
                 />
-                {!hideRir && (
-                  <RHFTextField name="rir" label="Repetições de reserva" variant="standard" />
-                )}
+                <RHFTextField name="rir" label="Repetições de reserva" variant="standard" />
+                <RHFTextField
+                  name="cadence"
+                  label="Cadência/velocidade de movimento"
+                  variant="standard"
+                />
               </Box>
             </>
           </>

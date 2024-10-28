@@ -19,7 +19,7 @@ const initialState = {
     empty: false,
     error: null,
   },
-  programs: null,
+  programs: [],
   programsStatus: {
     loading: false,
     empty: false,

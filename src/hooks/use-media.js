@@ -4,7 +4,7 @@ import {
   deleteMediaById,
   getListMedias,
   getMediaById,
-  getMediasWithStretchTag,
+  getMediasWithTagFiltered,
 } from 'src/redux/slices/medias';
 import { useDispatch, useSelector } from 'src/redux/store';
 export default function useMedia() {
@@ -21,9 +21,9 @@ export default function useMedia() {
   } = useSelector((state) => state.medias);
 
   const onGetListMedias = useCallback(
-    (isStretches) => {
-      if (isStretches) {
-        dispatch(getMediasWithStretchTag());
+    (tags) => {
+      if (tags) {
+        dispatch(getMediasWithTagFiltered(tags));
       } else {
         dispatch(getListMedias());
       }

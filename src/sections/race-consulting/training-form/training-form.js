@@ -30,10 +30,13 @@ import { _tags } from 'src/utils/tags';
 import { trainingModules } from 'src/utils/training-modules';
 import * as Yup from 'yup';
 
+import HeatingView from './heating-view';
 import MediasView from './medias-view';
 import StretchesView from './stretches-view';
 
 const stretchTags = ['Alongamento ativo', 'Alongamento passivo', 'Alongamentos'];
+const heatingTags = ['Aquecimento'];
+const excludedTags = ['Alongamento ativo', 'Alongamento passivo', 'Alongamentos', 'Aquecimento'];
 
 export default function TrainingForm({ handleCancel }) {
   const tablePv = useTablePvContext();
@@ -41,6 +44,8 @@ export default function TrainingForm({ handleCancel }) {
   const { program } = useProgram();
   const listMedias = useBoolean();
   const isStretches = useBoolean();
+  const isHeating = useBoolean();
+
   const toggleTags = useBoolean(true);
 
   const NewTrainingSchema = Yup.object().shape({
@@ -64,6 +69,7 @@ export default function TrainingForm({ handleCancel }) {
       medias: training?.medias || [],
       mediaOrder: training?.mediaOrder || [],
       stretchesOrder: training?.stretchesOrder || [],
+      heatingOrder: training?.heatingOrder || [],
       exerciseInfo: training?.exerciseInfo || [],
       tags: training?.tags || [],
     }),
@@ -121,15 +127,30 @@ export default function TrainingForm({ handleCancel }) {
   );
 
   const handleSaveMedias = (leftList) => {
-    setValue('medias', leftList);
+    const medias = values.medias;
+    const filtered = medias?.filter((item) => item.tags.some((tag) => excludedTags.includes(tag)));
+    const newMedias = [...filtered, ...leftList];
+    setValue('medias', newMedias);
     orderMedias(leftList);
     listMedias.onFalse();
   };
 
   const handleSaveStretches = (leftList) => {
-    setValue('medias', leftList);
+    const medias = values.medias;
+    const filtered = medias?.filter((item) => !item.tags.some((tag) => stretchTags.includes(tag)));
+    const newMedias = [...filtered, ...leftList];
+    setValue('medias', newMedias);
     orderStretches(leftList);
     isStretches.onFalse();
+  };
+
+  const handleSaveHeatings = (leftList) => {
+    const medias = values.medias;
+    const filtered = medias?.filter((item) => !item.tags.some((tag) => heatingTags.includes(tag)));
+    const newMedias = [...filtered, ...leftList];
+    setValue('medias', newMedias);
+    orderHeating(leftList);
+    isHeating.onFalse();
   };
 
   const handleReorderMedias = (newMedias) => {
@@ -140,6 +161,11 @@ export default function TrainingForm({ handleCancel }) {
   const handleReorderStretches = (itens) => {
     //setValue('medias', itens);
     orderStretches(filterStretches(itens));
+  };
+
+  const handleReorderHeatings = (itens) => {
+    //setValue('medias', itens);
+    orderHeating(filterHeating(itens));
   };
 
   const handleSaveExerciseInfo = (data) => {
@@ -168,16 +194,29 @@ export default function TrainingForm({ handleCancel }) {
     setValue('stretchesOrder', stretchesID);
   };
 
+  const orderHeating = (heatings) => {
+    const newMedias = filterHeating(heatings);
+    const heatingID = newMedias.map((item) => item.id);
+    setValue('heatingOrder', heatingID);
+  };
+
   const handleChangeTags = useCallback((newValue) => {
     setValue('tags', newValue);
   }, []);
 
   const filterMedias = (medias) => {
-    return medias?.filter((item) => !stretchTags.some((tag) => item.tags.includes(tag)));
+    const filtered = medias?.filter((item) => !item.tags.some((tag) => excludedTags.includes(tag)));
+    return filtered;
   };
 
   const filterStretches = (medias) => {
-    return medias?.filter((item) => stretchTags.some((tag) => item.tags.includes(tag)));
+    const filtered = medias?.filter((item) => item.tags.some((tag) => stretchTags.includes(tag)));
+    return filtered;
+  };
+
+  const filterHeating = (medias) => {
+    const filtered = medias?.filter((item) => item.tags.some((tag) => heatingTags.includes(tag)));
+    return filtered;
   };
 
   const renderErros = (
@@ -336,7 +375,49 @@ export default function TrainingForm({ handleCancel }) {
                     />
                   </Stack>
                 </Stack>
-                <RHFTextField name="heating" label="Aquecimento" multiline rows={3} />
+                <Box>
+                  <RHFTextField name="heating" label="Aquecimento" multiline rows={3} />
+                  <Stack>
+                    {filterHeating(values.medias).length > 0 && (
+                      <Box
+                        sx={{
+                          overflowY: 'auto',
+                          maxHeight: '40vh',
+                          display: 'flex',
+                          flexGrow: 1,
+                          flexDirection: 'column',
+                        }}
+                      >
+                        <Scrollbar sx={{ height: 320 }}>
+                          <HeatingView
+                            medias={filterHeating(values.medias)}
+                            handleReorderMedias={handleReorderHeatings}
+                            mediaOrder={values.heatingOrder}
+                            handleSaveExerciseInfo={handleSaveExerciseInfo}
+                            exerciseInfo={values.exerciseInfo}
+                          />
+                        </Scrollbar>
+                      </Box>
+                    )}
+                    <Box pt={1}>
+                      <Button
+                        size="small"
+                        color="primary"
+                        startIcon={<Iconify icon="mingcute:add-line" />}
+                        sx={{ flexShrink: 0 }}
+                        onClick={() => {
+                          isStretches.onFalse();
+                          listMedias.onFalse();
+                          isHeating.onTrue();
+                        }}
+                      >
+                        {filterHeating(values.medias).length > 0
+                          ? 'Editar Aquecimentos Selecionados'
+                          : 'Selecionar Aquecimentos'}
+                      </Button>
+                    </Box>
+                  </Stack>
+                </Box>
                 {(!program?.type || program?.type === 1) && (
                   <Box
                     component="fieldset"
@@ -374,6 +455,7 @@ export default function TrainingForm({ handleCancel }) {
                         onClick={() => {
                           listMedias.onFalse();
                           isStretches.onTrue();
+                          isHeating.onFalse();
                         }}
                       >
                         Selecionar Alongamentos
@@ -383,7 +465,6 @@ export default function TrainingForm({ handleCancel }) {
                 )}
 
                 <RHFTextField name="description" label="Parte principal" multiline rows={6} />
-                <RHFTextField name="recovery" label="Desaquecimento" multiline rows={3} />
                 <Stack>
                   {filterMedias(values.medias).length > 0 && (
                     <Box
@@ -395,7 +476,7 @@ export default function TrainingForm({ handleCancel }) {
                         flexDirection: 'column',
                       }}
                     >
-                      <Scrollbar>
+                      <Scrollbar sx={{ height: 320 }}>
                         <MediasView
                           medias={filterMedias(values.medias)}
                           handleReorderMedias={handleReorderMedias}
@@ -416,6 +497,7 @@ export default function TrainingForm({ handleCancel }) {
                         onClick={() => {
                           isStretches.onFalse();
                           listMedias.onTrue();
+                          isHeating.onFalse();
                         }}
                       >
                         {filterMedias(values.medias).length > 0
@@ -425,6 +507,7 @@ export default function TrainingForm({ handleCancel }) {
                     </Box>
                   )}
                 </Stack>
+                <RHFTextField name="recovery" label="Desaquecimento" multiline rows={3} />
                 <Stack alignItems="flex-start" sx={{ mb: 1 }}>
                   <FormControlLabel
                     control={
@@ -462,6 +545,7 @@ export default function TrainingForm({ handleCancel }) {
           mediasSelected={filterMedias(values.medias)}
           mediaOrder={values.mediaOrder}
           tags={values.tags}
+          excludedTags={['Alongamento ativo', 'Alongamento passivo', 'Alongamentos', 'Aquecimento']}
         />
       )}
       {isStretches?.value && (
@@ -470,8 +554,18 @@ export default function TrainingForm({ handleCancel }) {
           onClose={isStretches.onFalse}
           onSelectMedias={handleSaveStretches}
           mediasSelected={filterStretches(values.medias)}
-          isStretches={true}
           mediaOrder={values.stretchesOrder}
+          includedTags={stretchTags}
+        />
+      )}
+      {isHeating?.value && (
+        <SelectMedia
+          open={isHeating.value}
+          onClose={isHeating.onFalse}
+          onSelectMedias={handleSaveHeatings}
+          mediasSelected={filterHeating(values.medias)}
+          mediaOrder={values.heatingOrder}
+          includedTags={heatingTags}
         />
       )}
     </>

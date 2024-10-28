@@ -22,6 +22,12 @@ export const paths = {
     customerChangePassword: (id) => `${ROOTS.DASHBOARD}/customer-change-password/${id}`,
     security: `${ROOTS.DASHBOARD}/security`,
     customersRacing: `${ROOTS.DASHBOARD}/customersRacing`,
+    customer: {
+      root: `${ROOTS.DASHBOARD}/customer`,
+      profile: (id) => `${ROOTS.DASHBOARD}/customer/profile/${id}`,
+      create: (type, id) => `${ROOTS.DASHBOARD}/customer/create/${type}/${id}`,
+      edit: (id) => `${ROOTS.DASHBOARD}/customer/edit/${id}`,
+    },
     metrics: {
       root: (id) => `${ROOTS.DASHBOARD}/metrics/${id}`,
       create: (type, id) => `${ROOTS.DASHBOARD}/metrics/create/${type}/${id}`,

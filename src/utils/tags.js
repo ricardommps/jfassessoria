@@ -13,6 +13,7 @@ export const _tags = [
   'Establidade',
   'Alongamento ativo',
   'Alongamento passivo',
+  'Aquecimento',
 ];
 
 export const tagOptions = _tags.map((tag) => ({
