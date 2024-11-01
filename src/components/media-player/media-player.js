@@ -2,12 +2,13 @@ import CloseIcon from '@mui/icons-material/Close';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
 import ReactPlayer from 'react-player/youtube';
 export default function MediaPlayer({ open, onClose, url, title }) {
   return (
-    <Dialog open={open}>
+    <Dialog open={open} fullWidth maxWidth="md">
       <DialogTitle sx={{ p: (theme) => theme.spacing(3, 3, 2, 3) }}>
-        {title}
+        <Typography>{title}</Typography>
         <IconButton
           aria-label="close"
           onClick={onClose}
