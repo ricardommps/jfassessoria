@@ -5,9 +5,7 @@ import NearMeIcon from '@mui/icons-material/NearMe';
 import ReviewsIcon from '@mui/icons-material/Reviews';
 import { Stack } from '@mui/material';
 import Alert from '@mui/material/Alert';
-import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import FormControl from '@mui/material/FormControl';
 import IconButton from '@mui/material/IconButton';
 import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
@@ -25,7 +23,6 @@ import useTraining from 'src/hooks/use-training';
 import { useRouter } from 'src/routes/hook';
 import { getModuleName } from 'src/utils/training-modules';
 
-import { BootstrapInput } from '../program/styles';
 import FeedBack from './feedback';
 import {
   BasecColumnAction,
@@ -250,16 +247,6 @@ export default function TrainingItem({
             <Alert variant="filled" severity="error" sx={{ margin: '15px 0' }}>
               Aviso: esta ação não é reversível. Por favor, tenha certeza.
             </Alert>
-            <FormControl variant="standard" sx={{ width: '100%' }}>
-              <Typography>
-                Digite o nome do treino{' '}
-                <Box component="span" fontWeight="bold" color="#FF5630">
-                  {training.name}
-                </Box>{' '}
-                para continuar:
-              </Typography>
-              <BootstrapInput onChange={handleChangeTrainingName} />
-            </FormControl>
           </>
         }
         action={
@@ -271,7 +258,6 @@ export default function TrainingItem({
               onDeleteTraining(training.id);
               deleteTraining.onFalse();
             }}
-            disabled={training.name.trim() !== trainingName?.trim()}
           >
             DELETAR
           </Button>

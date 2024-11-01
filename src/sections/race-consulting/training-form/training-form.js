@@ -1,5 +1,8 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import LoadingButton from '@mui/lab/LoadingButton';
+import Accordion from '@mui/material/Accordion';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import AccordionSummary from '@mui/material/AccordionSummary';
 import Alert from '@mui/material/Alert';
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
@@ -21,8 +24,6 @@ import { useTablePvContext } from 'src/components/drawer-table-pv';
 import { RHFSelect, RHFTextField } from 'src/components/hook-form';
 import FormProvider from 'src/components/hook-form/form-provider';
 import Iconify from 'src/components/iconify/iconify';
-import Scrollbar from 'src/components/scrollbar';
-import SelectMedia from 'src/components/select-media';
 import { useBoolean } from 'src/hooks/use-boolean';
 import useProgram from 'src/hooks/use-program';
 import useTraining from 'src/hooks/use-training';
@@ -30,9 +31,12 @@ import { _tags } from 'src/utils/tags';
 import { trainingModules } from 'src/utils/training-modules';
 import * as Yup from 'yup';
 
-import HeatingView from './heating-view';
-import MediasView from './medias-view';
-import StretchesView from './stretches-view';
+import HeatingFind from './heating/heating-find';
+import HeatingView from './heating/heating-view';
+import StrechesFind from './streches/streches-find';
+import StrechesView from './streches/streches-view';
+import WorkoutFind from './workout/workout-find';
+import WorkoutView from './workout/workout-view';
 
 const stretchTags = ['Alongamento ativo', 'Alongamento passivo', 'Alongamentos'];
 const heatingTags = ['Aquecimento'];
@@ -126,46 +130,210 @@ export default function TrainingForm({ handleCancel }) {
     [setValue],
   );
 
-  const handleSaveMedias = (leftList) => {
+  const handleSaveMedias = (workouts) => {
     const medias = values.medias;
     const filtered = medias?.filter((item) => item.tags.some((tag) => excludedTags.includes(tag)));
-    const newMedias = [...filtered, ...leftList];
+    const newMedias = [...filtered, ...workouts];
     setValue('medias', newMedias);
-    orderMedias(leftList);
+    if (!workouts || workouts.length === 0) {
+      setValue('mediaOrder', []);
+    }
+    orderMedias(workouts);
     listMedias.onFalse();
   };
 
-  const handleSaveStretches = (leftList) => {
+  const handleSaveStretches = (stretches) => {
     const medias = values.medias;
     const filtered = medias?.filter((item) => !item.tags.some((tag) => stretchTags.includes(tag)));
-    const newMedias = [...filtered, ...leftList];
+    const newMedias = [...filtered, ...stretches];
     setValue('medias', newMedias);
-    orderStretches(leftList);
+    if (!stretches || stretches.length === 0) {
+      setValue('stretchesOrder', []);
+    }
+    orderStretches(stretches);
     isStretches.onFalse();
   };
 
-  const handleSaveHeatings = (leftList) => {
+  const handleSaveHeatings = (heatings) => {
     const medias = values.medias;
     const filtered = medias?.filter((item) => !item.tags.some((tag) => heatingTags.includes(tag)));
-    const newMedias = [...filtered, ...leftList];
+    const newMedias = [...filtered, ...heatings];
     setValue('medias', newMedias);
-    orderHeating(leftList);
+    if (!heatings || heatings.length === 0) {
+      setValue('heatingOrder', []);
+    } else {
+      orderHeating(heatings);
+    }
+
     isHeating.onFalse();
   };
 
-  const handleReorderMedias = (newMedias) => {
-    //setValue('medias', newMedias);
-    orderMedias(newMedias);
+  const handleRemoveHeatings = (removed) => {
+    const idsToRemove = removed.map((item) => item.id);
+    const medias = [...values.medias];
+    const heatingOrder = [...values.heatingOrder];
+
+    const newHeatingOrder = heatingOrder
+      .flatMap((element) => {
+        if (idsToRemove.includes(element)) {
+          return [];
+        }
+        const resultado =
+          typeof element === 'object' && element !== null
+            ? element.flatMap((subElement) =>
+                idsToRemove.includes(subElement) ? [] : [subElement],
+              )
+            : element;
+        return Array.isArray(resultado) && resultado.length === 0 ? [] : [resultado];
+      })
+      .filter((item) => !Array.isArray(item) || item.length !== 0);
+    const filteredMedias = medias.filter((item) => !idsToRemove.includes(item.id));
+    setValue('heatingOrder', newHeatingOrder);
+    setValue('medias', filteredMedias);
+  };
+
+  const handleRemoveStretches = (removed) => {
+    const idsToRemove = removed.map((item) => item.id);
+    const medias = [...values.medias];
+    const stretchesOrder = [...values.stretchesOrder];
+
+    const newStretchesOrder = stretchesOrder
+      .flatMap((element) => {
+        if (idsToRemove.includes(element)) {
+          return [];
+        }
+        const resultado =
+          typeof element === 'object' && element !== null
+            ? element.flatMap((subElement) =>
+                idsToRemove.includes(subElement) ? [] : [subElement],
+              )
+            : element;
+        return Array.isArray(resultado) && resultado.length === 0 ? [] : [resultado];
+      })
+      .filter((item) => !Array.isArray(item) || item.length !== 0);
+    const filteredMedias = medias.filter((item) => !idsToRemove.includes(item.id));
+    setValue('stretchesOrder', newStretchesOrder);
+    setValue('medias', filteredMedias);
+  };
+
+  const handleRemoveWorkout = (removed) => {
+    const idsToRemove = removed.map((item) => item.id);
+    const medias = [...values.medias];
+    const mediaOrder = [...values.mediaOrder];
+
+    const newWorkoutOrder = mediaOrder
+      .flatMap((element) => {
+        if (idsToRemove.includes(element)) {
+          return [];
+        }
+        const resultado =
+          typeof element === 'object' && element !== null
+            ? element.flatMap((subElement) =>
+                idsToRemove.includes(subElement) ? [] : [subElement],
+              )
+            : element;
+        return Array.isArray(resultado) && resultado.length === 0 ? [] : [resultado];
+      })
+      .filter((item) => !Array.isArray(item) || item.length !== 0);
+    const filteredMedias = medias.filter((item) => !idsToRemove.includes(item.id));
+    setValue('mediaOrder', newWorkoutOrder);
+    setValue('medias', filteredMedias);
+  };
+
+  const handleReorderMedias = (itens) => {
+    setValue('mediaOrder', itens);
   };
 
   const handleReorderStretches = (itens) => {
-    //setValue('medias', itens);
-    orderStretches(filterStretches(itens));
+    setValue('stretchesOrder', itens);
   };
 
   const handleReorderHeatings = (itens) => {
-    //setValue('medias', itens);
-    orderHeating(filterHeating(itens));
+    setValue('heatingOrder', itens);
+  };
+
+  const groupHeatings = (itens) => {
+    const heatingOrder = [...values.heatingOrder];
+    const newHeatingOrder = heatingOrder
+      .map((element) => {
+        return itens.includes(element) ? null : element;
+      })
+      .filter((element) => element !== null);
+
+    newHeatingOrder.splice(1, 0, [...itens]);
+    setValue('heatingOrder', newHeatingOrder);
+  };
+
+  const ungroupHeatings = (idsToUngroup) => {
+    const heatingOrder = [...values.heatingOrder];
+    const newHeatingOrder = heatingOrder.flatMap((element) => {
+      if (Array.isArray(element)) {
+        const desagrupados = element.filter((subElement) => idsToUngroup.includes(subElement));
+        const restantes = element.filter((subElement) => !idsToUngroup.includes(subElement));
+        if (desagrupados.length > 0) {
+          return restantes.length > 0 ? [...desagrupados, restantes] : desagrupados;
+        }
+        return [element];
+      }
+      return element;
+    });
+    setValue('heatingOrder', newHeatingOrder);
+  };
+
+  const ungroupStretches = (idsToUngroup) => {
+    const stretchesOrder = [...values.stretchesOrder];
+    const newStretchesOrder = stretchesOrder.flatMap((element) => {
+      if (Array.isArray(element)) {
+        const desagrupados = element.filter((subElement) => idsToUngroup.includes(subElement));
+        const restantes = element.filter((subElement) => !idsToUngroup.includes(subElement));
+        if (desagrupados.length > 0) {
+          return restantes.length > 0 ? [...desagrupados, restantes] : desagrupados;
+        }
+        return [element];
+      }
+      return element;
+    });
+    setValue('stretchesOrder', newStretchesOrder);
+  };
+
+  const groupStretches = (itens) => {
+    const stretchesOrder = [...values.stretchesOrder];
+    const newStretchesOrder = stretchesOrder
+      .map((element) => {
+        return itens.includes(element) ? null : element;
+      })
+      .filter((element) => element !== null);
+
+    newStretchesOrder.splice(1, 0, [...itens]);
+    setValue('stretchesOrder', newStretchesOrder);
+  };
+
+  const groupWorkout = (itens) => {
+    const workoutOrder = [...values.mediaOrder];
+    const newWorkoutOrder = workoutOrder
+      .map((element) => {
+        return itens.includes(element) ? null : element;
+      })
+      .filter((element) => element !== null);
+
+    newWorkoutOrder.splice(1, 0, [...itens]);
+    setValue('mediaOrder', newWorkoutOrder);
+  };
+
+  const ungroupWorkout = (idsToUngroup) => {
+    const workoutOrder = [...values.mediaOrder];
+    const newWorkoutOrder = workoutOrder.flatMap((element) => {
+      if (Array.isArray(element)) {
+        const desagrupados = element.filter((subElement) => idsToUngroup.includes(subElement));
+        const restantes = element.filter((subElement) => !idsToUngroup.includes(subElement));
+        if (desagrupados.length > 0) {
+          return restantes.length > 0 ? [...desagrupados, restantes] : desagrupados;
+        }
+        return [element];
+      }
+      return element;
+    });
+    setValue('mediaOrder', newWorkoutOrder);
   };
 
   const handleSaveExerciseInfo = (data) => {
@@ -189,15 +357,54 @@ export default function TrainingForm({ handleCancel }) {
   };
 
   const orderStretches = (stretches) => {
-    const newMedias = filterStretches(stretches);
-    const stretchesID = newMedias.map((item) => item.id);
-    setValue('stretchesOrder', stretchesID);
+    const idsStretches = stretches.map((item) => item.id);
+    const stretchesOrder = [...values.stretchesOrder];
+    idsStretches.forEach((item) => {
+      const isDuplicate = stretchesOrder.some((element) =>
+        Array.isArray(element) && Array.isArray(item)
+          ? JSON.stringify(element) === JSON.stringify(item)
+          : element === item,
+      );
+
+      if (!isDuplicate) {
+        stretchesOrder.push(item);
+      }
+    });
+    setValue('stretchesOrder', stretchesOrder);
   };
 
   const orderHeating = (heatings) => {
-    const newMedias = filterHeating(heatings);
-    const heatingID = newMedias.map((item) => item.id);
-    setValue('heatingOrder', heatingID);
+    const idsHeatings = heatings.map((item) => item.id);
+    const heatingOrder = [...values.heatingOrder];
+    idsHeatings.forEach((item) => {
+      const isDuplicate = heatingOrder.some((element) =>
+        Array.isArray(element) && Array.isArray(item)
+          ? JSON.stringify(element) === JSON.stringify(item)
+          : element === item,
+      );
+
+      if (!isDuplicate) {
+        heatingOrder.push(item);
+      }
+    });
+    setValue('heatingOrder', heatingOrder);
+  };
+
+  const orderWorkout = (workout) => {
+    const idsWorkout = workout.map((item) => item.id);
+    const workoutOrder = [...values.mediaOrder];
+    idsWorkout.forEach((item) => {
+      const isDuplicate = workoutOrder.some((element) =>
+        Array.isArray(element) && Array.isArray(item)
+          ? JSON.stringify(element) === JSON.stringify(item)
+          : element === item,
+      );
+
+      if (!isDuplicate) {
+        workoutOrder.push(item);
+      }
+    });
+    setValue('mediaOrder', workoutOrder);
   };
 
   const handleChangeTags = useCallback((newValue) => {
@@ -377,136 +584,197 @@ export default function TrainingForm({ handleCancel }) {
                 </Stack>
                 <Box>
                   <RHFTextField name="heating" label="Aquecimento" multiline rows={3} />
-                  <Stack>
-                    {filterHeating(values.medias).length > 0 && (
-                      <Box
-                        sx={{
-                          overflowY: 'auto',
-                          maxHeight: '40vh',
-                          display: 'flex',
-                          flexGrow: 1,
-                          flexDirection: 'column',
-                        }}
-                      >
-                        <Scrollbar sx={{ height: 320 }}>
-                          <HeatingView
-                            medias={filterHeating(values.medias)}
-                            handleReorderMedias={handleReorderHeatings}
-                            mediaOrder={values.heatingOrder}
-                            handleSaveExerciseInfo={handleSaveExerciseInfo}
-                            exerciseInfo={values.exerciseInfo}
-                          />
-                        </Scrollbar>
-                      </Box>
-                    )}
-                    <Box pt={1}>
-                      <Button
-                        size="small"
-                        color="primary"
-                        startIcon={<Iconify icon="mingcute:add-line" />}
-                        sx={{ flexShrink: 0 }}
-                        onClick={() => {
-                          isStretches.onFalse();
-                          listMedias.onFalse();
-                          isHeating.onTrue();
-                        }}
-                      >
-                        {filterHeating(values.medias).length > 0
-                          ? 'Editar Aquecimentos Selecionados'
-                          : 'Selecionar Aquecimentos'}
-                      </Button>
-                    </Box>
-                  </Stack>
-                </Box>
-                {(!program?.type || program?.type === 1) && (
-                  <Box
-                    component="fieldset"
+                  <Accordion
+                    aria-controls="heating-medias-content"
+                    id="heating-medias-header"
+                    defaultExpanded
                     sx={{
-                      borderWidth: '2px',
-                      borderStyle: 'groove',
-                      borderColor: 'rgba(145, 158, 171, 0.2)',
-                      borderRadius: '8px',
+                      '&:before': {
+                        display: 'none',
+                      },
                     }}
                   >
-                    <legend>
-                      <Typography fontSize={'12px'} color={'#919EAB'}>
-                        Alongamentos ativos e educativos de corrida
-                      </Typography>
-                    </legend>
-                    {filterStretches(values.medias).length > 0 && (
-                      <Box>
-                        <Scrollbar sx={{ height: 320 }}>
-                          <StretchesView
-                            medias={filterStretches(values.medias)}
-                            handleReorderMedias={handleReorderStretches}
-                            mediaOrder={values.stretchesOrder}
-                            handleSaveExerciseInfo={handleSaveExerciseInfo}
-                            exerciseInfo={values.exerciseInfo}
-                          />
-                        </Scrollbar>
-                      </Box>
-                    )}
-                    <Stack>
-                      <Button
-                        size="small"
-                        color="primary"
-                        startIcon={<Iconify icon="mingcute:add-line" />}
-                        sx={{ flexShrink: 0 }}
-                        onClick={() => {
-                          listMedias.onFalse();
-                          isStretches.onTrue();
-                          isHeating.onFalse();
-                        }}
-                      >
-                        Selecionar Alongamentos
-                      </Button>
-                    </Stack>
-                  </Box>
+                    <AccordionSummary expandIcon={<Iconify icon="eva:arrow-ios-downward-fill" />}>
+                      <Typography variant="subtitle1">Vídeos de aquecimento</Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      <Stack py={2}>
+                        <HeatingFind
+                          handleSaveHeatings={handleSaveHeatings}
+                          heatingMedias={filterHeating(values.medias)}
+                        />
+                      </Stack>
+                      <Stack>
+                        {filterHeating(values.medias).length > 0 && (
+                          <Box
+                            sx={{
+                              overflowY: 'auto',
+                              maxHeight: '40vh',
+                              display: 'flex',
+                              flexGrow: 1,
+                              flexDirection: 'column',
+                            }}
+                          >
+                            <HeatingView
+                              medias={filterHeating(values.medias)}
+                              mediaOrder={values.heatingOrder}
+                              handleSaveExerciseInfo={handleSaveExerciseInfo}
+                              exerciseInfo={values.exerciseInfo}
+                              groupHeatings={groupHeatings}
+                              ungroupHeatings={ungroupHeatings}
+                              handleRemoveHeatings={handleRemoveHeatings}
+                              handleReorderHeatings={handleReorderHeatings}
+                            />
+                          </Box>
+                        )}
+                      </Stack>
+                    </AccordionDetails>
+                  </Accordion>
+                </Box>
+                {(!program?.type || program?.type === 1) && (
+                  <Accordion
+                    aria-controls="stretches-medias-content"
+                    id="stretches-medias-header"
+                    defaultExpanded
+                    elevation={0}
+                    sx={{
+                      '&:before': {
+                        display: 'none',
+                      },
+                    }}
+                  >
+                    <AccordionSummary expandIcon={<Iconify icon="eva:arrow-ios-downward-fill" />}>
+                      <Typography variant="subtitle1">Vídeos de alongamentos</Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      <Stack py={2}>
+                        <StrechesFind
+                          handleSaveStretches={handleSaveStretches}
+                          strechesMedias={filterStretches(values.medias)}
+                        />
+                      </Stack>
+                      <Stack>
+                        {filterStretches(values.medias).length > 0 && (
+                          <Box
+                            sx={{
+                              overflowY: 'auto',
+                              maxHeight: '40vh',
+                              display: 'flex',
+                              flexGrow: 1,
+                              flexDirection: 'column',
+                            }}
+                          >
+                            <StrechesView
+                              medias={filterStretches(values.medias)}
+                              mediaOrder={values.stretchesOrder}
+                              handleSaveExerciseInfo={handleSaveExerciseInfo}
+                              exerciseInfo={values.exerciseInfo}
+                              groupStretches={groupStretches}
+                              ungroupStretches={ungroupStretches}
+                              handleRemoveStretches={handleRemoveStretches}
+                              handleReorderStretches={handleReorderStretches}
+                            />
+                          </Box>
+                        )}
+                      </Stack>
+                    </AccordionDetails>
+                  </Accordion>
+                  // <Box
+                  //   component="fieldset"
+                  //   sx={{
+                  //     borderWidth: '2px',
+                  //     borderStyle: 'groove',
+                  //     borderColor: 'rgba(145, 158, 171, 0.2)',
+                  //     borderRadius: '8px',
+                  //   }}
+                  // >
+                  //   <legend>
+                  //     <Typography fontSize={'12px'} color={'#919EAB'}>
+                  //       Alongamentos ativos e educativos de corrida
+                  //     </Typography>
+                  //   </legend>
+                  //   {filterStretches(values.medias).length > 0 && (
+                  //     <Box>
+                  //       <Scrollbar sx={{ height: 320 }}>
+                  //         <StretchesView
+                  //           medias={filterStretches(values.medias)}
+                  //           handleReorderMedias={handleReorderStretches}
+                  //           mediaOrder={values.stretchesOrder}
+                  //           handleSaveExerciseInfo={handleSaveExerciseInfo}
+                  //           exerciseInfo={values.exerciseInfo}
+                  //         />
+                  //       </Scrollbar>
+                  //     </Box>
+                  //   )}
+                  //   <Stack>
+                  //     <Button
+                  //       size="small"
+                  //       color="primary"
+                  //       startIcon={<Iconify icon="mingcute:add-line" />}
+                  //       sx={{ flexShrink: 0 }}
+                  //       onClick={() => {
+                  //         listMedias.onFalse();
+                  //         isStretches.onTrue();
+                  //         isHeating.onFalse();
+                  //       }}
+                  //     >
+                  //       Selecionar Alongamentos
+                  //     </Button>
+                  //   </Stack>
+                  // </Box>
                 )}
 
                 <RHFTextField name="description" label="Parte principal" multiline rows={6} />
-                <Stack>
-                  {filterMedias(values.medias).length > 0 && (
-                    <Box
-                      sx={{
-                        overflowY: 'auto',
-                        maxHeight: '40vh',
-                        display: 'flex',
-                        flexGrow: 1,
-                        flexDirection: 'column',
-                      }}
-                    >
-                      <Scrollbar sx={{ height: 320 }}>
-                        <MediasView
-                          medias={filterMedias(values.medias)}
-                          handleReorderMedias={handleReorderMedias}
-                          mediaOrder={values.mediaOrder}
-                          handleSaveExerciseInfo={handleSaveExerciseInfo}
-                          exerciseInfo={values.exerciseInfo}
+                {program?.type === 2 && (
+                  <Accordion
+                    aria-controls="stretches-medias-content"
+                    id="stretches-medias-header"
+                    defaultExpanded
+                    elevation={0}
+                    sx={{
+                      '&:before': {
+                        display: 'none',
+                      },
+                    }}
+                  >
+                    <AccordionSummary expandIcon={<Iconify icon="eva:arrow-ios-downward-fill" />}>
+                      <Typography variant="subtitle1">Vídeos dos exercícios</Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      <Stack py={2}>
+                        <WorkoutFind
+                          handleSaveWorkout={handleSaveMedias}
+                          workoutMedias={filterMedias(values.medias)}
+                          tags={values.tags}
                         />
-                      </Scrollbar>
-                    </Box>
-                  )}
-                  {program?.type === 2 && (
-                    <Box pt={1}>
-                      <Button
-                        size="small"
-                        color="primary"
-                        startIcon={<Iconify icon="mingcute:add-line" />}
-                        sx={{ flexShrink: 0 }}
-                        onClick={() => {
-                          isStretches.onFalse();
-                          listMedias.onTrue();
-                          isHeating.onFalse();
-                        }}
-                      >
-                        {filterMedias(values.medias).length > 0
-                          ? 'Editar Exercícios Selecionados'
-                          : 'Selecionar Exercícios'}
-                      </Button>
-                    </Box>
-                  )}
-                </Stack>
+                      </Stack>
+                      <Stack>
+                        {filterMedias(values.medias).length > 0 && (
+                          <Box
+                            sx={{
+                              overflowY: 'auto',
+                              maxHeight: '40vh',
+                              display: 'flex',
+                              flexGrow: 1,
+                              flexDirection: 'column',
+                            }}
+                          >
+                            <WorkoutView
+                              medias={filterMedias(values.medias)}
+                              mediaOrder={values.mediaOrder}
+                              handleSaveExerciseInfo={handleSaveExerciseInfo}
+                              exerciseInfo={values.exerciseInfo}
+                              groupWorkout={groupWorkout}
+                              ungroupWorkout={ungroupWorkout}
+                              handleRemoveWorkout={handleRemoveWorkout}
+                              handleReorderWorkout={handleReorderMedias}
+                            />
+                          </Box>
+                        )}
+                      </Stack>
+                    </AccordionDetails>
+                  </Accordion>
+                )}
                 <RHFTextField name="recovery" label="Desaquecimento" multiline rows={3} />
                 <Stack alignItems="flex-start" sx={{ mb: 1 }}>
                   <FormControlLabel
@@ -537,37 +805,6 @@ export default function TrainingForm({ handleCancel }) {
           </FormProvider>
         </Grid>
       </Grid>
-      {listMedias?.value && (
-        <SelectMedia
-          open={listMedias.value}
-          onClose={listMedias.onFalse}
-          onSelectMedias={handleSaveMedias}
-          mediasSelected={filterMedias(values.medias)}
-          mediaOrder={values.mediaOrder}
-          tags={values.tags}
-          excludedTags={['Alongamento ativo', 'Alongamento passivo', 'Alongamentos', 'Aquecimento']}
-        />
-      )}
-      {isStretches?.value && (
-        <SelectMedia
-          open={isStretches.value}
-          onClose={isStretches.onFalse}
-          onSelectMedias={handleSaveStretches}
-          mediasSelected={filterStretches(values.medias)}
-          mediaOrder={values.stretchesOrder}
-          includedTags={stretchTags}
-        />
-      )}
-      {isHeating?.value && (
-        <SelectMedia
-          open={isHeating.value}
-          onClose={isHeating.onFalse}
-          onSelectMedias={handleSaveHeatings}
-          mediasSelected={filterHeating(values.medias)}
-          mediaOrder={values.heatingOrder}
-          includedTags={heatingTags}
-        />
-      )}
     </>
   );
 }

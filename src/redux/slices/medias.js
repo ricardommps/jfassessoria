@@ -152,9 +152,14 @@ export function getMediasWithTagFiltered(tags = []) {
     dispatch(slice.actions.getAllMediasStart());
     try {
       // Convert the tags array to a comma-separated string for the query parameter
-      const tagsQuery = tags.join(',');
-      const response = await axios.get(`${API_ENDPOINTS.medias.root}/filtered?tags=${tagsQuery}`);
-      dispatch(slice.actions.getAllMediasSuccess(response.data));
+      if (tags?.length > 0) {
+        const tagsQuery = tags.join(',');
+        const response = await axios.get(`${API_ENDPOINTS.medias.root}/filtered?tags=${tagsQuery}`);
+        dispatch(slice.actions.getAllMediasSuccess(response.data));
+      } else {
+        const response = await axios.get(`${API_ENDPOINTS.medias.root}`);
+        dispatch(slice.actions.getAllMediasSuccess(response.data));
+      }
     } catch (error) {
       dispatch(slice.actions.getAllMediasFailure(error));
     }
