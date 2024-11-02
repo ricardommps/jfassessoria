@@ -24,15 +24,17 @@ export default function WorkoutViewGroupItem({
   mediasSelected,
   mediaGroupSelected,
   setMediaGroupSelected,
+  medias,
 }) {
-  const exerciseInfoById = exerciseInfo?.filter((item) => item.id === media.id)[0];
+  const mediaItem = medias.find((m) => m.id === media);
+  const exerciseInfoById = exerciseInfo?.filter((item) => item.id === mediaItem.id)[0];
   const player = useBoolean();
   const info = useBoolean();
 
   const handleCheckboxChange = (event) => {
     const selected = event.target.checked;
     setMediaGroupSelected((prevSelected) =>
-      selected ? [...prevSelected, media.id] : prevSelected.filter((id) => id !== media.id),
+      selected ? [...prevSelected, mediaItem.id] : prevSelected.filter((id) => id !== mediaItem.id),
     );
   };
 
@@ -41,12 +43,12 @@ export default function WorkoutViewGroupItem({
       <ListItem>
         <Checkbox
           disabled={mediasSelected.length > 0}
-          checked={mediaGroupSelected?.includes(media.id)}
+          checked={mediaGroupSelected?.includes(mediaItem.id)}
           onChange={handleCheckboxChange}
         />
         <TextColum>
           <Stack direction="row" alignItems={'center'}>
-            <Title sx={{ flex: 1 }}>{media.title}</Title>
+            <Title sx={{ flex: 1 }}>{mediaItem.title}</Title>
             <IconButton sx={{ paddingRight: 2 }} onClick={player.onTrue}>
               <Iconify icon="mdi:youtube" width={20} />
             </IconButton>
@@ -145,16 +147,16 @@ export default function WorkoutViewGroupItem({
         <MediaPlayer
           open={player.value}
           onClose={player.onFalse}
-          url={media.videoUrl}
-          title={media.title}
+          url={mediaItem.videoUrl}
+          title={mediaItem.title}
         />
       )}
       {info.value && (
         <ExerciseInfo
           open={info.value}
           onClose={info.onFalse}
-          title={media.title}
-          id={media.id}
+          title={mediaItem.title}
+          id={mediaItem.id}
           onSave={handleSaveExerciseInfo}
           exerciseInfoById={exerciseInfoById}
           hideRir={true}
