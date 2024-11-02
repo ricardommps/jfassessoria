@@ -1,11 +1,13 @@
-import { DragDropContext, Droppable } from '@hello-pangea/dnd';
+import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
-import { useCallback, useState } from 'react';
+import { alpha } from '@mui/material/styles';
+import { useState } from 'react';
 import Scrollbar from 'src/components/scrollbar';
 
-import WorkoutViewGroup from './workout-view-group';
+import WorkoutGroup from './workout-group';
 import WorkoutViewItem from './workout-view-item';
 
 const reorder = (list, startIndex, endIndex) => {
@@ -13,6 +15,41 @@ const reorder = (list, startIndex, endIndex) => {
   const [removed] = result.splice(startIndex, 1);
   result.splice(endIndex, 0, removed);
   return result;
+};
+
+const reorderItems = (items, source, destination) => {
+  const updatedItems = [...items];
+
+  const sourceGroupIndex = Number.isInteger(parseInt(source.droppableId))
+    ? parseInt(source.droppableId, 10)
+    : null;
+  const destinationGroupIndex = Number.isInteger(parseInt(destination.droppableId))
+    ? parseInt(destination.droppableId, 10)
+    : null;
+
+  if (
+    sourceGroupIndex !== null &&
+    destinationGroupIndex !== null &&
+    sourceGroupIndex === destinationGroupIndex
+  ) {
+    // Reordenar dentro do mesmo grupo
+    updatedItems[sourceGroupIndex] = reorder(
+      updatedItems[sourceGroupIndex],
+      source.index,
+      destination.index,
+    );
+  } else if (sourceGroupIndex !== null && destinationGroupIndex === null) {
+    const [movedItem] = updatedItems[sourceGroupIndex].splice(source.index, 1);
+    updatedItems.splice(destination.index, 0, movedItem);
+  } else if (sourceGroupIndex === null && destinationGroupIndex !== null) {
+    const [movedItem] = updatedItems.splice(source.index, 1);
+    updatedItems[destinationGroupIndex].splice(destination.index, 0, movedItem);
+  } else if (sourceGroupIndex === null && destinationGroupIndex === null) {
+    const [movedItem] = updatedItems.splice(source.index, 1);
+    updatedItems.splice(destination.index, 0, movedItem);
+  }
+
+  return updatedItems;
 };
 
 export default function WorkoutView({
@@ -33,22 +70,18 @@ export default function WorkoutView({
     setMediasSelected([]);
   };
 
-  const onDragEnd = useCallback(
-    (result) => {
-      if (!result.destination) {
-        return;
-      }
-      const newMedias = reorder(mediaOrder, result.source.index, result.destination.index);
-      handleReorderWorkout(newMedias);
-    },
+  const onDragEnd = (result) => {
+    if (!result.destination) return;
 
-    [medias],
-  );
+    const { source, destination } = result;
+    const newItems = reorderItems(mediaOrder, source, destination);
+    handleReorderWorkout(newItems);
+  };
 
   return (
     <Box sx={{ p: 1, overflow: 'hidden' }}>
       {mediasSelected.length > 1 && (
-        <Box py={1} justifyContent={'flex-end'} display={'flex'}>
+        <Box py={1} justifyContent="flex-end" display="flex">
           <Button variant="outlined" onClick={handleGroupWorkout}>
             Agrupar
           </Button>
@@ -57,43 +90,76 @@ export default function WorkoutView({
       <Scrollbar sx={{ height: 320 }}>
         <Stack spacing={2}>
           <DragDropContext onDragEnd={onDragEnd}>
-            <Droppable droppableId="droppable">
+            <Droppable droppableId="top-level" type="GROUP">
               {(provided) => (
                 <div ref={provided.innerRef} {...provided.droppableProps}>
-                  {mediaOrder.map((orderItem, index) => {
-                    if (Array.isArray(orderItem)) {
-                      const groupedMedias = medias.filter((media) => orderItem.includes(media.id));
-                      return (
-                        <WorkoutViewGroup
-                          media={groupedMedias}
-                          index={index}
-                          key={`group-${index}`}
-                          handleSaveExerciseInfo={handleSaveExerciseInfo}
-                          exerciseInfo={exerciseInfo}
-                          mediasSelected={mediasSelected}
-                          setMediasSelected={setMediaGroupSelected}
-                          handleRemoveWorkout={handleRemoveWorkout}
-                          mediaGroupSelected={mediaGroupSelected}
-                          setMediaGroupSelected={setMediaGroupSelected}
-                          ungroupWorkout={ungroupWorkout}
-                        />
-                      );
-                    } else {
-                      const media = medias.find((m) => m.id === orderItem);
-                      return (
-                        <WorkoutViewItem
-                          media={media}
-                          index={index}
-                          key={media.id}
-                          handleSaveExerciseInfo={handleSaveExerciseInfo}
-                          exerciseInfo={exerciseInfo}
-                          mediasSelected={mediasSelected}
-                          setMediasSelected={setMediasSelected}
-                          mediaGroupSelected={mediaGroupSelected}
-                        />
-                      );
-                    }
-                  })}
+                  {mediaOrder.map((item, index) =>
+                    Array.isArray(item) ? (
+                      <Draggable
+                        key={`group-${index}`}
+                        draggableId={`group-${index}`}
+                        index={index}
+                      >
+                        {(provided) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                          >
+                            <Paper
+                              variant="outlined"
+                              pb={2}
+                              sx={{
+                                marginBottom: '8.25px',
+                                paddingTop: '10px',
+                                paddingRight: '10px',
+                                paddingLeft: '10px',
+                                borderRadius: 1.5,
+                                borderStyle: 'dashed',
+                                borderColor: (theme) => alpha(theme.palette.grey[300], 0.5),
+                                bgcolor: (theme) => alpha(theme.palette.grey[500], 0.04),
+                              }}
+                            >
+                              <WorkoutGroup
+                                item={item}
+                                index={index}
+                                medias={medias}
+                                mediaGroupSelected={mediaGroupSelected}
+                                setMediaGroupSelected={setMediaGroupSelected}
+                                ungroupWorkout={ungroupWorkout}
+                                handleRemoveWorkout={handleRemoveWorkout}
+                                exerciseInfo={exerciseInfo}
+                                handleSaveExerciseInfo={handleSaveExerciseInfo}
+                                mediasSelected={mediasSelected}
+                              />
+                            </Paper>
+                          </div>
+                        )}
+                      </Draggable>
+                    ) : (
+                      <Draggable key={`item-${index}`} draggableId={`item-${index}`} index={index}>
+                        {(provided) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                          >
+                            <WorkoutViewItem
+                              media={medias.find((m) => m.id === item)}
+                              index={index}
+                              key={`media-${index}`}
+                              handleSaveExerciseInfo={handleSaveExerciseInfo}
+                              exerciseInfo={exerciseInfo}
+                              mediasSelected={mediasSelected}
+                              setMediasSelected={setMediasSelected}
+                              mediaGroupSelected={mediaGroupSelected}
+                            />
+                          </div>
+                        )}
+                      </Draggable>
+                    ),
+                  )}
+                  {provided.placeholder}
                 </div>
               )}
             </Droppable>

@@ -32,9 +32,7 @@ import { trainingModules } from 'src/utils/training-modules';
 import * as Yup from 'yup';
 
 import HeatingFind from './heating/heating-find';
-import HeatingView from './heating/heating-view';
 import StrechesFind from './streches/streches-find';
-import StrechesView from './streches/streches-view';
 import WorkoutFind from './workout/workout-find';
 import WorkoutView from './workout/workout-view';
 
@@ -615,15 +613,15 @@ export default function TrainingForm({ handleCancel }) {
                               flexDirection: 'column',
                             }}
                           >
-                            <HeatingView
+                            <WorkoutView
                               medias={filterHeating(values.medias)}
                               mediaOrder={values.heatingOrder}
                               handleSaveExerciseInfo={handleSaveExerciseInfo}
                               exerciseInfo={values.exerciseInfo}
-                              groupHeatings={groupHeatings}
-                              ungroupHeatings={ungroupHeatings}
-                              handleRemoveHeatings={handleRemoveHeatings}
-                              handleReorderHeatings={handleReorderHeatings}
+                              groupWorkout={groupHeatings}
+                              ungroupWorkout={ungroupHeatings}
+                              handleRemoveWorkout={handleRemoveHeatings}
+                              handleReorderWorkout={handleReorderHeatings}
                             />
                           </Box>
                         )}
@@ -664,15 +662,15 @@ export default function TrainingForm({ handleCancel }) {
                               flexDirection: 'column',
                             }}
                           >
-                            <StrechesView
+                            <WorkoutView
                               medias={filterStretches(values.medias)}
                               mediaOrder={values.stretchesOrder}
                               handleSaveExerciseInfo={handleSaveExerciseInfo}
                               exerciseInfo={values.exerciseInfo}
-                              groupStretches={groupStretches}
-                              ungroupStretches={ungroupStretches}
-                              handleRemoveStretches={handleRemoveStretches}
-                              handleReorderStretches={handleReorderStretches}
+                              groupWorkout={groupStretches}
+                              ungroupWorkout={ungroupHeatings}
+                              handleRemoveWorkout={handleRemoveStretches}
+                              handleReorderWorkout={handleReorderStretches}
                             />
                           </Box>
                         )}
