@@ -136,7 +136,7 @@ export default function TrainingForm({ handleCancel }) {
     if (!workouts || workouts.length === 0) {
       setValue('mediaOrder', []);
     }
-    orderMedias(workouts);
+    orderWorkout(workouts);
     listMedias.onFalse();
   };
 
