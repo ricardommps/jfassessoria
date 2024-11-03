@@ -33,11 +33,11 @@ export default function WorkoutViewItem({
   const handleCheckboxChange = (event) => {
     const selected = event.target.checked;
     setMediasSelected((prevSelected) =>
-      selected ? [...prevSelected, media.id] : prevSelected.filter((id) => id !== media.id),
+      selected ? [...prevSelected, media.id] : prevSelected.filter((id) => id !== media?.id),
     );
   };
 
-  const exerciseInfoById = exerciseInfo?.filter((item) => item.id === media.id)[0];
+  const exerciseInfoById = exerciseInfo?.filter((item) => item.id === media?.id)[0];
 
   return (
     <>
@@ -156,16 +156,16 @@ export default function WorkoutViewItem({
         <MediaPlayer
           open={player.value}
           onClose={player.onFalse}
-          url={media.videoUrl}
-          title={media.title}
+          url={media?.videoUrl}
+          title={media?.title}
         />
       )}
       {info.value && (
         <ExerciseInfo
           open={info.value}
           onClose={info.onFalse}
-          title={media.title}
-          id={media.id}
+          title={media?.title}
+          id={media?.id}
           onSave={handleSaveExerciseInfo}
           exerciseInfoById={exerciseInfoById}
           hideRir={true}
