@@ -100,11 +100,10 @@ export default function WorkoutView({
                         draggableId={`group-${index}`}
                         index={index}
                       >
-                        {(provided) => (
+                        {(providedGroupRoot) => (
                           <div
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
+                            ref={providedGroupRoot.innerRef}
+                            {...providedGroupRoot.draggableProps}
                           >
                             <Paper
                               variant="outlined"
@@ -131,6 +130,7 @@ export default function WorkoutView({
                                 exerciseInfo={exerciseInfo}
                                 handleSaveExerciseInfo={handleSaveExerciseInfo}
                                 mediasSelected={mediasSelected}
+                                providedGroupRoot={providedGroupRoot}
                               />
                             </Paper>
                           </div>
@@ -138,12 +138,8 @@ export default function WorkoutView({
                       </Draggable>
                     ) : (
                       <Draggable key={`item-${index}`} draggableId={`item-${index}`} index={index}>
-                        {(provided) => (
-                          <div
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                          >
+                        {(providedItem) => (
+                          <div ref={providedItem.innerRef} {...providedItem.draggableProps}>
                             <WorkoutViewItem
                               media={medias.find((m) => m.id === item)}
                               index={index}
@@ -153,6 +149,7 @@ export default function WorkoutView({
                               mediasSelected={mediasSelected}
                               setMediasSelected={setMediasSelected}
                               mediaGroupSelected={mediaGroupSelected}
+                              providedItem={providedItem}
                             />
                           </div>
                         )}

@@ -1,3 +1,4 @@
+import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import Box from '@mui/material/Box';
 import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
@@ -24,7 +25,7 @@ export default function WorkoutViewItem({
   mediasSelected,
   setMediasSelected,
   mediaGroupSelected,
-  index,
+  providedItem,
 }) {
   const player = useBoolean();
   const info = useBoolean();
@@ -32,24 +33,29 @@ export default function WorkoutViewItem({
   const handleCheckboxChange = (event) => {
     const selected = event.target.checked;
     setMediasSelected((prevSelected) =>
-      selected ? [...prevSelected, media.id] : prevSelected.filter((id) => id !== media.id),
+      selected ? [...prevSelected, media.id] : prevSelected.filter((id) => id !== media?.id),
     );
   };
 
-  const exerciseInfoById = exerciseInfo?.filter((item) => item.id === media.id)[0];
+  const exerciseInfoById = exerciseInfo?.filter((item) => item.id === media?.id)[0];
 
   return (
     <>
       <Stack pb={2}>
         <ListItem>
+          <Box>
+            <IconButton {...providedItem.dragHandleProps}>
+              <DragIndicatorIcon />
+            </IconButton>
+          </Box>
           <Checkbox
-            checked={mediasSelected?.includes(media.id)}
+            checked={mediasSelected?.includes(media?.id)}
             onChange={handleCheckboxChange}
             disabled={mediaGroupSelected.length > 0}
           />
           <TextColum>
             <Stack direction="row" alignItems={'center'}>
-              <Title sx={{ flex: 1 }}>{media.title}</Title>
+              <Title sx={{ flex: 1 }}>{media?.title}</Title>
               <IconButton sx={{ paddingRight: 2 }} onClick={player.onTrue}>
                 <Iconify icon="mdi:youtube" width={20} />
               </IconButton>
@@ -150,16 +156,16 @@ export default function WorkoutViewItem({
         <MediaPlayer
           open={player.value}
           onClose={player.onFalse}
-          url={media.videoUrl}
-          title={media.title}
+          url={media?.videoUrl}
+          title={media?.title}
         />
       )}
       {info.value && (
         <ExerciseInfo
           open={info.value}
           onClose={info.onFalse}
-          title={media.title}
-          id={media.id}
+          title={media?.title}
+          id={media?.id}
           onSave={handleSaveExerciseInfo}
           exerciseInfoById={exerciseInfoById}
           hideRir={true}

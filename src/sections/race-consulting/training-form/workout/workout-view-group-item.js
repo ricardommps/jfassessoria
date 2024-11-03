@@ -1,3 +1,4 @@
+import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import Box from '@mui/material/Box';
 import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
@@ -25,6 +26,7 @@ export default function WorkoutViewGroupItem({
   mediaGroupSelected,
   setMediaGroupSelected,
   medias,
+  providedGroupItem,
 }) {
   const mediaItem = medias.find((m) => m.id === media);
   const exerciseInfoById = exerciseInfo?.filter((item) => item.id === mediaItem.id)[0];
@@ -41,6 +43,11 @@ export default function WorkoutViewGroupItem({
   return (
     <Box pb={2}>
       <ListItem>
+        <Box>
+          <IconButton {...providedGroupItem.dragHandleProps}>
+            <DragIndicatorIcon />
+          </IconButton>
+        </Box>
         <Checkbox
           disabled={mediasSelected.length > 0}
           checked={mediaGroupSelected?.includes(mediaItem.id)}

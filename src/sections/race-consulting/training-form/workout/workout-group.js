@@ -1,4 +1,5 @@
 import { Draggable, Droppable } from '@hello-pangea/dnd';
+import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
@@ -17,6 +18,7 @@ export default function WorkoutGroup({
   exerciseInfo,
   handleSaveExerciseInfo,
   mediasSelected,
+  providedGroupRoot,
 }) {
   const groupedMedias = medias.filter((media) => item.includes(media.id));
 
@@ -35,7 +37,12 @@ export default function WorkoutGroup({
             padding: 0,
           }}
         >
-          <Box justifyContent="flex-end" display="flex" pr={2} gap={2}>
+          <Box justifyContent="flex-start" display="flex" pr={2} gap={2}>
+            <Box sx={{ flex: 1 }}>
+              <IconButton {...providedGroupRoot.dragHandleProps}>
+                <DragIndicatorIcon />
+              </IconButton>
+            </Box>
             {mediaGroupSelected.length > 0 && (
               <Button variant="outlined" size="small" onClick={handleUngroupWorkout}>
                 Desagrupar
@@ -51,12 +58,8 @@ export default function WorkoutGroup({
               draggableId={`subitem-${index}-${subIndex}`}
               index={subIndex}
             >
-              {(provided) => (
-                <Box
-                  ref={provided.innerRef}
-                  {...provided.draggableProps}
-                  {...provided.dragHandleProps}
-                >
+              {(providedGroupItem) => (
+                <Box ref={providedGroupItem.innerRef} {...providedGroupItem.draggableProps}>
                   <WorkoutViewGroupItem
                     media={subItem}
                     exerciseInfo={exerciseInfo}
@@ -65,6 +68,7 @@ export default function WorkoutGroup({
                     mediaGroupSelected={mediaGroupSelected}
                     setMediaGroupSelected={setMediaGroupSelected}
                     medias={medias}
+                    providedGroupItem={providedGroupItem}
                   />
                 </Box>
               )}
