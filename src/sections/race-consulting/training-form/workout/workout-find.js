@@ -1,5 +1,6 @@
 import Autocomplete from '@mui/material/Autocomplete';
 import Checkbox from '@mui/material/Checkbox';
+import Chip from '@mui/material/Chip';
 import CircularProgress from '@mui/material/CircularProgress';
 import TextField from '@mui/material/TextField';
 import { darken, lighten, styled } from '@mui/system';
@@ -27,7 +28,6 @@ export default function WorkoutFind({ handleSaveWorkout, workoutMedias = [], tag
   const [open, setOpen] = useState(false);
   const [options, setOptions] = useState([]);
   const [loading, setLoading] = useState(false);
-  //const [mediasSelected, setMediasSelected] = useState([]);
 
   const { onGetListMedias, medias } = useMedia();
 
@@ -35,13 +35,11 @@ export default function WorkoutFind({ handleSaveWorkout, workoutMedias = [], tag
     setOpen(true);
     (async () => {
       setLoading(true);
-      if (tags) {
+      if (tags?.length > 0) {
         await onGetListMedias(tags);
       } else {
-        //const filteredTags = _tags.filter((tag) => !excludedTags.includes(tag));
         await onGetListMedias();
       }
-
       setLoading(false);
     })();
   };
@@ -53,20 +51,26 @@ export default function WorkoutFind({ handleSaveWorkout, workoutMedias = [], tag
 
   useEffect(() => {
     if (medias) {
-      // Ensure `medias` is an array and create a shallow copy before sorting
       const sortedMedias = [...(medias || [])].sort((a, b) => a.title.localeCompare(b.title));
-      setOptions(sortedMedias);
+      if (tags?.length > 0) {
+        setOptions(sortedMedias);
+      } else {
+        const newWorkouts = sortedMedias.filter(
+          (item) => !item.tags.some((tagItem) => excludedTags.includes(tagItem)),
+        );
+        setOptions(newWorkouts);
+      }
     }
   }, [medias]);
 
   const handleChange = (event, value) => {
-    //setMediasSelected(value);
     handleSaveWorkout(value);
   };
 
   return (
     <Autocomplete
       multiple
+      disableClearable
       limitTags={2}
       fullWidth
       open={open}
@@ -74,23 +78,20 @@ export default function WorkoutFind({ handleSaveWorkout, workoutMedias = [], tag
       onClose={handleClose}
       options={options}
       disableCloseOnSelect
-      isOptionEqualToValue={(option, value) => option.id === value.id} // Compare by unique id
+      isOptionEqualToValue={(option, value) => option.id === value.id}
       getOptionLabel={(option) => option.title}
       loading={loading}
       onChange={handleChange}
-      value={workoutMedias} // Ensure selected items are reflected
+      value={workoutMedias}
       groupBy={(option) => {
         const firstLetter = option.title[0].toUpperCase();
         return /[0-9]/.test(firstLetter) ? '0-9' : firstLetter;
       }}
       renderOption={(props, option, { selected }) => {
-        const { key, ...optionProps } = props; // Extract `key` from `props`
+        const { key, ...optionProps } = props;
         return (
           <li key={key} {...optionProps}>
-            <Checkbox
-              style={{ marginRight: 8 }}
-              checked={selected} // Automatically checked based on `value`
-            />
+            <Checkbox style={{ marginRight: 8 }} checked={selected} />
             {option.title}
           </li>
         );
@@ -100,19 +101,27 @@ export default function WorkoutFind({ handleSaveWorkout, workoutMedias = [], tag
           {...params}
           label="Selecione os vídeos"
           placeholder="Vídeos"
-          slotProps={{
-            input: {
-              ...params.InputProps,
-              endAdornment: (
-                <>
-                  {loading ? <CircularProgress color="inherit" size={20} /> : null}
-                  {params.InputProps.endAdornment}
-                </>
-              ),
-            },
+          InputProps={{
+            ...params.InputProps,
+            endAdornment: (
+              <>
+                {loading ? <CircularProgress color="inherit" size={20} /> : null}
+                {params.InputProps.endAdornment}
+              </>
+            ),
           }}
         />
       )}
+      renderTags={(value, getTagProps) =>
+        value.map((option, index) => (
+          <Chip
+            variant="outlined"
+            label={option.title}
+            {...getTagProps({ index })}
+            onDelete={null} // Disables delete (remove) icon on the Chip
+          />
+        ))
+      }
       renderGroup={(params) => (
         <li key={params.key}>
           <GroupHeader>{params.group}</GroupHeader>

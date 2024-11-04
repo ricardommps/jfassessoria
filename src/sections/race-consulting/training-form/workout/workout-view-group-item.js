@@ -27,6 +27,7 @@ export default function WorkoutViewGroupItem({
   setMediaGroupSelected,
   medias,
   providedGroupItem,
+  handleRemoveWorkout,
 }) {
   const mediaItem = medias.find((m) => m.id === media);
   const exerciseInfoById = exerciseInfo?.filter((item) => item.id === mediaItem.id)[0];
@@ -56,9 +57,14 @@ export default function WorkoutViewGroupItem({
         <TextColum>
           <Stack direction="row" alignItems={'center'}>
             <Title sx={{ flex: 1 }}>{mediaItem.title}</Title>
-            <IconButton sx={{ paddingRight: 2 }} onClick={player.onTrue}>
-              <Iconify icon="mdi:youtube" width={20} />
-            </IconButton>
+            <Box sx={{ paddingRight: 2 }}>
+              <IconButton onClick={player.onTrue}>
+                <Iconify icon="mdi:youtube" width={20} />
+              </IconButton>
+              <IconButton edge="end" onClick={() => handleRemoveWorkout([mediaItem])}>
+                <Iconify icon="mdi:bin-circle" width={24} height={24} />
+              </IconButton>
+            </Box>
           </Stack>
         </TextColum>
       </ListItem>

@@ -69,6 +69,7 @@ export default function WorkoutGroup({
                     setMediaGroupSelected={setMediaGroupSelected}
                     medias={medias}
                     providedGroupItem={providedGroupItem}
+                    handleRemoveWorkout={handleRemoveWorkout}
                   />
                 </Box>
               )}
