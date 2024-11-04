@@ -1,5 +1,6 @@
 import Autocomplete from '@mui/material/Autocomplete';
 import Checkbox from '@mui/material/Checkbox';
+import Chip from '@mui/material/Chip';
 import CircularProgress from '@mui/material/CircularProgress';
 import TextField from '@mui/material/TextField';
 import { darken, lighten, styled } from '@mui/system';
@@ -58,6 +59,7 @@ export default function HeatingFind({ handleSaveHeatings, heatingMedias = [] }) 
   return (
     <Autocomplete
       multiple
+      disableClearable
       limitTags={2}
       fullWidth
       open={open}
@@ -65,23 +67,20 @@ export default function HeatingFind({ handleSaveHeatings, heatingMedias = [] }) 
       onClose={handleClose}
       options={options}
       disableCloseOnSelect
-      isOptionEqualToValue={(option, value) => option.id === value.id} // Compare by unique id
+      isOptionEqualToValue={(option, value) => option.id === value.id}
       getOptionLabel={(option) => option.title}
       loading={loading}
       onChange={handleChange}
-      value={heatingMedias} // Ensure selected items are reflected
+      value={heatingMedias}
       groupBy={(option) => {
         const firstLetter = option.title[0].toUpperCase();
         return /[0-9]/.test(firstLetter) ? '0-9' : firstLetter;
       }}
       renderOption={(props, option, { selected }) => {
-        const { key, ...optionProps } = props; // Extract `key` from `props`
+        const { key, ...optionProps } = props;
         return (
           <li key={key} {...optionProps}>
-            <Checkbox
-              style={{ marginRight: 8 }}
-              checked={selected} // Automatically checked based on `value`
-            />
+            <Checkbox style={{ marginRight: 8 }} checked={selected} />
             {option.title}
           </li>
         );
@@ -89,21 +88,29 @@ export default function HeatingFind({ handleSaveHeatings, heatingMedias = [] }) 
       renderInput={(params) => (
         <TextField
           {...params}
-          label="Selecione os vídeos de aquecimento"
+          label="Selecione os vídeos"
           placeholder="Vídeos"
-          slotProps={{
-            input: {
-              ...params.InputProps,
-              endAdornment: (
-                <>
-                  {loading ? <CircularProgress color="inherit" size={20} /> : null}
-                  {params.InputProps.endAdornment}
-                </>
-              ),
-            },
+          InputProps={{
+            ...params.InputProps,
+            endAdornment: (
+              <>
+                {loading ? <CircularProgress color="inherit" size={20} /> : null}
+                {params.InputProps.endAdornment}
+              </>
+            ),
           }}
         />
       )}
+      renderTags={(value, getTagProps) =>
+        value.map((option, index) => (
+          <Chip
+            variant="outlined"
+            label={option.title}
+            {...getTagProps({ index })}
+            onDelete={null} // Disables delete (remove) icon on the Chip
+          />
+        ))
+      }
       renderGroup={(params) => (
         <li key={params.key}>
           <GroupHeader>{params.group}</GroupHeader>

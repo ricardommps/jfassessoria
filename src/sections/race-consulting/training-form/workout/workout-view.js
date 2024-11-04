@@ -141,7 +141,8 @@ export default function WorkoutView({
                         {(providedItem) => (
                           <div ref={providedItem.innerRef} {...providedItem.draggableProps}>
                             <WorkoutViewItem
-                              media={medias.find((m) => m.id === item)}
+                              medias={medias}
+                              mediaItem={item}
                               index={index}
                               key={`media-${index}`}
                               handleSaveExerciseInfo={handleSaveExerciseInfo}
@@ -150,6 +151,7 @@ export default function WorkoutView({
                               setMediasSelected={setMediasSelected}
                               mediaGroupSelected={mediaGroupSelected}
                               providedItem={providedItem}
+                              handleRemoveWorkout={handleRemoveWorkout}
                             />
                           </div>
                         )}

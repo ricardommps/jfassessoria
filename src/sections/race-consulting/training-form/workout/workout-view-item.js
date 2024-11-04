@@ -4,6 +4,7 @@ import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
+import { useEffect, useState } from 'react';
 import Iconify from 'src/components/iconify/iconify';
 import MediaPlayer from 'src/components/media-player';
 import { useBoolean } from 'src/hooks/use-boolean';
@@ -19,13 +20,15 @@ import {
 } from '../styles';
 
 export default function WorkoutViewItem({
-  media,
+  medias,
+  mediaItem,
   handleSaveExerciseInfo,
   exerciseInfo,
   mediasSelected,
   setMediasSelected,
   mediaGroupSelected,
   providedItem,
+  handleRemoveWorkout,
 }) {
   const player = useBoolean();
   const info = useBoolean();
@@ -37,7 +40,20 @@ export default function WorkoutViewItem({
     );
   };
 
-  const exerciseInfoById = exerciseInfo?.filter((item) => item.id === media?.id)[0];
+  const [exerciseInfoById, setexErciseInfoById] = useState(null);
+
+  const [media, setMedia] = useState([]);
+
+  useEffect(() => {
+    if (medias?.length > 0) {
+      const mediaFind = medias.find((m) => m.id === mediaItem);
+      if (mediaFind) {
+        const exerciseInfoFilter = exerciseInfo?.filter((item) => item.id === mediaFind?.id)[0];
+        setexErciseInfoById(exerciseInfoFilter);
+      }
+      setMedia(mediaFind);
+    }
+  }, [medias, exerciseInfo]);
 
   return (
     <>
@@ -56,9 +72,14 @@ export default function WorkoutViewItem({
           <TextColum>
             <Stack direction="row" alignItems={'center'}>
               <Title sx={{ flex: 1 }}>{media?.title}</Title>
-              <IconButton sx={{ paddingRight: 2 }} onClick={player.onTrue}>
-                <Iconify icon="mdi:youtube" width={20} />
-              </IconButton>
+              <Box sx={{ paddingRight: 2 }}>
+                <IconButton onClick={player.onTrue}>
+                  <Iconify icon="mdi:youtube" width={20} />
+                </IconButton>
+                <IconButton edge="end" onClick={() => handleRemoveWorkout([media])}>
+                  <Iconify icon="mdi:bin-circle" width={24} height={24} />
+                </IconButton>
+              </Box>
             </Stack>
           </TextColum>
         </ListItem>

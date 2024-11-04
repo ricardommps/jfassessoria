@@ -154,8 +154,7 @@ export default function TrainingForm({ handleCancel }) {
 
   const handleSaveHeatings = (heatings) => {
     const medias = values.medias;
-    const filtered = medias?.filter((item) => !item.tags.some((tag) => heatingTags.includes(tag)));
-    const newMedias = [...filtered, ...heatings];
+    const newMedias = [...new Set([...medias, ...heatings])];
     setValue('medias', newMedias);
     if (!heatings || heatings.length === 0) {
       setValue('heatingOrder', []);
@@ -251,6 +250,7 @@ export default function TrainingForm({ handleCancel }) {
   };
 
   const groupHeatings = (itens) => {
+    console.log('-groupHeatings---');
     const heatingOrder = [...values.heatingOrder];
     const newHeatingOrder = heatingOrder
       .map((element) => {
@@ -354,7 +354,7 @@ export default function TrainingForm({ handleCancel }) {
     setValue('mediaOrder', mediasID);
   };
 
-  const orderStretches = (stretches) => {
+  const orderStretches_ = (stretches) => {
     const idsStretches = stretches.map((item) => item.id);
     const stretchesOrder = [...values.stretchesOrder];
     idsStretches.forEach((item) => {
@@ -371,17 +371,32 @@ export default function TrainingForm({ handleCancel }) {
     setValue('stretchesOrder', stretchesOrder);
   };
 
+  const orderStretches = (stretches) => {
+    const idsStretches = stretches.map((item) => item.id);
+    const stretchesOrder = [...values.stretchesOrder];
+    const isDuplicate = (item) => {
+      return stretchesOrder.some((element) =>
+        Array.isArray(element) ? element.includes(item) : element === item,
+      );
+    };
+    idsStretches.forEach((item) => {
+      if (!isDuplicate(item)) {
+        stretchesOrder.push(item);
+      }
+    });
+    setValue('stretchesOrder', stretchesOrder);
+  };
+
   const orderHeating = (heatings) => {
     const idsHeatings = heatings.map((item) => item.id);
     const heatingOrder = [...values.heatingOrder];
-    idsHeatings.forEach((item) => {
-      const isDuplicate = heatingOrder.some((element) =>
-        Array.isArray(element) && Array.isArray(item)
-          ? JSON.stringify(element) === JSON.stringify(item)
-          : element === item,
+    const isDuplicate = (item) => {
+      return heatingOrder.some((element) =>
+        Array.isArray(element) ? element.includes(item) : element === item,
       );
-
-      if (!isDuplicate) {
+    };
+    idsHeatings.forEach((item) => {
+      if (!isDuplicate(item)) {
         heatingOrder.push(item);
       }
     });
@@ -391,14 +406,13 @@ export default function TrainingForm({ handleCancel }) {
   const orderWorkout = (workout) => {
     const idsWorkout = workout.map((item) => item.id);
     const workoutOrder = [...values.mediaOrder];
-    idsWorkout.forEach((item) => {
-      const isDuplicate = workoutOrder.some((element) =>
-        Array.isArray(element) && Array.isArray(item)
-          ? JSON.stringify(element) === JSON.stringify(item)
-          : element === item,
+    const isDuplicate = (item) => {
+      return workoutOrder.some((element) =>
+        Array.isArray(element) ? element.includes(item) : element === item,
       );
-
-      if (!isDuplicate) {
+    };
+    idsWorkout.forEach((item) => {
+      if (!isDuplicate(item)) {
         workoutOrder.push(item);
       }
     });
@@ -422,6 +436,40 @@ export default function TrainingForm({ handleCancel }) {
   const filterHeating = (medias) => {
     const filtered = medias?.filter((item) => item.tags.some((tag) => heatingTags.includes(tag)));
     return filtered;
+  };
+
+  const filterHeatingFind = (medias) => {
+    const flattenOrder = values.heatingOrder.flat(Infinity); // Ensures deeply nested arrays are flattened
+    if (flattenOrder.length > 0) {
+      const filtered = medias?.filter((item) => {
+        return flattenOrder.includes(item.id);
+      });
+      console.log('--filtered--', filtered);
+      return filtered;
+    }
+    return [];
+  };
+
+  const filterStretchesFind = (medias) => {
+    const flattenOrder = values.stretchesOrder.flat(Infinity); // Ensures deeply nested arrays are flattened
+    if (flattenOrder.length > 0) {
+      const filtered = medias?.filter((item) => {
+        return flattenOrder.includes(item.id);
+      });
+      return filtered;
+    }
+    return [];
+  };
+
+  const filterWorkoutFind = (medias) => {
+    const flattenOrder = values.mediaOrder.flat(Infinity); // Ensures deeply nested arrays are flattened
+    if (flattenOrder.length > 0) {
+      const filtered = medias?.filter((item) => {
+        return flattenOrder.includes(item.id);
+      });
+      return filtered;
+    }
+    return [];
   };
 
   const renderErros = (
@@ -599,11 +647,11 @@ export default function TrainingForm({ handleCancel }) {
                       <Stack py={2}>
                         <HeatingFind
                           handleSaveHeatings={handleSaveHeatings}
-                          heatingMedias={filterHeating(values.medias)}
+                          heatingMedias={filterHeatingFind(values.medias)}
                         />
                       </Stack>
                       <Stack>
-                        {filterHeating(values.medias).length > 0 && (
+                        {values.heatingOrder.length > 0 && (
                           <Box
                             sx={{
                               overflowY: 'auto',
@@ -648,11 +696,11 @@ export default function TrainingForm({ handleCancel }) {
                       <Stack py={2}>
                         <StrechesFind
                           handleSaveStretches={handleSaveStretches}
-                          strechesMedias={filterStretches(values.medias)}
+                          strechesMedias={filterStretchesFind(values.medias)}
                         />
                       </Stack>
                       <Stack>
-                        {filterStretches(values.medias).length > 0 && (
+                        {values.stretchesOrder.length > 0 && (
                           <Box
                             sx={{
                               overflowY: 'auto',
@@ -668,7 +716,7 @@ export default function TrainingForm({ handleCancel }) {
                               handleSaveExerciseInfo={handleSaveExerciseInfo}
                               exerciseInfo={values.exerciseInfo}
                               groupWorkout={groupStretches}
-                              ungroupWorkout={ungroupHeatings}
+                              ungroupWorkout={ungroupStretches}
                               handleRemoveWorkout={handleRemoveStretches}
                               handleReorderWorkout={handleReorderStretches}
                             />
@@ -742,12 +790,12 @@ export default function TrainingForm({ handleCancel }) {
                       <Stack py={2}>
                         <WorkoutFind
                           handleSaveWorkout={handleSaveMedias}
-                          workoutMedias={filterMedias(values.medias)}
+                          workoutMedias={filterWorkoutFind(values.medias)}
                           tags={values.tags}
                         />
                       </Stack>
                       <Stack>
-                        {filterMedias(values.medias).length > 0 && (
+                        {values.mediaOrder.length > 0 && (
                           <Box
                             sx={{
                               overflowY: 'auto',
