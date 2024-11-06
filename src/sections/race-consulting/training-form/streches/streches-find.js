@@ -28,7 +28,7 @@ export default function StrechesFind({ handleSaveStretches, strechesMedias = [] 
   const [open, setOpen] = useState(false);
   const [options, setOptions] = useState([]);
   const [loading, setLoading] = useState(false);
-  //const [mediasSelected, setMediasSelected] = useState([]);
+  const [mediasSelected, setMediasSelected] = useState([]);
 
   const { onGetListMedias, medias } = useMedia();
 
@@ -48,11 +48,33 @@ export default function StrechesFind({ handleSaveStretches, strechesMedias = [] 
 
   useEffect(() => {
     if (medias) {
-      // Ensure `medias` is an array and create a shallow copy before sorting
-      const sortedMedias = [...(medias || [])].sort((a, b) => a.title.localeCompare(b.title));
+      const sortedMedias = [...(medias || [])]
+        .sort((a, b) => a.title.localeCompare(b.title))
+        .reduce((acc, current) => {
+          const duplicate = acc.find((item) => item.id === current.id);
+          if (!duplicate) {
+            acc.push(current);
+          }
+          return acc;
+        }, []);
       setOptions(sortedMedias);
     }
   }, [medias]);
+
+  useEffect(() => {
+    if (strechesMedias) {
+      const newMedias = [...(strechesMedias || [])]
+        .sort((a, b) => a.title.localeCompare(b.title))
+        .reduce((acc, current) => {
+          const duplicate = acc.find((item) => item.id === current.id);
+          if (!duplicate) {
+            acc.push(current);
+          }
+          return acc;
+        }, []);
+      setMediasSelected(newMedias);
+    }
+  }, [strechesMedias]);
 
   const handleChange = (event, value) => {
     //setMediasSelected(value);
@@ -74,7 +96,7 @@ export default function StrechesFind({ handleSaveStretches, strechesMedias = [] 
       getOptionLabel={(option) => option.title}
       loading={loading}
       onChange={handleChange}
-      value={strechesMedias}
+      value={mediasSelected}
       groupBy={(option) => {
         const firstLetter = option.title[0].toUpperCase();
         return /[0-9]/.test(firstLetter) ? '0-9' : firstLetter;
