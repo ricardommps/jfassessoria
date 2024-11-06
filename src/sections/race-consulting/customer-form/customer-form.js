@@ -229,7 +229,7 @@ export default function CustomerForm({ handleCloseNewCustomer, isMobile = false 
   return (
     <Paper
       sx={{
-        px: 2,
+        p: 2,
         borderRadius: 2,
         bgcolor: 'background.neutral',
       }}
@@ -242,7 +242,7 @@ export default function CustomerForm({ handleCloseNewCustomer, isMobile = false 
             </Button>
           </Stack>
         )}
-        <Stack p={2}>
+        <Stack>
           <Typography variant="h3">Formulário</Typography>
           <Typography sx={{ fontSize: '1.5em', fontWeight: 'bold', color: '#f7951e' }}>
             {customer ? 'Editar Aluno' : 'Novo Aluno'}

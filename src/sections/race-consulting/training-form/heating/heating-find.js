@@ -28,6 +28,7 @@ export default function HeatingFind({ handleSaveHeatings, heatingMedias = [] }) 
   const [open, setOpen] = useState(false);
   const [options, setOptions] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [mediasSelected, setMediasSelected] = useState([]);
 
   const { onGetListMedias, medias } = useMedia();
 
@@ -47,10 +48,33 @@ export default function HeatingFind({ handleSaveHeatings, heatingMedias = [] }) 
 
   useEffect(() => {
     if (medias) {
-      const sortedMedias = [...(medias || [])].sort((a, b) => a.title.localeCompare(b.title));
+      const sortedMedias = [...(medias || [])]
+        .sort((a, b) => a.title.localeCompare(b.title))
+        .reduce((acc, current) => {
+          const duplicate = acc.find((item) => item.id === current.id);
+          if (!duplicate) {
+            acc.push(current);
+          }
+          return acc;
+        }, []);
       setOptions(sortedMedias);
     }
   }, [medias]);
+
+  useEffect(() => {
+    if (heatingMedias) {
+      const newMedias = [...(heatingMedias || [])]
+        .sort((a, b) => a.title.localeCompare(b.title))
+        .reduce((acc, current) => {
+          const duplicate = acc.find((item) => item.id === current.id);
+          if (!duplicate) {
+            acc.push(current);
+          }
+          return acc;
+        }, []);
+      setMediasSelected(newMedias);
+    }
+  }, [heatingMedias]);
 
   const handleChange = (event, value) => {
     handleSaveHeatings(value);
@@ -71,7 +95,7 @@ export default function HeatingFind({ handleSaveHeatings, heatingMedias = [] }) 
       getOptionLabel={(option) => option.title}
       loading={loading}
       onChange={handleChange}
-      value={heatingMedias}
+      value={mediasSelected}
       groupBy={(option) => {
         const firstLetter = option.title[0].toUpperCase();
         return /[0-9]/.test(firstLetter) ? '0-9' : firstLetter;
@@ -108,6 +132,7 @@ export default function HeatingFind({ handleSaveHeatings, heatingMedias = [] }) 
             label={option.title}
             {...getTagProps({ index })}
             onDelete={null} // Disables delete (remove) icon on the Chip
+            disabled
           />
         ))
       }
