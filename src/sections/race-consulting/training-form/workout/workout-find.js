@@ -28,6 +28,7 @@ export default function WorkoutFind({ handleSaveWorkout, workoutMedias = [], tag
   const [open, setOpen] = useState(false);
   const [options, setOptions] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [mediasSelected, setMediasSelected] = useState([]);
 
   const { onGetListMedias, medias } = useMedia();
 
@@ -51,17 +52,33 @@ export default function WorkoutFind({ handleSaveWorkout, workoutMedias = [], tag
 
   useEffect(() => {
     if (medias) {
-      const sortedMedias = [...(medias || [])].sort((a, b) => a.title.localeCompare(b.title));
-      if (tags?.length > 0) {
-        setOptions(sortedMedias);
-      } else {
-        const newWorkouts = sortedMedias.filter(
-          (item) => !item.tags.some((tagItem) => excludedTags.includes(tagItem)),
-        );
-        setOptions(newWorkouts);
-      }
+      const sortedMedias = [...(medias || [])]
+        .sort((a, b) => a.title.localeCompare(b.title))
+        .reduce((acc, current) => {
+          const duplicate = acc.find((item) => item.id === current.id);
+          if (!duplicate) {
+            acc.push(current);
+          }
+          return acc;
+        }, []);
+      setOptions(sortedMedias);
     }
   }, [medias]);
+
+  useEffect(() => {
+    if (workoutMedias) {
+      const newMedias = [...(workoutMedias || [])]
+        .sort((a, b) => a.title.localeCompare(b.title))
+        .reduce((acc, current) => {
+          const duplicate = acc.find((item) => item.id === current.id);
+          if (!duplicate) {
+            acc.push(current);
+          }
+          return acc;
+        }, []);
+      setMediasSelected(newMedias);
+    }
+  }, [workoutMedias]);
 
   const handleChange = (event, value) => {
     handleSaveWorkout(value);
@@ -82,7 +99,7 @@ export default function WorkoutFind({ handleSaveWorkout, workoutMedias = [], tag
       getOptionLabel={(option) => option.title}
       loading={loading}
       onChange={handleChange}
-      value={workoutMedias}
+      value={mediasSelected}
       groupBy={(option) => {
         const firstLetter = option.title[0].toUpperCase();
         return /[0-9]/.test(firstLetter) ? '0-9' : firstLetter;
