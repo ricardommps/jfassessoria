@@ -96,6 +96,9 @@ export default function HeatingFind({ handleSaveHeatings, heatingMedias = [] }) 
       loading={loading}
       onChange={handleChange}
       value={mediasSelected}
+      getOptionDisabled={(option) =>
+        mediasSelected.some((selectedMedia) => selectedMedia.id === option.id)
+      }
       groupBy={(option) => {
         const firstLetter = option.title[0].toUpperCase();
         return /[0-9]/.test(firstLetter) ? '0-9' : firstLetter;
@@ -104,7 +107,7 @@ export default function HeatingFind({ handleSaveHeatings, heatingMedias = [] }) 
         const { key, ...optionProps } = props;
         return (
           <li key={key} {...optionProps}>
-            <Checkbox style={{ marginRight: 8 }} checked={selected} />
+            <Checkbox style={{ marginRight: 8 }} checked={selected} disabled={selected} />
             {option.title}
           </li>
         );

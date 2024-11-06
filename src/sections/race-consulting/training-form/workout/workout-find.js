@@ -80,8 +80,10 @@ export default function WorkoutFind({ handleSaveWorkout, workoutMedias = [], tag
     }
   }, [workoutMedias]);
 
-  const handleChange = (event, value) => {
-    handleSaveWorkout(value);
+  const handleChange = (event, value, reason) => {
+    if (reason !== 'remove-option') {
+      handleSaveWorkout(value);
+    }
   };
 
   return (
@@ -100,6 +102,9 @@ export default function WorkoutFind({ handleSaveWorkout, workoutMedias = [], tag
       loading={loading}
       onChange={handleChange}
       value={mediasSelected}
+      getOptionDisabled={(option) =>
+        mediasSelected.some((selectedMedia) => selectedMedia.id === option.id)
+      }
       groupBy={(option) => {
         const firstLetter = option.title[0].toUpperCase();
         return /[0-9]/.test(firstLetter) ? '0-9' : firstLetter;
@@ -107,7 +112,7 @@ export default function WorkoutFind({ handleSaveWorkout, workoutMedias = [], tag
       renderOption={(props, option, { selected }) => {
         const { key, ...optionProps } = props;
         return (
-          <li key={key} {...optionProps}>
+          <li key={key} {...optionProps} disabled={selected}>
             <Checkbox style={{ marginRight: 8 }} checked={selected} />
             {option.title}
           </li>

@@ -52,29 +52,31 @@ export default function WorkoutGroup({
               <Iconify icon="mdi:bin-circle" width={24} height={24} />
             </IconButton>
           </Box>
-          {item.map((subItem, subIndex) => (
-            <Draggable
-              key={`subitem-${index}-${subIndex}`}
-              draggableId={`subitem-${index}-${subIndex}`}
-              index={subIndex}
-            >
-              {(providedGroupItem) => (
-                <Box ref={providedGroupItem.innerRef} {...providedGroupItem.draggableProps}>
-                  <WorkoutViewGroupItem
-                    media={subItem}
-                    exerciseInfo={exerciseInfo}
-                    handleSaveExerciseInfo={handleSaveExerciseInfo}
-                    mediasSelected={mediasSelected}
-                    mediaGroupSelected={mediaGroupSelected}
-                    setMediaGroupSelected={setMediaGroupSelected}
-                    medias={medias}
-                    providedGroupItem={providedGroupItem}
-                    handleRemoveWorkout={handleRemoveWorkout}
-                  />
-                </Box>
-              )}
-            </Draggable>
-          ))}
+          {item.map((subItem, subIndex) => {
+            return (
+              <Draggable
+                key={`subitem-${index}-${subIndex}`}
+                draggableId={`subitem-${index}-${subIndex}`}
+                index={subIndex}
+              >
+                {(providedGroupItem) => (
+                  <Box ref={providedGroupItem.innerRef} {...providedGroupItem.draggableProps}>
+                    <WorkoutViewGroupItem
+                      media={subItem}
+                      exerciseInfo={exerciseInfo}
+                      handleSaveExerciseInfo={handleSaveExerciseInfo}
+                      mediasSelected={mediasSelected}
+                      mediaGroupSelected={mediaGroupSelected}
+                      setMediaGroupSelected={setMediaGroupSelected}
+                      medias={medias}
+                      providedGroupItem={providedGroupItem}
+                      handleRemoveWorkout={handleRemoveWorkout}
+                    />
+                  </Box>
+                )}
+              </Draggable>
+            );
+          })}
           {provided.placeholder}
         </Box>
       )}

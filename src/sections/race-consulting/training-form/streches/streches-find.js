@@ -97,6 +97,9 @@ export default function StrechesFind({ handleSaveStretches, strechesMedias = [] 
       loading={loading}
       onChange={handleChange}
       value={mediasSelected}
+      getOptionDisabled={(option) =>
+        mediasSelected.some((selectedMedia) => selectedMedia.id === option.id)
+      }
       groupBy={(option) => {
         const firstLetter = option.title[0].toUpperCase();
         return /[0-9]/.test(firstLetter) ? '0-9' : firstLetter;
