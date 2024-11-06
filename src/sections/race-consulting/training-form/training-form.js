@@ -250,7 +250,6 @@ export default function TrainingForm({ handleCancel }) {
   };
 
   const groupHeatings = (itens) => {
-    console.log('-groupHeatings---');
     const heatingOrder = [...values.heatingOrder];
     const newHeatingOrder = heatingOrder
       .map((element) => {
@@ -444,7 +443,6 @@ export default function TrainingForm({ handleCancel }) {
       const filtered = medias?.filter((item) => {
         return flattenOrder.includes(item.id);
       });
-      console.log('--filtered--', filtered);
       return filtered;
     }
     return [];
