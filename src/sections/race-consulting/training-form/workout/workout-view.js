@@ -5,7 +5,6 @@ import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import { alpha } from '@mui/material/styles';
 import { useState } from 'react';
-import Scrollbar from 'src/components/scrollbar';
 
 import WorkoutGroup from './workout-group';
 import WorkoutViewItem from './workout-view-item';
@@ -87,7 +86,7 @@ export default function WorkoutView({
           </Button>
         </Box>
       )}
-      <Scrollbar sx={{ height: 320 }}>
+      <Box>
         <Stack spacing={2}>
           <DragDropContext onDragEnd={onDragEnd}>
             <Droppable droppableId="top-level" type="GROUP">
@@ -164,7 +163,7 @@ export default function WorkoutView({
             </Droppable>
           </DragDropContext>
         </Stack>
-      </Scrollbar>
+      </Box>
     </Box>
   );
 }
