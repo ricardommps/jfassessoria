@@ -653,7 +653,7 @@ export default function TrainingForm({ handleCancel }) {
                           <Box
                             sx={{
                               overflowY: 'auto',
-                              maxHeight: '40vh',
+                              height: 'auto',
                               display: 'flex',
                               flexGrow: 1,
                               flexDirection: 'column',
@@ -702,7 +702,7 @@ export default function TrainingForm({ handleCancel }) {
                           <Box
                             sx={{
                               overflowY: 'auto',
-                              maxHeight: '40vh',
+                              height: 'auto',
                               display: 'flex',
                               flexGrow: 1,
                               flexDirection: 'column',
@@ -797,7 +797,7 @@ export default function TrainingForm({ handleCancel }) {
                           <Box
                             sx={{
                               overflowY: 'auto',
-                              maxHeight: '40vh',
+                              height: 'auto',
                               display: 'flex',
                               flexGrow: 1,
                               flexDirection: 'column',
