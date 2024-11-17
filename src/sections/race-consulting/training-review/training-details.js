@@ -91,7 +91,7 @@ export default function TrainingDetails({ training, finished, program }) {
   };
 
   const renderPace = () => {
-    if (finished?.pace.length > 0) {
+    if (finished?.pace?.length > 0) {
       return finished?.pace;
     }
     if (finished?.paceInSeconds) {
@@ -262,7 +262,7 @@ export default function TrainingDetails({ training, finished, program }) {
                     component: 'span',
                   }}
                 />
-                {(finished?.pace.length > 0 || finished?.paceInSeconds > 0) && (
+                {(finished?.pace?.length > 0 || finished?.paceInSeconds > 0) && (
                   <ListItemText
                     primary={`Pace médio da sessão`}
                     secondary={renderPace()}
