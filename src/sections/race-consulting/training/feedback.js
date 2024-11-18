@@ -63,7 +63,7 @@ export default function FeedBack({ open, onClose, trainingId }) {
     }
   }, [feedbackUpdateStatus]);
   return (
-    <Dialog fullWidth maxWidth="md" open={open}>
+    <Dialog fullWidth maxWidth="lg" open={open}>
       <DialogTitle sx={{ p: (theme) => theme.spacing(3, 3, 2, 3) }}>
         Feedback
         <IconButton
