@@ -82,7 +82,6 @@ export default function CustomerForm({ handleCloseNewCustomer, isMobile = false 
   const NewCustomerSchema = Yup.object().shape({
     name: Yup.string().required('Titulo obrigatório'),
     email: Yup.string().required('Email obrigatório'),
-    phone: Yup.string().required('Telefone obrigatório'),
     gender: Yup.string().required('Sexo obrigatório'),
     birthDate: Yup.date().required('Data de Nascimento obrigatório').typeError(''),
   });
