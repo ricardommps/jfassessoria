@@ -92,6 +92,7 @@ export default function FinishedForm({ training, finished, editForm, onCancel })
   };
 
   const handleOpenLink = () => {
+    console.log('--handleOpenLink-', finished.link);
     if (finished.link.length > 0) {
       window.open(finished.link, '_blank', 'noreferrer');
     }

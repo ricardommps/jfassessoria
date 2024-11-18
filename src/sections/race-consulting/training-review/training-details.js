@@ -30,17 +30,35 @@ export default function TrainingDetails({ training, finished, program }) {
     showEditForm((prev) => !prev);
   }, []);
 
-  const renderLink = (
-    <TextMaxLine
-      asLink
-      target="_blank"
-      href={finished?.link}
-      color="primary"
-      sx={{ maxWidth: 200 }}
-    >
-      Link
-    </TextMaxLine>
-  );
+  function extractLink(str) {
+    // Expressão regular para capturar URLs
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    const match = str.match(urlRegex);
+
+    // Retorna o primeiro link encontrado ou null se nenhum for encontrado
+    return match ? match[0] : null;
+  }
+
+  function isValidLink(str) {
+    try {
+      new URL(str); // Tentativa de criar uma URL válida
+      return true; // Retorna true se a URL for válida
+    } catch {
+      return false; // Retorna false se lançar um erro
+    }
+  }
+
+  const renderLink = () => {
+    const newLink = extractLink(finished?.link);
+    console.log('--newLink--', newLink);
+    if (isValidLink(newLink)) {
+      return (
+        <TextMaxLine asLink target="_blank" href={newLink} color="primary" sx={{ maxWidth: 200 }}>
+          Link
+        </TextMaxLine>
+      );
+    }
+  };
 
   const renderIntensities = () => {
     const intensities = finished.intensities.map((intensities) => JSON.parse(intensities));
@@ -308,7 +326,7 @@ export default function TrainingDetails({ training, finished, program }) {
                 />
                 {finished?.link && (
                   <ListItemText
-                    primary={renderLink}
+                    primary={renderLink()}
                     primaryTypographyProps={{
                       typography: 'body2',
                       color: 'text.primary',
