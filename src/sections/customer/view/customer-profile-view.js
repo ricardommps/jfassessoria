@@ -11,6 +11,7 @@ import useCustomer from 'src/hooks/use-customer';
 import { useParams } from 'src/routes/hook';
 import { paths } from 'src/routes/paths';
 
+import Anamnese from '../anamnese';
 import CustomerForm from '../forms/customer-form';
 import SecurityForm from '../forms/security-form';
 import Notifications from '../notifications';
@@ -140,7 +141,10 @@ export default function CustomerProfileView() {
       {currentTab === 'security' && (
         <SecurityForm customer={customer} loading={loading} setLoading={setLoading} />
       )}
-      {currentTab === 'notifications' && <Notifications id={customer.id} />}
+      {currentTab === 'notifications' && (
+        <Notifications id={customer.id} loading={loading} setLoading={setLoading} />
+      )}
+      {currentTab === 'anamnese' && <Anamnese id={customer.id} />}
     </Container>
   );
 }

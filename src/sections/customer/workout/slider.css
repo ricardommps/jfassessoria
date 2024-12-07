@@ -1,0 +1,19 @@
+.over-slider {
+  z-index: 2;
+}
+
+.slick-list{
+  overflow: visible;
+  padding:0 20% 0 0;
+  position: relative;
+}
+
+.slick-list::after {
+  content: ' ';
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  width: 4000px;
+  right: 100%;
+  background-color: white;
+}

@@ -45,14 +45,14 @@ export default function useNotifications() {
 
   const onDeleteNoticifation = useCallback(
     async (notificationId) => {
-      dispatch(deleteNoticifationReq(notificationId));
+      await dispatch(deleteNoticifationReq(notificationId));
     },
     [dispatch],
   );
 
   const onCreateAndEdit = useCallback(
     async (payload, notificationId) => {
-      dispatch(createAndEditReq(payload, notificationId));
+      await dispatch(createAndEditReq(payload, notificationId));
     },
     [dispatch],
   );

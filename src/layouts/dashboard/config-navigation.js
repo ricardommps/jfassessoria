@@ -61,6 +61,12 @@ export function useNavData() {
             icon: ICONS.runner,
           },
           {
+            title: 'Alunos',
+            titleMini: 'Alunos',
+            path: paths.dashboard.customer.root,
+            icon: ICONS.user,
+          },
+          {
             title: 'Mídias',
             titleMini: 'Mídias',
             path: paths.dashboard.medias.root,

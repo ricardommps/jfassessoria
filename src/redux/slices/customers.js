@@ -207,6 +207,18 @@ export function getCustomers() {
   };
 }
 
+export function getCustomerV2() {
+  return async (dispatch) => {
+    dispatch(slice.actions.getCustomersStart());
+    try {
+      const response = await axios.get(`${API_ENDPOINTS.customer}`);
+      dispatch(slice.actions.getCustomersSuccess(response.data));
+    } catch (error) {
+      dispatch(slice.actions.getCustomersFailure(error));
+    }
+  };
+}
+
 export function getCustomerById(customerId) {
   return async (dispatch) => {
     dispatch(slice.actions.getCustomerStart());
@@ -227,7 +239,9 @@ export function createCustomer(customerData) {
       const response = await axios.post(API_ENDPOINTS.customer, data);
       dispatch(slice.actions.createCustomerSuccess(response.data));
     } catch (error) {
-      console.error(error);
+      // Obtém uma mensagem de erro detalhada, se disponível
+      const errorMessage = 'Erro ao salvar os dados';
+      throw new Error(errorMessage);
     }
   };
 }
@@ -240,7 +254,8 @@ export function updateCustomer(customerUpadate, customerId) {
       dispatch(slice.actions.updateCustomerSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.customerError());
-      console.error(error);
+      const errorMessage = 'Erro ao salvar os dados';
+      throw new Error(errorMessage);
     }
   };
 }

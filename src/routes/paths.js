@@ -25,8 +25,10 @@ export const paths = {
     customer: {
       root: `${ROOTS.DASHBOARD}/customer`,
       profile: (id) => `${ROOTS.DASHBOARD}/customer/profile/${id}`,
+      new: `${ROOTS.DASHBOARD}/customer/profile/new`,
       create: (type, id) => `${ROOTS.DASHBOARD}/customer/create/${type}/${id}`,
       edit: (id) => `${ROOTS.DASHBOARD}/customer/edit/${id}`,
+      program: (id) => `${ROOTS.DASHBOARD}/customer/program/${id}`,
     },
     metrics: {
       root: (id) => `${ROOTS.DASHBOARD}/metrics/${id}`,

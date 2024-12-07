@@ -16,6 +16,7 @@ import { useResponsive } from 'src/hooks/use-responsive';
 import { bgBlur } from 'src/theme/css';
 
 import { AccountPopover } from '../_common';
+import FeedbackPopover from '../_common/feedback-popover';
 //
 import { HEADER, NAV } from '../config-layout';
 
@@ -52,6 +53,7 @@ export default function Header({ onOpenNav }) {
         justifyContent="flex-end"
         spacing={{ xs: 0.5, sm: 1 }}
       >
+        <FeedbackPopover />
         <AccountPopover />
       </Stack>
     </>

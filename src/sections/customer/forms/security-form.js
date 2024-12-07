@@ -14,10 +14,13 @@ import Iconify from 'src/components/iconify';
 import { useSnackbar } from 'src/components/snackbar';
 import { useBoolean } from 'src/hooks/use-boolean';
 import useCustomer from 'src/hooks/use-customer';
+import { useRouter } from 'src/routes/hook';
+import { paths } from 'src/routes/paths';
 // components
 // hooks
 import * as Yup from 'yup';
 export default function SecurityForm({ customer, loading, setLoading }) {
+  const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
   const password = useBoolean();
   const { onChangePassword } = useCustomer();
@@ -114,7 +117,11 @@ export default function SecurityForm({ customer, loading, setLoading }) {
           <LoadingButton type="submit" variant="contained" loading={loading}>
             Salvar
           </LoadingButton>
-          <Button variant="outlined" color="warning">
+          <Button
+            variant="outlined"
+            color="warning"
+            onClick={() => router.push(paths.dashboard.customer.root)}
+          >
             Cancelar
           </Button>
         </Stack>

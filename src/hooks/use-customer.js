@@ -7,6 +7,7 @@ import {
   getCustomerById,
   getCustomers,
   getCustomersReview,
+  getCustomerV2,
   updateCustomer,
 } from 'src/redux/slices/customers';
 import { useDispatch, useSelector } from 'src/redux/store';
@@ -30,23 +31,26 @@ export default function useCustomer() {
   } = useSelector((state) => state.customer);
 
   const onCreateCustomer = useCallback(
-    (newCustomer) => {
-      dispatch(createCustomer(newCustomer));
+    async (newCustomer) => {
+      await dispatch(createCustomer(newCustomer));
     },
     [dispatch],
   );
-
-  const onListCustomersReview = useCallback(() => {
-    dispatch(getCustomersReview());
+  const onListCustomersReview = useCallback(async () => {
+    await dispatch(getCustomersReview());
   }, [dispatch]);
 
-  const onListCustomers = useCallback(() => {
-    dispatch(getCustomers());
+  const onListCustomers = useCallback(async () => {
+    await dispatch(getCustomers());
+  }, [dispatch]);
+
+  const onListCustomersV2 = useCallback(async () => {
+    await dispatch(getCustomerV2());
   }, [dispatch]);
 
   const onCustomerById = useCallback(
-    (customerId) => {
-      dispatch(getCustomerById(customerId));
+    async (customerId) => {
+      await dispatch(getCustomerById(customerId));
     },
     [dispatch],
   );
@@ -56,22 +60,22 @@ export default function useCustomer() {
   }, [dispatch]);
 
   const onUpdateCustomer = useCallback(
-    (customerUpdate, customerId) => {
-      dispatch(updateCustomer(customerUpdate, customerId));
+    async (customerUpdate, customerId) => {
+      await dispatch(updateCustomer(customerUpdate, customerId));
     },
     [dispatch],
   );
 
   const onDeleteCustomer = useCallback(
-    (customerId) => {
-      dispatch(deleteCustomerReq(customerId));
+    async (customerId) => {
+      await dispatch(deleteCustomerReq(customerId));
     },
     [dispatch],
   );
 
   const onChangePassword = useCallback(
-    (updatePassword, customerId) => {
-      dispatch(changePassword(updatePassword, customerId));
+    async (updatePassword, customerId) => {
+      await dispatch(changePassword(updatePassword, customerId));
     },
     [dispatch],
   );
@@ -98,5 +102,6 @@ export default function useCustomer() {
     onChangePassword,
     changePasswordSuccess,
     changePasswordStatus,
+    onListCustomersV2,
   };
 }

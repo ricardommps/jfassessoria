@@ -3,15 +3,20 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Stack from '@mui/material/Stack';
+import Switch from '@mui/material/Switch';
 import Typography from '@mui/material/Typography';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
+import { enqueueSnackbar } from 'notistack';
 import { useCallback, useEffect, useMemo } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import FormProvider, { RHFRadioGroup, RHFSelect, RHFTextField } from 'src/components/hook-form';
 import useCustomer from 'src/hooks/use-customer';
+import { useRouter } from 'src/routes/hook';
+import { paths } from 'src/routes/paths';
 import * as Yup from 'yup';
 
 export const GENDER_OPTIONS = [
@@ -57,11 +62,11 @@ const ESTADOSBRASILEIROS = [
   { value: 'TO', label: 'Tocantins' },
 ];
 export default function CustomerForm({ customer, loading, setLoading }) {
+  const router = useRouter();
   const { onUpdateCustomer, onCreateCustomer } = useCustomer();
   const NewCustomerSchema = Yup.object().shape({
     name: Yup.string().required('Titulo obrigatório'),
     email: Yup.string().required('Email obrigatório'),
-    phone: Yup.string().required('Telefone obrigatório'),
     gender: Yup.string().required('Sexo obrigatório'),
     birthDate: Yup.date().required('Data de Nascimento obrigatório').typeError(''),
   });
@@ -111,15 +116,37 @@ export default function CustomerForm({ customer, loading, setLoading }) {
           delete payload.id;
           delete payload.typeUser;
           delete payload.programs;
-          onUpdateCustomer(payload, customer.id);
+          await onUpdateCustomer(payload, customer.id);
+          enqueueSnackbar('Dados do aluno salvo com sucesso!', {
+            autoHideDuration: 8000,
+            variant: 'success',
+          });
         } else {
-          onCreateCustomer(data);
+          await onCreateCustomer(data);
+          enqueueSnackbar('Dados do aluno salvo com sucesso!', {
+            autoHideDuration: 8000,
+            variant: 'success',
+          });
+          router.push(paths.dashboard.customer.root);
         }
       } catch (error) {
+        enqueueSnackbar(`${error.message}`, {
+          autoHideDuration: 8000,
+          variant: 'error',
+        });
         console.error(error);
+      } finally {
+        setLoading(false);
       }
     },
     [onCreateCustomer, reset, customer],
+  );
+
+  const handleChangeActive = useCallback(
+    (event) => {
+      setValue('active', event.target.checked);
+    },
+    [setValue],
   );
 
   useEffect(() => {
@@ -227,6 +254,19 @@ export default function CustomerForm({ customer, loading, setLoading }) {
               ))}
             </RHFSelect>
           </Box>
+          <Box pt={3}>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={Boolean(values.active)}
+                  color="primary"
+                  onChange={handleChangeActive}
+                />
+              }
+              label="Aluno ativo"
+              labelPlacement="end"
+            />
+          </Box>
         </Card>
         <Stack
           alignItems="flex-end"
@@ -238,7 +278,11 @@ export default function CustomerForm({ customer, loading, setLoading }) {
           <LoadingButton type="submit" variant="contained" loading={loading}>
             Salvar
           </LoadingButton>
-          <Button variant="outlined" color="warning">
+          <Button
+            variant="outlined"
+            color="warning"
+            onClick={() => router.push(paths.dashboard.customer.root)}
+          >
             Cancelar
           </Button>
         </Stack>

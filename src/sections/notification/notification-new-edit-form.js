@@ -1,8 +1,8 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import LoadingButton from '@mui/lab/LoadingButton';
+import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
-import Grid from '@mui/material/Unstable_Grid2';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import FormProvider, { RHFTextField } from 'src/components/hook-form';
@@ -11,7 +11,12 @@ import useNotifications from 'src/hooks/use-notifications';
 import { useRouter } from 'src/routes/hook';
 import { paths } from 'src/routes/paths';
 import * as Yup from 'yup';
-export default function NotificationNewEditForm({ notification, recipientId }) {
+export default function NotificationNewEditForm({
+  notification,
+  recipientId,
+  onCancel,
+  onSuccess,
+}) {
   const { onCreateAndEdit, createAndEdit, createAndEditStatus } = useNotifications();
   const { enqueueSnackbar } = useSnackbar();
   const [loading, setLoading] = useState(false);
@@ -44,11 +49,15 @@ export default function NotificationNewEditForm({ notification, recipientId }) {
 
   useEffect(() => {
     if (createAndEditStatus.error) {
-      router.push(paths.dashboard.notification.root(recipientId));
       enqueueSnackbar('Não foi possível executar esta operação. Tente novamente mais tarde.', {
         autoHideDuration: 8000,
         variant: 'error',
       });
+      if (onCancel) {
+        onCancel();
+      } else {
+        router.push(paths.dashboard.notification.root(recipientId));
+      }
     }
   }, [createAndEditStatus.error]);
 
@@ -59,7 +68,11 @@ export default function NotificationNewEditForm({ notification, recipientId }) {
         autoHideDuration: 8000,
         variant: 'success',
       });
-      router.push(paths.dashboard.notification.root(recipientId));
+      if (onSuccess) {
+        onSuccess();
+      } else {
+        router.push(paths.dashboard.notification.root(recipientId));
+      }
     }
   }, [createAndEdit]);
 
@@ -81,19 +94,44 @@ export default function NotificationNewEditForm({ notification, recipientId }) {
           await onCreateAndEdit(payload);
         }
       } catch (error) {
-        router.push(paths.dashboard.notification.root(recipientId));
         enqueueSnackbar('Não foi possível executar esta operação. Tente novamente mais tarde.', {
           autoHideDuration: 8000,
           variant: 'error',
         });
+        if (onCancel) {
+          onCancel();
+        } else {
+          router.push(paths.dashboard.notification.root(recipientId));
+        }
       }
     },
     [notification, enqueueSnackbar, reset, router],
   );
 
+  const renderActions = (
+    <>
+      <Stack
+        alignItems="flex-end"
+        sx={{ mt: 3 }}
+        spacing={2}
+        flexDirection={'row'}
+        justifyContent={'flex-end'}
+      >
+        <LoadingButton type="submit" variant="contained" loading={loading} sx={{ ml: 2 }}>
+          {!notification ? 'Enviar' : 'Editar'}
+        </LoadingButton>
+        {onCancel && (
+          <Button variant="outlined" color="warning" onClick={onCancel}>
+            Cancelar
+          </Button>
+        )}
+      </Stack>
+    </>
+  );
+
   const renderDetails = (
     <>
-      <Grid xs={12} md={8}>
+      <>
         <Card>
           <Stack spacing={3} sx={{ p: 3 }}>
             <RHFTextField name="title" label="Título" />
@@ -101,35 +139,14 @@ export default function NotificationNewEditForm({ notification, recipientId }) {
             <RHFTextField name="content" label="Mensagem" multiline rows={3} />
           </Stack>
         </Card>
-      </Grid>
-    </>
-  );
-
-  const renderActions = (
-    <>
-      <Grid xs={12} md={8} sx={{ display: 'flex', alignItems: 'center' }}>
-        <LoadingButton
-          type="submit"
-          variant="contained"
-          size="large"
-          loading={loading}
-          sx={{ ml: 2 }}
-        >
-          {!notification ? 'Enviar' : 'Editar'}
-        </LoadingButton>
-      </Grid>
+        {renderActions}
+      </>
     </>
   );
 
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
-      <Stack>
-        <Grid container spacing={3}>
-          {renderDetails}
-
-          {renderActions}
-        </Grid>
-      </Stack>
+      <Stack>{renderDetails}</Stack>
     </FormProvider>
   );
 }

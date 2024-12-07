@@ -61,8 +61,8 @@ export default function useProgram() {
   );
 
   const onListPrograms = useCallback(
-    (customerId) => {
-      dispatch(getPrograms(customerId));
+    async (customerId) => {
+      await dispatch(getPrograms(customerId));
     },
     [dispatch],
   );
@@ -76,22 +76,22 @@ export default function useProgram() {
   }, [dispatch]);
 
   const onCreateProgram = useCallback(
-    (newProgram) => {
-      dispatch(createProgram(newProgram));
+    async (newProgram) => {
+      await dispatch(createProgram(newProgram));
     },
     [dispatch],
   );
 
   const onProgramById = useCallback(
-    (programId) => {
-      dispatch(getProgramById(programId));
+    async (programId) => {
+      await dispatch(getProgramById(programId));
     },
     [dispatch],
   );
 
   const onUpdateProgram = useCallback(
-    (programUpdate, programId) => {
-      dispatch(updateProgram(programUpdate, programId));
+    async (programUpdate, programId) => {
+      await dispatch(updateProgram(programUpdate, programId));
     },
     [dispatch],
   );
@@ -128,6 +128,13 @@ export default function useProgram() {
   const onDeleteProgram = useCallback(
     (programId) => {
       dispatch(deleteProgramReq(programId));
+    },
+    [dispatch],
+  );
+
+  const onDeleteProgramAsync = useCallback(
+    async (programId) => {
+      await dispatch(deleteProgramReq(programId));
     },
     [dispatch],
   );
@@ -208,5 +215,6 @@ export default function useProgram() {
     allChart,
     allChartStatus,
     onListAllChart,
+    onDeleteProgramAsync,
   };
 }
