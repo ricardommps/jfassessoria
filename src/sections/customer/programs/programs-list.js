@@ -28,7 +28,7 @@ export const NEW_OPTIONS = [
 ];
 
 export default function ProgramsList({ id }) {
-  const { onListPrograms, programs, programsStatus } = useProgram();
+  const { onListProgramsV2, programs, programsStatus } = useProgram();
 
   const [loading, setLoading] = useState(false);
   const [programSelected, setProgramSelected] = useState();
@@ -88,7 +88,7 @@ export default function ProgramsList({ id }) {
   const initialize = useCallback(async () => {
     try {
       setLoading(true);
-      await onListPrograms(id);
+      await onListProgramsV2(id);
     } catch (error) {
       console.error(error);
     } finally {
@@ -144,7 +144,7 @@ export default function ProgramsList({ id }) {
               <MenuItem
                 key={option.value}
                 selected={option.value === 0}
-                disabled={programs.some((program) => program.type === option.value)}
+                disabled={programs?.some((program) => program.type === option.value)}
                 onClick={() => {
                   popover.onClose();
                   handleOpenCreateProgram(option.value);

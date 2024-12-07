@@ -12,6 +12,7 @@ import {
   getArchivedPrograms,
   getProgramById,
   getPrograms,
+  getProgramsV2,
   getViewPdf,
   hideProgramReq,
   sendProgram,
@@ -63,6 +64,13 @@ export default function useProgram() {
   const onListPrograms = useCallback(
     async (customerId) => {
       await dispatch(getPrograms(customerId));
+    },
+    [dispatch],
+  );
+
+  const onListProgramsV2 = useCallback(
+    async (customerId) => {
+      await dispatch(getProgramsV2(customerId));
     },
     [dispatch],
   );
@@ -216,5 +224,6 @@ export default function useProgram() {
     allChartStatus,
     onListAllChart,
     onDeleteProgramAsync,
+    onListProgramsV2,
   };
 }

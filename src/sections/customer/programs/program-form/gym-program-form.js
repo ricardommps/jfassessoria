@@ -74,6 +74,7 @@ export default function GymProgramForm({
       try {
         setLoading(true);
         const payload = Object.assign({}, data);
+        payload.vs2 = true;
         if (program) {
           delete payload.id;
           delete payload.programId;

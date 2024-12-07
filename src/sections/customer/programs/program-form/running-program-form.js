@@ -172,6 +172,7 @@ export default function RunningProgramForm({
         payload.vlanLevel = Number(payload.vlanLevel);
         payload.vlaLevel = Number(payload.vlaLevel);
         payload.fcmValue = Number(payload.fcmValue);
+        payload.vs2 = true;
         if (program) {
           delete payload.id;
           delete payload.programId;
