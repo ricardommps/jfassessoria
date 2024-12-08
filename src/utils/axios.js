@@ -107,4 +107,11 @@ export const API_ENDPOINTS = {
   rating: {
     root: '/api/v2/rating',
   },
+  workout: {
+    root: '/api/v2/workout',
+  },
+  finished: {
+    review: '/api/v2/finished/review',
+    unreviewedFinished: '/api/v2/finished/unreviewedFinished',
+  },
 };

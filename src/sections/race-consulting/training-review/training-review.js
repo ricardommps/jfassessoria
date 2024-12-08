@@ -94,7 +94,7 @@ export function TrainingReview({ open, onClose, customerId, actionType, ...other
   }, [feedbackUpdateStatus]);
 
   return (
-    <Dialog fullWidth maxWidth="md" open={open} {...other}>
+    <Dialog fullWidth maxWidth="lg" open={open} {...other}>
       <DialogTitle sx={{ p: (theme) => theme.spacing(3, 3, 2, 3) }}>
         {actionType === 'review' ? 'Treinos aguardando feedback' : 'Feedbacks concluídos'}
         <IconButton

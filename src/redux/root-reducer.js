@@ -3,6 +3,7 @@ import createWebStorage from 'redux-persist/lib/storage/createWebStorage';
 
 import anamneseReducer from './slices/anamnese';
 import customerReducer from './slices/customers';
+import feedbackReducer from './slices/feedback';
 import feedbackTrainingReducer from './slices/feedback-training';
 import finishedTrainingReducer from './slices/finished-training';
 import mediasReducer from './slices/medias';
@@ -13,6 +14,7 @@ import programReducer from './slices/program';
 import ratingReducer from './slices/rating';
 import trainingReducer from './slices/training';
 import userReducer from './slices/user';
+import workoutReducer from './slices/workout';
 
 export const createNoopStorage = () => ({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -51,4 +53,6 @@ export const rootReducer = combineReducers({
   rating: ratingReducer,
   anamnese: anamneseReducer,
   notifications: notificatiosReducer,
+  workout: workoutReducer,
+  feedback: feedbackReducer,
 });

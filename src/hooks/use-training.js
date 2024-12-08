@@ -38,15 +38,15 @@ export default function useTraining() {
   );
 
   const onTrainingsList = useCallback(
-    (programId) => {
-      dispatch(listTrainings(programId));
+    async (programId) => {
+      await dispatch(listTrainings(programId));
     },
     [dispatch],
   );
 
   const onCreateTraining = useCallback(
-    (newTraining) => {
-      dispatch(createTraining(newTraining));
+    async (newTraining) => {
+      await dispatch(createTraining(newTraining));
     },
     [dispatch],
   );
@@ -59,15 +59,15 @@ export default function useTraining() {
   );
 
   const onTrainingById = useCallback(
-    (trainingId) => {
-      dispatch(getTrainingById(trainingId));
+    async (trainingId) => {
+      await dispatch(getTrainingById(trainingId));
     },
     [dispatch],
   );
 
   const onUpdateTraining = useCallback(
-    (trainingUpdate, trainingId) => {
-      dispatch(updateTraining(trainingUpdate, trainingId));
+    async (trainingUpdate, trainingId) => {
+      await dispatch(updateTraining(trainingUpdate, trainingId));
     },
     [dispatch],
   );
@@ -88,15 +88,15 @@ export default function useTraining() {
   );
 
   const onSendTraining = useCallback(
-    (newTraining) => {
-      dispatch(sendTraining(newTraining));
+    async (newTraining) => {
+      await dispatch(sendTraining(newTraining));
     },
     [dispatch],
   );
 
   const onDeleteTraining = useCallback(
-    (trainingId) => {
-      dispatch(deleteTrainingReq(trainingId));
+    async (trainingId) => {
+      await dispatch(deleteTrainingReq(trainingId));
     },
     [dispatch],
   );

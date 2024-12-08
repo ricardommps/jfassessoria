@@ -1,8 +1,5 @@
 // @mui
-import InsightsIcon from '@mui/icons-material/Insights';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import ReviewsIcon from '@mui/icons-material/Reviews';
-import VpnKeyIcon from '@mui/icons-material/VpnKey';
+import AssignmentIcon from '@mui/icons-material/Assignment';
 import Avatar from '@mui/material/Avatar';
 import Chip from '@mui/material/Chip';
 import IconButton from '@mui/material/IconButton';
@@ -19,7 +16,6 @@ import { paths } from 'src/routes/paths';
 export default function CustomerTableRow({ row, selected }) {
   const popover = usePopover();
   const router = useRouter();
-
   return (
     <>
       <TableRow hover selected={selected}>
@@ -68,38 +64,18 @@ export default function CustomerTableRow({ row, selected }) {
           <SvgColor src="/assets/icons/navbar/ic_user.svg" sx={{ mr: 1 }} />
           Perfil
         </MenuItem>
-        <MenuItem
-          onClick={() => {
-            popover.onClose();
-          }}
-        >
-          <VpnKeyIcon sx={{ mr: 1 }} />
-          Gerar senha
-        </MenuItem>
-        <MenuItem
-          onClick={() => {
-            popover.onClose();
-          }}
-        >
-          <NotificationsIcon sx={{ fontSize: '22px', width: '22px', height: '30px' }} />
-          Notificações
-        </MenuItem>
-        <MenuItem
-          onClick={() => {
-            popover.onClose();
-          }}
-        >
-          <ReviewsIcon sx={{ fontSize: '22px', width: '22px', height: '30px' }} />
-          Feedbacks
-        </MenuItem>
-        <MenuItem
-          onClick={() => {
-            popover.onClose();
-          }}
-        >
-          <InsightsIcon sx={{ fontSize: '22px', width: '22px', height: '30px' }} />
-          Métricas
-        </MenuItem>
+
+        {row.active && (
+          <MenuItem
+            onClick={() => {
+              popover.onClose();
+              router.push(paths.dashboard.customer.program(row.id));
+            }}
+          >
+            <AssignmentIcon sx={{ mr: 1 }} />
+            Programas
+          </MenuItem>
+        )}
       </CustomPopover>
     </>
   );

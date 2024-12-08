@@ -44,7 +44,7 @@ export default function ProgramListView() {
 
   const onSelectedProgram = (id) => {
     if (id) {
-      console.log('--onSelectedProgram--', id);
+      console.log('');
     }
   };
 

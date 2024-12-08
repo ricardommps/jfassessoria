@@ -3,6 +3,8 @@ import 'simplebar-react/dist/simplebar.min.css';
 // lazy image
 import 'moment/min/locales';
 import 'react-lazy-load-image-component/src/effects/blur.css';
+import 'slick-carousel/slick/slick-theme.css';
+import 'slick-carousel/slick/slick.css';
 
 import * as moment from 'moment';
 import PropTypes from 'prop-types';

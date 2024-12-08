@@ -1,11 +1,13 @@
 import { LoadingButton } from '@mui/lab';
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import IconButton from '@mui/material/IconButton';
 import MenuItem from '@mui/material/MenuItem';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { useEffect } from 'react';
+import { enqueueSnackbar } from 'notistack';
+import { useCallback, useEffect } from 'react';
 import { ConfirmDialog } from 'src/components/confirm-dialog';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 import Iconify from 'src/components/iconify';
@@ -16,49 +18,80 @@ import { useBoolean } from 'src/hooks/use-boolean';
 import useNotifications from 'src/hooks/use-notifications';
 import { fDate } from 'src/utils/format-time';
 
+import NotificationForm from './forms/notification-form';
+
 export default function Notifications({ id, loading, setLoading }) {
   const { onGetNotifications, notifications, notificationsStatus, onDeleteNoticifation } =
     useNotifications();
   const popover = usePopover();
   const onDelete = useBoolean();
+  const newNotification = useBoolean();
   useEffect(() => {
     if (id) {
       onGetNotifications(id);
     }
   }, [id]);
+
+  const handleSuccess = () => {
+    newNotification.onFalse();
+    onGetNotifications(id);
+  };
   return (
     <>
-      <Typography variant="h4" sx={{ my: 5 }}>
-        Notificações
-      </Typography>
+      <Stack direction={'row'} sx={{ my: 5 }}>
+        <Typography variant="h4" sx={{ flex: 1 }}>
+          Notificações
+        </Typography>
+        <Button
+          onClick={newNotification.onTrue}
+          variant="contained"
+          startIcon={<Iconify icon="mingcute:add-line" />}
+        >
+          Nova
+        </Button>
+      </Stack>
       {notificationsStatus.loading ? (
         <LoadingProgress />
       ) : (
-        <Box
-          gap={3}
-          display="grid"
-          gridTemplateColumns={{
-            xs: 'repeat(1, 1fr)',
-            sm: 'repeat(2, 1fr)',
-            md: 'repeat(3, 1fr)',
-          }}
-        >
-          {notifications.length > 0 && (
-            <>
-              {notifications.map((notification) => (
-                <NotificationItem
-                  key={notification.id}
-                  notification={notification}
-                  popover={popover}
-                  onDelete={onDelete}
-                  loading={loading}
-                  setLoading={setLoading}
-                  onDeleteNoticifation={onDeleteNoticifation}
-                />
-              ))}
-            </>
+        <>
+          {!newNotification.value && (
+            <Box
+              gap={3}
+              display="grid"
+              gridTemplateColumns={{
+                xs: 'repeat(1, 1fr)',
+                sm: 'repeat(2, 1fr)',
+                md: 'repeat(3, 1fr)',
+              }}
+            >
+              {notifications.length > 0 && (
+                <>
+                  {notifications.map((notification) => (
+                    <NotificationItem
+                      key={notification.id}
+                      notification={notification}
+                      popover={popover}
+                      onDelete={onDelete}
+                      loading={loading}
+                      setLoading={setLoading}
+                      onDeleteNoticifation={onDeleteNoticifation}
+                      handleSuccess={handleSuccess}
+                    />
+                  ))}
+                </>
+              )}
+            </Box>
           )}
-        </Box>
+          {newNotification.value && (
+            <Box>
+              <NotificationForm
+                id={id}
+                onCancel={newNotification.onFalse}
+                onSuccess={handleSuccess}
+              />
+            </Box>
+          )}
+        </>
       )}
     </>
   );
@@ -71,12 +104,29 @@ function NotificationItem({
   loading,
   setLoading,
   onDeleteNoticifation,
+  handleSuccess,
 }) {
-  const handleDelete = () => {
-    setLoading(true);
-    onDelete.onFalse();
-    onDeleteNoticifation(notification.id);
-  };
+  const handleDelete = useCallback(async () => {
+    try {
+      setLoading(true);
+      onDelete.onFalse();
+      await onDeleteNoticifation(notification.id);
+      enqueueSnackbar('Notificação deletada com sucesso!', {
+        autoHideDuration: 8000,
+        variant: 'success',
+      });
+      handleSuccess();
+    } catch (error) {
+      enqueueSnackbar(`${error.message}`, {
+        autoHideDuration: 8000,
+        variant: 'error',
+      });
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  }, [notification.id]);
+
   return (
     <>
       <Stack component={Card} direction="row" key={notification.id}>

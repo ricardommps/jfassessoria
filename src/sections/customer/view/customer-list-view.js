@@ -7,13 +7,15 @@ import { useEffect } from 'react';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 import Iconify from 'src/components/iconify';
 import useCustomer from 'src/hooks/use-customer';
+import { useRouter } from 'src/routes/hook';
 import { paths } from 'src/routes/paths';
 
 import CustomerList from '../customer-list';
 export default function CustomerListView() {
-  const { customers, onListCustomers } = useCustomer();
+  const router = useRouter();
+  const { onListCustomersV2 } = useCustomer();
   useEffect(() => {
-    onListCustomers();
+    onListCustomersV2();
   }, []);
 
   return (
@@ -27,7 +29,11 @@ export default function CustomerListView() {
             { name: 'Listas' },
           ]}
           action={
-            <Button variant="contained" startIcon={<Iconify icon="mingcute:add-line" />}>
+            <Button
+              variant="contained"
+              startIcon={<Iconify icon="mingcute:add-line" />}
+              onClick={() => router.push(paths.dashboard.customer.new)}
+            >
               Novo
             </Button>
           }

@@ -16,7 +16,7 @@ import useCustomer from 'src/hooks/use-customer';
 import useProgram from 'src/hooks/use-program';
 import * as Yup from 'yup';
 
-import ReferenceMonthDate from './reference-month-date';
+import ReferenceMonthDate from '../../customer/programs/program-form/reference-month-date';
 
 const DIFFICULTYLEVELOPTIONS = [
   { value: 'Iniciante', label: 'Iniciante' },

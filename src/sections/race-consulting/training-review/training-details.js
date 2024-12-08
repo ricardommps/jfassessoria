@@ -50,7 +50,6 @@ export default function TrainingDetails({ training, finished, program }) {
 
   const renderLink = () => {
     const newLink = extractLink(finished?.link);
-    console.log('--newLink--', newLink);
     if (isValidLink(newLink)) {
       return (
         <TextMaxLine asLink target="_blank" href={newLink} color="primary" sx={{ maxWidth: 200 }}>

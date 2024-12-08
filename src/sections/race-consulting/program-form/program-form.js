@@ -26,9 +26,9 @@ import { extrapolation } from 'src/utils/extrapolation';
 import { fPercent } from 'src/utils/format-number';
 import * as Yup from 'yup';
 
+import ReferenceMonthDate from '../../customer/programs/program-form/reference-month-date';
 import DialogTablePaceSpeed from './dialog-table-pace-speed';
 import { ExtrapolativeValidity } from './extrapolative-validity';
-import ReferenceMonthDate from './reference-month-date';
 import { ResultadoPv } from './resultado-pv';
 import TestDate from './test-date';
 

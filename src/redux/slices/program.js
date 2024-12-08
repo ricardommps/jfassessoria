@@ -415,6 +415,18 @@ export function getPrograms(customerId) {
   };
 }
 
+export function getProgramsV2(customerId) {
+  return async (dispatch) => {
+    dispatch(slice.actions.getProgramsStart());
+    try {
+      const response = await axios.get(`${API_ENDPOINTS.program.list}/${customerId}/v2`);
+      dispatch(slice.actions.getProgramsSuccess(response.data));
+    } catch (error) {
+      dispatch(slice.actions.getProgramsFailure(error));
+    }
+  };
+}
+
 export function getProgramById(programId) {
   return async (dispatch) => {
     dispatch(slice.actions.getProgramStart());

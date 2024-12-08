@@ -8,7 +8,15 @@ import PropTypes from 'prop-types';
 
 // ----------------------------------------------------------------------
 
-export default function ConfirmDialog({ title, content, action, open, onClose, ...other }) {
+export default function ConfirmDialog({
+  title,
+  content,
+  action,
+  open,
+  onClose,
+  loading = false,
+  ...other
+}) {
   return (
     <Dialog fullWidth maxWidth="xs" open={open} {...other}>
       <DialogTitle sx={{ pb: 2 }}>{title}</DialogTitle>
@@ -18,7 +26,7 @@ export default function ConfirmDialog({ title, content, action, open, onClose, .
       <DialogActions>
         {action}
 
-        <Button variant="outlined" color="inherit" onClick={onClose}>
+        <Button variant="outlined" color="inherit" onClick={onClose} disabled={loading}>
           Cancelar
         </Button>
       </DialogActions>
