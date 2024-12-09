@@ -7,7 +7,7 @@ import useWorkout from 'src/hooks/use-workout';
 import TrainingList from './training-list';
 import TrainingListMobile from './training-list-mobile';
 
-export default function Training({ open, id, type, handleCloseTraining }) {
+export default function Training({ open, id, type, handleCloseTraining, vs2 }) {
   const smDown = useResponsive('down', 'sm');
 
   const { onListWorkouts, workouts, workoutsStatus } = useWorkout();
@@ -34,7 +34,6 @@ export default function Training({ open, id, type, handleCloseTraining }) {
       initialize();
     }
   }, [id, initialize]);
-
   return (
     <>
       {smDown ? (
@@ -49,6 +48,7 @@ export default function Training({ open, id, type, handleCloseTraining }) {
             refreshList={refreshList}
             programId={id}
             type={type}
+            vs2={vs2}
           />
         </Box>
       ) : (
@@ -60,6 +60,7 @@ export default function Training({ open, id, type, handleCloseTraining }) {
             handleClose={handleCloseTraining}
             programId={id}
             type={type}
+            vs2={vs2}
             refreshList={refreshList}
           />
         </Box>

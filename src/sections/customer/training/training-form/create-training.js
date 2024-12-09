@@ -79,6 +79,7 @@ export default function CreateTraining({
               programId={programId}
               type={type}
               handleSuccessCreate={handleSuccessCreate}
+              onClose={onClose}
             />
           </Stack>
         )}

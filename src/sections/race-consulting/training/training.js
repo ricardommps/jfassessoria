@@ -421,6 +421,7 @@ export default function Training() {
           handleSendTraining={handleSendTraining}
           sendTrainingStatus={sendTrainingStatus}
           programsIdSelected={programsIdSelected}
+          program={program}
         />
       )}
       <ConfirmDialog

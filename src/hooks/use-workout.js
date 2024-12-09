@@ -6,6 +6,7 @@ import {
   getWorkout,
   getWorkouts,
   reviewWorkout,
+  sendWorkout,
   upDateWorkout,
 } from 'src/redux/slices/workout';
 import { useDispatch, useSelector } from 'src/redux/store';
@@ -31,6 +32,13 @@ export default function useWorkout() {
   const onCloneTraining = useCallback(
     async (trainingId, qntCopy) => {
       await dispatch(cloneWorkout(trainingId, qntCopy));
+    },
+    [dispatch],
+  );
+
+  const onSendTraining = useCallback(
+    async (payload) => {
+      await dispatch(sendWorkout(payload));
     },
     [dispatch],
   );
@@ -77,5 +85,6 @@ export default function useWorkout() {
     onReviewWorkout,
     onCloneTraining,
     onDeleteTraining,
+    onSendTraining,
   };
 }

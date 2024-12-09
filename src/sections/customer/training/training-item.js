@@ -45,6 +45,7 @@ export default function TrainingItem({
   type,
   refreshList,
   handleSuccessCreate,
+  handleOpenSend,
 }) {
   const popover = usePopover();
   const feedBack = useBoolean();
@@ -242,16 +243,15 @@ export default function TrainingItem({
           Copiar
         </MenuItem>
 
-        {false && (
-          <MenuItem
-            onClick={(e) => {
-              popover.onClose();
-            }}
-          >
-            <NearMeIcon sx={{ fontSize: '22px', width: '22px', height: '30px' }} />
-            Enviar
-          </MenuItem>
-        )}
+        <MenuItem
+          onClick={(e) => {
+            handleOpenSend(training, e);
+            popover.onClose();
+          }}
+        >
+          <NearMeIcon sx={{ fontSize: '22px', width: '22px', height: '30px' }} />
+          Enviar
+        </MenuItem>
 
         <MenuItem
           onClick={() => {

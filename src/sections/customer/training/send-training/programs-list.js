@@ -9,7 +9,7 @@ import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
 import useProgram from 'src/hooks/use-program';
 
-export default function ProgramsList({ onSelectProgram, program }) {
+export default function ProgramsList({ onSelectProgram, type, vs2 }) {
   const { allPrograms, onListAllPrograms, allProgramsStatus } = useProgram();
 
   const [filteredPrograms, setFilteredPrograms] = useState([]);
@@ -20,9 +20,7 @@ export default function ProgramsList({ onSelectProgram, program }) {
 
   useEffect(() => {
     if (allPrograms) {
-      const filteredData = allPrograms.filter(
-        (item) => item.type === program.type && item.vs2 === program.vs2,
-      );
+      const filteredData = allPrograms.filter((item) => item.type === type && item.vs2 === vs2);
       setFilteredPrograms(filteredData);
     }
   }, [allPrograms]);
