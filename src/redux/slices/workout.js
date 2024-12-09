@@ -57,6 +57,22 @@ const slice = createSlice({
       state.workoutActionStatus.loading = false;
     },
 
+    sendWorkoutStart(state) {
+      state.workoutAction = null;
+      state.workoutActionStatus.error = null;
+      state.workoutActionStatus.loading = true;
+    },
+    sendWorkoutSuccess(state, action) {
+      state.workoutAction = action.payload;
+      state.workoutActionStatus.error = null;
+      state.workoutActionStatus.loading = false;
+    },
+    sendWorkoutFailure(state, action) {
+      state.workoutAction = null;
+      state.workoutActionStatus.error = action.payload;
+      state.workoutActionStatus.loading = false;
+    },
+
     deleteWorkoutStart(state) {
       state.workoutAction = null;
       state.workoutActionStatus.error = null;
@@ -190,6 +206,19 @@ export function cloneWorkout(id, qntCopy) {
     } catch (error) {
       console.error(error);
       dispatch(slice.actions.cloneWorkoutFailure(error));
+    }
+  };
+}
+
+export function sendWorkout(payload) {
+  return async (dispatch) => {
+    dispatch(slice.actions.sendWorkoutStart());
+    try {
+      const response = await axios.post(`${API_ENDPOINTS.workout.root}/send`, payload);
+      dispatch(slice.actions.sendWorkoutSuccess(response.data));
+    } catch (error) {
+      console.error(error);
+      dispatch(slice.actions.sendWorkoutFailure(error));
     }
   };
 }

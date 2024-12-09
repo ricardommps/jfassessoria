@@ -15,9 +15,10 @@ export default function SendTraining({
   training,
   onSelectProgram,
   handleSendTraining,
-  sendTrainingStatus,
+  loading,
   programsIdSelected,
-  program,
+  type,
+  vs2,
   ...other
 }) {
   return (
@@ -37,7 +38,7 @@ export default function SendTraining({
         </Stack>
       </DialogTitle>
       <DialogContent dividers>
-        <ProgramsList onSelectProgram={onSelectProgram} program={program} />
+        <ProgramsList onSelectProgram={onSelectProgram} type={type} vs2={vs2} />
       </DialogContent>
       <DialogActions>
         <Button autoFocus onClick={onClose}>
@@ -46,7 +47,7 @@ export default function SendTraining({
         <LoadingButton
           onClick={handleSendTraining}
           variant="contained"
-          loading={sendTrainingStatus.loading}
+          loading={loading}
           disabled={programsIdSelected.length === 0}
           color="success"
         >

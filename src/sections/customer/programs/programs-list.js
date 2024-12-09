@@ -210,6 +210,7 @@ export default function ProgramsList({ id }) {
             id={programSelected?.id}
             handleCloseTraining={handleCloseTraining}
             type={programSelected?.type}
+            vs2={programSelected?.vs2}
           />
         )}
       </Grid>
