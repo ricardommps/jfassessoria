@@ -1,7 +1,9 @@
 import LoadingButton from '@mui/lab/LoadingButton';
+import Badge from '@mui/material/Badge';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
+import Chip from '@mui/material/Chip';
 import ListItemText from '@mui/material/ListItemText';
 import Stack from '@mui/material/Stack';
 import { useTheme } from '@mui/material/styles';
@@ -11,6 +13,7 @@ import { useForm } from 'react-hook-form';
 import { RHFTextField } from 'src/components/hook-form';
 import FormProvider from 'src/components/hook-form/form-provider';
 import Label from 'src/components/label';
+import TextMaxLine from 'src/components/text-max-line';
 import { useBoolean } from 'src/hooks/use-boolean';
 import { useResponsive } from 'src/hooks/use-responsive';
 import useWorkout from 'src/hooks/use-workout';
@@ -57,6 +60,30 @@ export default function HistoryItem({ historyItem, workoutInfo, refreshList }) {
       console.log(err);
     }
   }, []);
+
+  const renderIntensities = () => {
+    const intensities = historyItem.intensities.map((intensities) => JSON.parse(intensities));
+    const intensitiesValues = intensities.map((intensities) => {
+      if (intensities.value) {
+        return intensities.value;
+      }
+      return intensities.intensitie;
+    });
+    const noEmptyValues = intensitiesValues.filter((str) => str !== '');
+    return (
+      <Box display="grid" gap={2} gridTemplateColumns="repeat(2, 1fr)" width={'50px'} pt={3}>
+        {noEmptyValues.map((item, index) => (
+          <Badge badgeContent={index + 1} color="info" key={`intensities-badge-key-${index}`}>
+            <Chip
+              label={`${item} ${historyItem.unitmeasurement === 'pace' ? 'min' : 'km/h'}`}
+              key={`intensities-key-${index}`}
+              sx={{ width: '100px' }}
+            />
+          </Badge>
+        ))}
+      </Box>
+    );
+  };
 
   return (
     <>
@@ -190,6 +217,27 @@ export default function HistoryItem({ historyItem, workoutInfo, refreshList }) {
                       component: 'span',
                     }}
                   />
+                </Stack>
+              )}
+
+              {historyItem?.link && (
+                <TextMaxLine
+                  asLink
+                  target="_blank"
+                  href={historyItem?.link}
+                  color="primary"
+                  sx={{ maxWidth: 200 }}
+                >
+                  Link do treino
+                </TextMaxLine>
+              )}
+
+              {historyItem?.intensities?.length > 0 && (
+                <Stack pt={2}>
+                  <Typography variant="body2" sx={{ flexGrow: 1 }} color={'text.primary'}>
+                    Intensidade dos esforços
+                  </Typography>
+                  {renderIntensities()}
                 </Stack>
               )}
             </Stack>

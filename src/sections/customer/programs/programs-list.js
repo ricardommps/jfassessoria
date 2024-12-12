@@ -207,10 +207,8 @@ export default function ProgramsList({ id }) {
         {training.value && (
           <Training
             open={training.value}
-            id={programSelected?.id}
+            program={programSelected}
             handleCloseTraining={handleCloseTraining}
-            type={programSelected?.type}
-            vs2={programSelected?.vs2}
           />
         )}
       </Grid>

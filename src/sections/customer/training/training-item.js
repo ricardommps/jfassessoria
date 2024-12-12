@@ -41,12 +41,12 @@ import CreateTraining from './training-form/create-training';
 
 export default function TrainingItem({
   training,
-  programId,
-  type,
   refreshList,
   handleSuccessCreate,
   handleOpenSend,
+  program,
 }) {
+  const { type } = program;
   const popover = usePopover();
   const feedBack = useBoolean();
   const create = useBoolean();
@@ -275,9 +275,8 @@ export default function TrainingItem({
       {create.value && (
         <CreateTraining
           open={create.value}
-          programId={programId}
+          program={program}
           trainingId={training.id}
-          type={type}
           onClose={handleCloseCreate}
           handleSuccessCreate={handleSuccessCreate}
         />

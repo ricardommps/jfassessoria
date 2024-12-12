@@ -20,11 +20,10 @@ const Transition = forwardRef(function Transition(props, ref) {
 
 export default function CreateTraining({
   open,
-  programId,
   trainingId,
-  type,
   onClose,
   handleSuccessCreate,
+  program,
 }) {
   const smDown = useResponsive('down', 'sm');
 
@@ -63,8 +62,7 @@ export default function CreateTraining({
             <TrainingForm
               onUpdateTraining={onUpdateWorkout}
               onCreateTraining={onCreateWorkout}
-              programId={programId}
-              type={type}
+              program={program}
               handleSuccessCreate={handleSuccessCreate}
               onClose={onClose}
             />
@@ -76,8 +74,7 @@ export default function CreateTraining({
               training={workout}
               onUpdateTraining={onUpdateWorkout}
               onCreateTraining={onCreateWorkout}
-              programId={programId}
-              type={type}
+              program={program}
               handleSuccessCreate={handleSuccessCreate}
               onClose={onClose}
             />

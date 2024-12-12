@@ -16,6 +16,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { RHFTextField } from 'src/components/hook-form';
 import FormProvider from 'src/components/hook-form/form-provider';
+import TextMaxLine from 'src/components/text-max-line';
 import { useBoolean } from 'src/hooks/use-boolean';
 import useWorkout from 'src/hooks/use-workout';
 import {
@@ -254,6 +255,18 @@ export default function FeedbackItem({ feedback, refreshList, handleWorkoutSelec
           </Grid>
         )}
       </Grid>
+      {feedback?.link && (
+        <TextMaxLine
+          asLink
+          target="_blank"
+          href={feedback?.link}
+          color="primary"
+          sx={{ maxWidth: 200 }}
+        >
+          Link do treino
+        </TextMaxLine>
+      )}
+
       {feedback?.intensities?.length > 0 && (
         <Stack pt={2}>
           <Typography variant="body2" sx={{ flexGrow: 1 }} color={'text.primary'}>

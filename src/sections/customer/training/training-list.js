@@ -18,11 +18,10 @@ export default function TrainingList({
   trainings,
   trainingsStatus,
   handleClose,
-  programId,
-  type,
+  program,
   refreshList,
-  vs2,
 }) {
+  const { type, vs2 } = program;
   const create = useBoolean();
   const confirm = useBoolean();
   const { onSendTraining } = useWorkout();
@@ -152,8 +151,7 @@ export default function TrainingList({
                       <TrainingItem
                         key={training.id}
                         training={training}
-                        programId={programId}
-                        type={type}
+                        program={program}
                         refreshList={refreshList}
                         handleSuccessCreate={handleSuccessCreate}
                         handleOpenSend={handleOpenSend}
@@ -168,8 +166,7 @@ export default function TrainingList({
         {create.value && (
           <CreateTraining
             open={create.value}
-            programId={programId}
-            type={type}
+            program={program}
             onClose={handleCloseCreate}
             handleSuccessCreate={handleSuccessCreate}
           />
