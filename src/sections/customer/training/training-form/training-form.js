@@ -1,5 +1,6 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import LoadingButton from '@mui/lab/LoadingButton';
+import { IconButton } from '@mui/material';
 import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
@@ -22,6 +23,7 @@ import PropTypes from 'prop-types';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useTablePvContext } from 'src/components/drawer-table-pv';
+import ExertionZone from 'src/components/exertion-zone/exertion-zone';
 import { RHFSelect, RHFTextField } from 'src/components/hook-form';
 import FormProvider from 'src/components/hook-form/form-provider';
 import Iconify from 'src/components/iconify/iconify';
@@ -43,15 +45,16 @@ export default function TrainingForm({
   training,
   onUpdateTraining,
   onCreateTraining,
-  programId,
-  type,
+  program,
   handleSuccessCreate,
   onClose,
 }) {
+  const { id, type } = program;
   const tablePv = useTablePvContext();
   const listMedias = useBoolean();
   const isStretches = useBoolean();
   const isHeating = useBoolean();
+  const exertionZone = useBoolean();
 
   const toggleTags = useBoolean(true);
 
@@ -67,7 +70,7 @@ export default function TrainingForm({
   });
   const defaultValues = useMemo(
     () => ({
-      programId: training?.programId || programId,
+      programId: training?.programId || id,
       name: training?.name || '',
       subtitle: training?.subtitle || '',
       heating: training?.heating || '',
@@ -562,6 +565,12 @@ export default function TrainingForm({
           <Button variant="outlined" sx={{ width: 'fit-content' }} onClick={tablePv.onToggle}>
             {!tablePv.open ? 'Exibir tabela Pv' : 'Ocultas tabela Pv'}
           </Button>
+          <Stack spacing={1.5} direction="row" mt={3}>
+            <Typography>Zona de esforço</Typography>
+            <IconButton sx={{ padding: 0 }} onClick={exertionZone.onTrue}>
+              <Iconify icon="eva:info-outline" />
+            </IconButton>
+          </Stack>
         </Stack>
       )}
 
@@ -833,6 +842,18 @@ export default function TrainingForm({
           </FormProvider>
         </Grid>
       </Grid>
+      {exertionZone.value && (
+        <ExertionZone
+          open={exertionZone.value}
+          onClose={exertionZone.onFalse}
+          pv={program.pv}
+          pace={program.pace}
+          vla={program.vla}
+          paceVla={program.paceVla}
+          vlan={program.vlan}
+          paceVlan={program.paceVlan}
+        />
+      )}
     </Box>
   );
 }

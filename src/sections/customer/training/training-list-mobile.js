@@ -31,10 +31,9 @@ export default function TrainingListMobile({
   trainings,
   trainingsStatus,
   refreshList,
-  programId,
-  type,
-  vs2,
+  program,
 }) {
+  const { id, type, vs2 } = program;
   const create = useBoolean();
 
   const confirm = useBoolean();
@@ -169,7 +168,7 @@ export default function TrainingListMobile({
                     <TrainingItem
                       key={training.id}
                       training={training}
-                      programId={programId}
+                      programId={id}
                       type={type}
                       refreshList={refreshList}
                       handleSuccessCreate={handleSuccessCreate}
@@ -183,8 +182,7 @@ export default function TrainingListMobile({
           {create.value && (
             <CreateTraining
               open={create.value}
-              programId={programId}
-              type={type}
+              program={program}
               onClose={handleCloseCreate}
               handleSuccessCreate={handleSuccessCreate}
             />
