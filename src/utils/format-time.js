@@ -17,7 +17,8 @@ export function fDate(date, newFormat) {
 
   // Converte a data para o fuso horário de São Paulo
   const zonedDate = utcToZonedTime(parsedDate, timeZone);
-
+  console.log('-zonedDate---', zonedDate);
+  console.log('-date---', date);
   // Formata a data para o formato desejado
   const formattedDate = format(zonedDate, fm, { locale: ptBR });
 
