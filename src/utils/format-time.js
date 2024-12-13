@@ -1,5 +1,5 @@
 // eslint-disable-next-line simple-import-sort/imports
-import { format, formatDistanceToNow, getTime, parse } from 'date-fns';
+import { format, formatDistanceToNow, getTime, parseISO } from 'date-fns';
 import { utcToZonedTime } from 'date-fns-tz';
 import ptBR from 'date-fns/locale/pt-BR';
 
@@ -11,9 +11,9 @@ export function fDate(date, newFormat) {
 
   if (!date) return '';
   console.log('-date---', date);
-  // Tenta fazer o parse da data se ela estiver em string (ISO ou outro formato)
-  const parsedDate =
-    typeof date === 'string' ? parse(date, "yyyy-MM-dd'T'HH:mm:ss.SSSXXX", new Date()) : date;
+
+  // Se a data for uma string no formato ISO, usamos parseISO para garantir que ela seja interpretada corretamente
+  const parsedDate = typeof date === 'string' ? parseISO(date) : date;
 
   // Converte a data para o fuso horário de São Paulo
   const zonedDate = utcToZonedTime(parsedDate, timeZone);
