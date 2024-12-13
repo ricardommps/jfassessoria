@@ -7,7 +7,7 @@ import ptBR from 'date-fns/locale/pt-BR';
 
 export function fDate(date, newFormat) {
   const fm = newFormat || 'dd/MM/yyyy'; // Formato default
-  const timeZone = 'America/Sao_Paulo'; // Fuso horário de São Paulo (Brasil)
+  const timeZone = 'Europe/Warsaw'; // Fuso horário de São Paulo (Brasil)
 
   if (!date) return '';
   console.log('-date---', date);
