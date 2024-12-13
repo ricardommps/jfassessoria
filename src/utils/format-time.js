@@ -10,7 +10,7 @@ export function fDate(date, newFormat) {
   const timeZone = 'America/Sao_Paulo'; // Fuso horário de São Paulo (Brasil)
 
   if (!date) return '';
-
+  console.log('-date---', date);
   // Tenta fazer o parse da data se ela estiver em string (ISO ou outro formato)
   const parsedDate =
     typeof date === 'string' ? parse(date, "yyyy-MM-dd'T'HH:mm:ss.SSSXXX", new Date()) : date;
@@ -18,7 +18,7 @@ export function fDate(date, newFormat) {
   // Converte a data para o fuso horário de São Paulo
   const zonedDate = utcToZonedTime(parsedDate, timeZone);
   console.log('-zonedDate---', zonedDate);
-  console.log('-date---', date);
+
   // Formata a data para o formato desejado
   const formattedDate = format(zonedDate, fm, { locale: ptBR });
 
