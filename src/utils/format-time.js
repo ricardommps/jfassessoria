@@ -1,5 +1,5 @@
 // eslint-disable-next-line simple-import-sort/imports
-import { format, formatDistanceToNow, getTime, parseISO } from 'date-fns';
+import { format, formatDistanceToNow, getTime, parseISO, startOfDay } from 'date-fns';
 import { utcToZonedTime } from 'date-fns-tz';
 import ptBR from 'date-fns/locale/pt-BR';
 
@@ -19,8 +19,11 @@ export function fDate(date, newFormat) {
   const zonedDate = utcToZonedTime(parsedDate, timeZone);
   console.log('-zonedDate---', zonedDate);
 
+  // Ajusta para o início do dia no fuso horário de São Paulo
+  const startOfDayDate = startOfDay(zonedDate);
+
   // Formata a data para o formato desejado
-  const formattedDate = format(zonedDate, fm, { locale: ptBR });
+  const formattedDate = format(startOfDayDate, fm, { locale: ptBR });
 
   return formattedDate;
 }
