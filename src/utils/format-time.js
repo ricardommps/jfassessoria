@@ -1,13 +1,22 @@
+// eslint-disable-next-line simple-import-sort/imports
 import { format, formatDistanceToNow, getTime } from 'date-fns';
+import { utcToZonedTime } from 'date-fns-tz';
 import ptBR from 'date-fns/locale/pt-BR';
+
 // ----------------------------------------------------------------------
 
 export function fDate(date, newFormat) {
   const fm = newFormat || 'dd MMM yyyy';
+  const timeZone = 'America/Sao_Paulo'; // Define o fuso horário do Brasil
 
-  return date ? format(new Date(date), fm, { locale: ptBR }) : '';
+  if (!date) return '';
+
+  // Converte a data para o fuso horário do Brasil
+  const zonedDate = utcToZonedTime(new Date(date), timeZone);
+
+  // Formata a data no fuso horário ajustado
+  return format(zonedDate, fm, { locale: ptBR });
 }
-
 export function fDateMetrics(date, newFormat) {
   const fm = newFormat || 'yyyy-MM-dd';
 
