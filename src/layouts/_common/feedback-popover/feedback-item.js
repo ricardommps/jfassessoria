@@ -1,4 +1,5 @@
-// @mui
+'use client';
+
 import LoadingButton from '@mui/lab/LoadingButton';
 import Avatar from '@mui/material/Avatar';
 import Badge from '@mui/material/Badge';
