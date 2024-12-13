@@ -1,33 +1,25 @@
-'use client';
-
-// eslint-disable-next-line simple-import-sort/imports
-import { format, formatDistanceToNow, getTime, parseISO } from 'date-fns';
-import { utcToZonedTime } from 'date-fns-tz';
+import { format, formatDistanceToNow, getTime } from 'date-fns';
 import ptBR from 'date-fns/locale/pt-BR';
-
 // ----------------------------------------------------------------------
 
 export function fDate(date, newFormat) {
-  const fm = newFormat || 'dd/MM/yyyy'; // Formato default
-  const timeZone = 'America/Sao_Paulo'; // Fuso horário de São Paulo (Brasil)
+  const fm = newFormat || 'dd MMM yyyy';
+
+  // Verifica se o código está rodando em produção (não local)
+  const isProduction = process.env.NODE_ENV === 'production';
 
   if (!date) return '';
-  console.log('-date---', date);
 
-  // Se a data for uma string no formato ISO, usamos parseISO para garantir que ela seja interpretada corretamente
-  const parsedDate = typeof date === 'string' ? parseISO(date) : date;
+  // Cria a data a partir da string recebida
+  const parsedDate = new Date(date);
 
-  // Converte a data para o fuso horário de São Paulo
-  const zonedDate = utcToZonedTime(parsedDate, timeZone);
-  console.log('-zonedDate---', zonedDate);
-
-  // Verifica a hora na data e corrige se necessário, sem forçar para o início do dia
-  const adjustedDate = zonedDate;
+  // Se não estiver rodando localmente, adiciona 3 horas
+  if (isProduction) {
+    parsedDate.setHours(parsedDate.getHours() + 3);
+  }
 
   // Formata a data para o formato desejado
-  const formattedDate = format(adjustedDate, fm, { locale: ptBR });
-
-  return formattedDate;
+  return format(parsedDate, fm, { locale: ptBR });
 }
 
 export function fDateMetrics(date, newFormat) {
