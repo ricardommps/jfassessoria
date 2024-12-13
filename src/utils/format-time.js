@@ -6,17 +6,20 @@ import ptBR from 'date-fns/locale/pt-BR';
 // ----------------------------------------------------------------------
 
 export function fDate(date, newFormat) {
-  const fm = newFormat || 'dd MMM yyyy';
-  const timeZone = 'America/Sao_Paulo'; // Define o fuso horário do Brasil
+  const fm = newFormat || 'dd/MM/yyyy'; // Formato default
+  const timeZone = 'America/Sao_Paulo'; // Fuso horário de São Paulo (Brasil)
 
   if (!date) return '';
 
-  // Converte a data para o fuso horário do Brasil
+  // Converte a data UTC para o fuso horário do Brasil
   const zonedDate = utcToZonedTime(new Date(date), timeZone);
 
-  // Formata a data no fuso horário ajustado
-  return format(zonedDate, fm, { locale: ptBR });
+  // Verifica se a data no fuso horário está correta e formatada
+  const formattedDate = format(zonedDate, fm, { locale: ptBR });
+
+  return formattedDate;
 }
+
 export function fDateMetrics(date, newFormat) {
   const fm = newFormat || 'yyyy-MM-dd';
 
