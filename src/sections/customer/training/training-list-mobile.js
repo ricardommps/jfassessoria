@@ -168,8 +168,7 @@ export default function TrainingListMobile({
                     <TrainingItem
                       key={training.id}
                       training={training}
-                      programId={id}
-                      type={type}
+                      program={program}
                       refreshList={refreshList}
                       handleSuccessCreate={handleSuccessCreate}
                       handleOpenSend={handleOpenSend}

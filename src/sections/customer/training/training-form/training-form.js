@@ -27,14 +27,13 @@ import ExertionZone from 'src/components/exertion-zone/exertion-zone';
 import { RHFSelect, RHFTextField } from 'src/components/hook-form';
 import FormProvider from 'src/components/hook-form/form-provider';
 import Iconify from 'src/components/iconify/iconify';
+import { MediaSelectHeating, MediaSelectStreches } from 'src/components/media-select';
+import MediaSelectWorkout from 'src/components/media-select/media-select-workout';
 import { useBoolean } from 'src/hooks/use-boolean';
 import { _tags } from 'src/utils/tags';
 import { trainingModules } from 'src/utils/training-modules';
 import * as Yup from 'yup';
 
-import HeatingFind from './heating/heating-find';
-import StrechesFind from './streches/streches-find';
-import WorkoutFind from './workout/workout-find';
 import WorkoutView from './workout/workout-view';
 
 const stretchTags = ['Alongamento ativo', 'Alongamento passivo', 'Alongamentos'];
@@ -55,6 +54,9 @@ export default function TrainingForm({
   const isStretches = useBoolean();
   const isHeating = useBoolean();
   const exertionZone = useBoolean();
+  const drawerHeating = useBoolean();
+  const drawerWorkout = useBoolean();
+  const drawerStreches = useBoolean();
 
   const toggleTags = useBoolean(true);
 
@@ -117,9 +119,10 @@ export default function TrainingForm({
         setLoading(true);
         const newData = Object.assign({}, data);
         const mediasID = newData.medias.map((item) => item.id);
+        const uniqueMedias = [...new Set(mediasID)];
         if (training) {
           const payload = newData;
-          payload.medias = mediasID;
+          payload.medias = uniqueMedias;
           delete payload.id;
           // delete payload.programId;
           await onUpdateTraining(payload, training.id);
@@ -193,6 +196,7 @@ export default function TrainingForm({
 
   const handleSaveHeatings = (heatings) => {
     const medias = values.medias;
+
     const newMedias = [...new Set([...medias, ...heatings])];
     setValue('medias', newMedias);
     if (!heatings || heatings.length === 0) {
@@ -228,7 +232,7 @@ export default function TrainingForm({
     setValue('medias', filteredMedias);
   };
 
-  const handleRemoveStretches = (removed) => {
+  const handleRemoveStreches = (removed) => {
     const idsToRemove = removed.map((item) => item.id);
     const medias = [...values.medias];
     const stretchesOrder = [...values.stretchesOrder];
@@ -548,123 +552,180 @@ export default function TrainingForm({
   }, [type]);
 
   return (
-    <Box sx={{ height: 'auto' }}>
-      <Stack>
-        <Typography sx={{ fontSize: '1.5em', fontWeight: 'bold', color: '#f7951e' }}>
-          {training ? 'Editar Treino' : 'Novo Treino'}
-        </Typography>
-        <Typography sx={{ fontSize: 'smaller', color: '#777', marginBottom: 2 }}>
-          {training
-            ? 'Atualize os dados do treino com este formulário'
-            : 'Cadastre um novo Treino para o programa do seu aluno com este formulário'}
-          .
-        </Typography>
-      </Stack>
-      {(!type || type === 1) && (
+    <>
+      <Box sx={{ height: 'auto' }}>
         <Stack>
-          <Button variant="outlined" sx={{ width: 'fit-content' }} onClick={tablePv.onToggle}>
-            {!tablePv.open ? 'Exibir tabela Pv' : 'Ocultas tabela Pv'}
-          </Button>
-          <Stack spacing={1.5} direction="row" mt={3}>
-            <Typography>Zona de esforço</Typography>
-            <IconButton sx={{ padding: 0 }} onClick={exertionZone.onTrue}>
-              <Iconify icon="eva:info-outline" />
-            </IconButton>
-          </Stack>
+          <Typography sx={{ fontSize: '1.5em', fontWeight: 'bold', color: '#f7951e' }}>
+            {training ? 'Editar Treino' : 'Novo Treino'}
+          </Typography>
+          <Typography sx={{ fontSize: 'smaller', color: '#777', marginBottom: 2 }}>
+            {training
+              ? 'Atualize os dados do treino com este formulário'
+              : 'Cadastre um novo Treino para o programa do seu aluno com este formulário'}
+            .
+          </Typography>
         </Stack>
-      )}
+        {(!type || type === 1) && (
+          <Stack>
+            <Button variant="outlined" sx={{ width: 'fit-content' }} onClick={tablePv.onToggle}>
+              {!tablePv.open ? 'Exibir tabela Pv' : 'Ocultas tabela Pv'}
+            </Button>
+            <Stack spacing={1.5} direction="row" mt={3}>
+              <Typography>Zona de esforço</Typography>
+              <IconButton sx={{ padding: 0 }} onClick={exertionZone.onTrue}>
+                <Iconify icon="eva:info-outline" />
+              </IconButton>
+            </Stack>
+          </Stack>
+        )}
 
-      <Grid container spacing={6}>
-        <Grid xs={12} md={12}>
-          <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
-            <>
-              <Box rowGap={3} columnGap={2} display="grid" pt={2}>
-                {type === 2 ? (
-                  <Typography>Força</Typography>
-                ) : (
-                  <RHFSelect name="name" label="Módulo *" variant="standard">
-                    {trainingModules.map((option) => (
-                      <MenuItem key={option.value} value={option.value}>
-                        {option.label}
-                      </MenuItem>
-                    ))}
-                  </RHFSelect>
-                )}
-                {type === 2 && (
-                  <Stack>
-                    <RHFTextField
-                      name="displayOrder"
-                      label="Ordem de exibição no app do aluno"
-                      type="number"
-                    />
-                  </Stack>
-                )}
-
-                <Stack>
-                  <RHFTextField name="subtitle" label="Subtítulo" />
-                </Stack>
-                {type === 2 && <>{renderTags}</>}
-
-                <Stack mt={1}>
-                  <Controller
-                    name="datePublished"
-                    control={control}
-                    render={({ field, fieldState: { error } }) => (
-                      <DatePicker
-                        label="Data do treino"
-                        format="dd/MM/yyyy"
-                        value={dayjs(field?.value).toDate() || null}
-                        onChange={(newValue) => {
-                          field.onChange(newValue);
-                        }}
-                        slotProps={{
-                          textField: {
-                            fullWidth: true,
-                            error: !!error,
-                            helperText: error?.message,
-                          },
-                          actionBar: {
-                            actions: ['clear'],
-                          },
-                        }}
-                      />
-                    )}
-                  />
-                  <Stack mt={2}>
-                    <Controller
-                      name="workoutDateOther"
-                      control={control}
-                      render={({ field, fieldState: { error } }) => (
-                        <DatePicker
-                          disabled={!values.datePublished}
-                          label="Data do treino alternativa"
-                          format="dd/MM/yyyy"
-                          value={dayjs(field?.value).toDate() || null}
-                          onChange={(newValue) => {
-                            field.onChange(newValue);
-                          }}
-                          slotProps={{
-                            textField: {
-                              fullWidth: true,
-                              error: !!error,
-                              helperText: error?.message,
-                            },
-                            actionBar: {
-                              actions: ['clear'],
-                            },
-                          }}
-                        />
-                      )}
-                    />
-                  </Stack>
-                </Stack>
-                <Box>
-                  <RHFTextField name="heating" label="Aquecimento" multiline rows={3} />
+        <Grid container spacing={6}>
+          <Grid xs={12} md={12}>
+            <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
+              <>
+                <Box rowGap={3} columnGap={2} display="grid" pt={2}>
+                  {type === 2 ? (
+                    <Typography>Força</Typography>
+                  ) : (
+                    <RHFSelect name="name" label="Módulo *" variant="standard">
+                      {trainingModules.map((option) => (
+                        <MenuItem key={option.value} value={option.value}>
+                          {option.label}
+                        </MenuItem>
+                      ))}
+                    </RHFSelect>
+                  )}
                   {type === 2 && (
+                    <Stack>
+                      <RHFTextField
+                        name="displayOrder"
+                        label="Ordem de exibição no app do aluno"
+                        type="number"
+                      />
+                    </Stack>
+                  )}
+
+                  <Stack>
+                    <RHFTextField name="subtitle" label="Subtítulo" />
+                  </Stack>
+                  {type === 2 && <>{renderTags}</>}
+                  {(!type || type === 1) && (
+                    <Stack mt={1}>
+                      <Controller
+                        name="datePublished"
+                        control={control}
+                        render={({ field, fieldState: { error } }) => (
+                          <DatePicker
+                            label="Data do treino"
+                            format="dd/MM/yyyy"
+                            value={dayjs(field?.value).toDate() || null}
+                            onChange={(newValue) => {
+                              field.onChange(newValue);
+                            }}
+                            slotProps={{
+                              textField: {
+                                fullWidth: true,
+                                error: !!error,
+                                helperText: error?.message,
+                              },
+                              actionBar: {
+                                actions: ['clear'],
+                              },
+                            }}
+                          />
+                        )}
+                      />
+                      <Stack mt={2}>
+                        <Controller
+                          name="workoutDateOther"
+                          control={control}
+                          render={({ field, fieldState: { error } }) => (
+                            <DatePicker
+                              disabled={!values.datePublished}
+                              label="Data do treino alternativa"
+                              format="dd/MM/yyyy"
+                              value={dayjs(field?.value).toDate() || null}
+                              onChange={(newValue) => {
+                                field.onChange(newValue);
+                              }}
+                              slotProps={{
+                                textField: {
+                                  fullWidth: true,
+                                  error: !!error,
+                                  helperText: error?.message,
+                                },
+                                actionBar: {
+                                  actions: ['clear'],
+                                },
+                              }}
+                            />
+                          )}
+                        />
+                      </Stack>
+                    </Stack>
+                  )}
+                  <Box>
+                    <RHFTextField name="heating" label="Aquecimento" multiline rows={3} />
+                    {type === 2 && (
+                      <Accordion
+                        aria-controls="heating-medias-content"
+                        id="heating-medias-header"
+                        defaultExpanded
+                        sx={{
+                          '&:before': {
+                            display: 'none',
+                          },
+                        }}
+                      >
+                        <AccordionSummary
+                          expandIcon={<Iconify icon="eva:arrow-ios-downward-fill" />}
+                        >
+                          <Typography variant="subtitle1">Vídeos de aquecimento</Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                          <Stack pb={2} sx={{ width: 'fit-content' }}>
+                            {/* <HeatingFind
+                              handleSaveHeatings={handleSaveHeatings}
+                              heatingMedias={filterHeatingFind(values.medias)}
+                            /> */}
+                            <Button variant="outlined" onClick={drawerHeating.onTrue}>
+                              Selecione os vídeos de aquecimento
+                            </Button>
+                          </Stack>
+                          <Stack>
+                            {values.heatingOrder.length > 0 && (
+                              <Box
+                                sx={{
+                                  overflowY: 'auto',
+                                  height: 'auto',
+                                  display: 'flex',
+                                  flexGrow: 1,
+                                  flexDirection: 'column',
+                                }}
+                              >
+                                <WorkoutView
+                                  medias={filterHeating(values.medias)}
+                                  mediaOrder={values.heatingOrder}
+                                  handleSaveExerciseInfo={handleSaveExerciseInfo}
+                                  exerciseInfo={values.exerciseInfo}
+                                  groupWorkout={groupHeatings}
+                                  ungroupWorkout={ungroupHeatings}
+                                  handleRemoveWorkout={handleRemoveHeatings}
+                                  handleReorderWorkout={handleReorderHeatings}
+                                />
+                              </Box>
+                            )}
+                          </Stack>
+                        </AccordionDetails>
+                      </Accordion>
+                    )}
+                  </Box>
+                  {(!type || type === 1) && (
                     <Accordion
-                      aria-controls="heating-medias-content"
-                      id="heating-medias-header"
+                      aria-controls="stretches-medias-content"
+                      id="stretches-medias-header"
                       defaultExpanded
+                      elevation={0}
                       sx={{
                         '&:before': {
                           display: 'none',
@@ -672,17 +733,22 @@ export default function TrainingForm({
                       }}
                     >
                       <AccordionSummary expandIcon={<Iconify icon="eva:arrow-ios-downward-fill" />}>
-                        <Typography variant="subtitle1">Vídeos de aquecimento</Typography>
+                        <Typography variant="subtitle1">
+                          Alongamentos ativos e educativos de corrida
+                        </Typography>
                       </AccordionSummary>
                       <AccordionDetails>
-                        <Stack py={2}>
-                          <HeatingFind
-                            handleSaveHeatings={handleSaveHeatings}
-                            heatingMedias={filterHeatingFind(values.medias)}
-                          />
+                        <Stack pb={2} sx={{ width: 'fit-content' }}>
+                          {/* <StrechesFind
+                            handleSaveStretches={handleSaveStretches}
+                            strechesMedias={filterStretchesFind(values.medias)}
+                          /> */}
+                          <Button variant="outlined" onClick={drawerStreches.onTrue}>
+                            Selecione vídeos de alongamentos ativos e educativos de corrida
+                          </Button>
                         </Stack>
                         <Stack>
-                          {values.heatingOrder.length > 0 && (
+                          {values.stretchesOrder.length > 0 && (
                             <Box
                               sx={{
                                 overflowY: 'auto',
@@ -693,14 +759,14 @@ export default function TrainingForm({
                               }}
                             >
                               <WorkoutView
-                                medias={filterHeating(values.medias)}
-                                mediaOrder={values.heatingOrder}
+                                medias={filterStretches(values.medias)}
+                                mediaOrder={values.stretchesOrder}
                                 handleSaveExerciseInfo={handleSaveExerciseInfo}
                                 exerciseInfo={values.exerciseInfo}
-                                groupWorkout={groupHeatings}
-                                ungroupWorkout={ungroupHeatings}
-                                handleRemoveWorkout={handleRemoveHeatings}
-                                handleReorderWorkout={handleReorderHeatings}
+                                groupWorkout={groupStretches}
+                                ungroupWorkout={ungroupStretches}
+                                handleRemoveWorkout={handleRemoveStreches}
+                                handleReorderWorkout={handleReorderStretches}
                               />
                             </Box>
                           )}
@@ -708,153 +774,134 @@ export default function TrainingForm({
                       </AccordionDetails>
                     </Accordion>
                   )}
-                </Box>
-                {(!type || type === 1) && (
-                  <Accordion
-                    aria-controls="stretches-medias-content"
-                    id="stretches-medias-header"
-                    defaultExpanded
-                    elevation={0}
-                    sx={{
-                      '&:before': {
-                        display: 'none',
-                      },
-                    }}
-                  >
-                    <AccordionSummary expandIcon={<Iconify icon="eva:arrow-ios-downward-fill" />}>
-                      <Typography variant="subtitle1">
-                        Alongamentos ativos e educativos de corrida
-                      </Typography>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                      <Stack py={2}>
-                        <StrechesFind
-                          handleSaveStretches={handleSaveStretches}
-                          strechesMedias={filterStretchesFind(values.medias)}
-                        />
-                      </Stack>
-                      <Stack>
-                        {values.stretchesOrder.length > 0 && (
-                          <Box
-                            sx={{
-                              overflowY: 'auto',
-                              height: 'auto',
-                              display: 'flex',
-                              flexGrow: 1,
-                              flexDirection: 'column',
-                            }}
-                          >
-                            <WorkoutView
-                              medias={filterStretches(values.medias)}
-                              mediaOrder={values.stretchesOrder}
-                              handleSaveExerciseInfo={handleSaveExerciseInfo}
-                              exerciseInfo={values.exerciseInfo}
-                              groupWorkout={groupStretches}
-                              ungroupWorkout={ungroupStretches}
-                              handleRemoveWorkout={handleRemoveStretches}
-                              handleReorderWorkout={handleReorderStretches}
-                            />
-                          </Box>
-                        )}
-                      </Stack>
-                    </AccordionDetails>
-                  </Accordion>
-                )}
 
-                <RHFTextField name="description" label="Parte principal" multiline rows={6} />
-                {type === 2 && (
-                  <Accordion
-                    aria-controls="stretches-medias-content"
-                    id="stretches-medias-header"
-                    defaultExpanded
-                    elevation={0}
-                    sx={{
-                      '&:before': {
-                        display: 'none',
-                      },
-                    }}
-                  >
-                    <AccordionSummary expandIcon={<Iconify icon="eva:arrow-ios-downward-fill" />}>
-                      <Typography variant="subtitle1">Vídeos dos exercícios</Typography>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                      <Stack py={2}>
-                        <WorkoutFind
-                          handleSaveWorkout={handleSaveMedias}
-                          workoutMedias={filterWorkoutFind(values.medias)}
-                          tags={values.tags}
+                  <RHFTextField name="description" label="Parte principal" multiline rows={6} />
+                  {type === 2 && (
+                    <Accordion
+                      aria-controls="stretches-medias-content"
+                      id="stretches-medias-header"
+                      defaultExpanded
+                      elevation={0}
+                      sx={{
+                        '&:before': {
+                          display: 'none',
+                        },
+                      }}
+                    >
+                      <AccordionSummary expandIcon={<Iconify icon="eva:arrow-ios-downward-fill" />}>
+                        <Typography variant="subtitle1">Vídeos da parte principal</Typography>
+                      </AccordionSummary>
+                      <AccordionDetails>
+                        <Stack pb={2} sx={{ width: 'fit-content' }}>
+                          {/* <WorkoutFind
+                            handleSaveWorkout={handleSaveMedias}
+                            workoutMedias={filterWorkoutFind(values.medias)}
+                            tags={values.tags}
+                          /> */}
+                          <Button variant="outlined" onClick={drawerWorkout.onTrue}>
+                            Selecione vídeos da parte principal
+                          </Button>
+                        </Stack>
+                        <Stack>
+                          {values.mediaOrder.length > 0 && (
+                            <Box
+                              sx={{
+                                overflowY: 'auto',
+                                height: 'auto',
+                                display: 'flex',
+                                flexGrow: 1,
+                                flexDirection: 'column',
+                              }}
+                            >
+                              <WorkoutView
+                                medias={filterMedias(values.medias)}
+                                mediaOrder={values.mediaOrder}
+                                handleSaveExerciseInfo={handleSaveExerciseInfo}
+                                exerciseInfo={values.exerciseInfo}
+                                groupWorkout={groupWorkout}
+                                ungroupWorkout={ungroupWorkout}
+                                handleRemoveWorkout={handleRemoveWorkout}
+                                handleReorderWorkout={handleReorderMedias}
+                              />
+                            </Box>
+                          )}
+                        </Stack>
+                      </AccordionDetails>
+                    </Accordion>
+                  )}
+                  <RHFTextField name="recovery" label="Desaquecimento" multiline rows={3} />
+                  <Stack alignItems="flex-start" sx={{ mb: 1 }}>
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={Boolean(values.published)}
+                          color="primary"
+                          onChange={handleChangePublished}
                         />
-                      </Stack>
-                      <Stack>
-                        {values.mediaOrder.length > 0 && (
-                          <Box
-                            sx={{
-                              overflowY: 'auto',
-                              height: 'auto',
-                              display: 'flex',
-                              flexGrow: 1,
-                              flexDirection: 'column',
-                            }}
-                          >
-                            <WorkoutView
-                              medias={filterMedias(values.medias)}
-                              mediaOrder={values.mediaOrder}
-                              handleSaveExerciseInfo={handleSaveExerciseInfo}
-                              exerciseInfo={values.exerciseInfo}
-                              groupWorkout={groupWorkout}
-                              ungroupWorkout={ungroupWorkout}
-                              handleRemoveWorkout={handleRemoveWorkout}
-                              handleReorderWorkout={handleReorderMedias}
-                            />
-                          </Box>
-                        )}
-                      </Stack>
-                    </AccordionDetails>
-                  </Accordion>
-                )}
-                <RHFTextField name="recovery" label="Desaquecimento" multiline rows={3} />
-                <Stack alignItems="flex-start" sx={{ mb: 1 }}>
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        checked={Boolean(values.published)}
-                        color="primary"
-                        onChange={handleChangePublished}
-                      />
-                    }
-                    label="Liberado"
-                    labelPlacement="end"
-                  />
+                      }
+                      label="Liberado"
+                      labelPlacement="end"
+                    />
+                  </Stack>
+                </Box>
+                <Stack pt={2} sx={{ width: '100%' }} spacing={2}>
+                  {renderErros}
                 </Stack>
-              </Box>
-              <Stack pt={2} sx={{ width: '100%' }} spacing={2}>
-                {renderErros}
-              </Stack>
-              <Stack alignItems="flex-end" sx={{ mt: 3 }} spacing={2}>
-                <LoadingButton type="submit" variant="contained" loading={loading} fullWidth>
-                  Salvar
-                </LoadingButton>
-                <Button fullWidth variant="outlined" color="warning" onClick={onClose}>
-                  Cancelar
-                </Button>
-              </Stack>
-            </>
-          </FormProvider>
+                <Stack alignItems="flex-end" sx={{ mt: 3 }} spacing={2}>
+                  <LoadingButton type="submit" variant="contained" loading={loading} fullWidth>
+                    Salvar
+                  </LoadingButton>
+                  <Button fullWidth variant="outlined" color="warning" onClick={onClose}>
+                    Cancelar
+                  </Button>
+                </Stack>
+              </>
+            </FormProvider>
+          </Grid>
         </Grid>
-      </Grid>
-      {exertionZone.value && (
-        <ExertionZone
-          open={exertionZone.value}
-          onClose={exertionZone.onFalse}
-          pv={program.pv}
-          pace={program.pace}
-          vla={program.vla}
-          paceVla={program.paceVla}
-          vlan={program.vlan}
-          paceVlan={program.paceVlan}
+        {exertionZone.value && (
+          <ExertionZone
+            open={exertionZone.value}
+            onClose={exertionZone.onFalse}
+            pv={program.pv}
+            pace={program.pace}
+            vla={program.vla}
+            paceVla={program.paceVla}
+            vlan={program.vlan}
+            paceVlan={program.paceVlan}
+          />
+        )}
+      </Box>
+      {drawerHeating.value && (
+        <MediaSelectHeating
+          drawer={drawerHeating}
+          handleSaveHeatings={handleSaveHeatings}
+          heatingMedias={filterHeatingFind(values.medias)}
+          handleRemoveHeatings={handleRemoveHeatings}
+          workoutMedias={filterWorkoutFind(values.medias)}
         />
       )}
-    </Box>
+
+      {drawerStreches.value && (
+        <MediaSelectStreches
+          drawer={drawerStreches}
+          handleSaveStreches={handleSaveStretches}
+          strechesMedias={filterStretchesFind(values.medias)}
+          handleRemoveStreches={handleRemoveStreches}
+        />
+      )}
+
+      {drawerWorkout.value && (
+        <MediaSelectWorkout
+          drawer={drawerWorkout}
+          handleSaveWorkout={handleSaveMedias}
+          workoutMedias={filterWorkoutFind(values.medias)}
+          handleRemoveWorkout={handleRemoveWorkout}
+          tags={values.tags}
+          heatingMedias={filterHeatingFind(values.medias)}
+        />
+      )}
+    </>
   );
 }
 
