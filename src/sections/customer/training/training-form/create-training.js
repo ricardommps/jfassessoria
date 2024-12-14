@@ -9,6 +9,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { forwardRef, useCallback, useEffect, useState } from 'react';
 import LoadingProgress from 'src/components/loading-progress';
+import { useBoolean } from 'src/hooks/use-boolean';
 import { useResponsive } from 'src/hooks/use-responsive';
 import useWorkout from 'src/hooks/use-workout';
 
@@ -26,6 +27,7 @@ export default function CreateTraining({
   program,
 }) {
   const smDown = useResponsive('down', 'sm');
+  const drawerHeating = useBoolean();
 
   const { onCreateWorkout, onGetWorkout, workout, onUpdateWorkout } = useWorkout();
 
@@ -65,6 +67,7 @@ export default function CreateTraining({
               program={program}
               handleSuccessCreate={handleSuccessCreate}
               onClose={onClose}
+              drawerHeating={drawerHeating}
             />
           </Stack>
         )}
@@ -77,6 +80,7 @@ export default function CreateTraining({
               program={program}
               handleSuccessCreate={handleSuccessCreate}
               onClose={onClose}
+              drawerHeating={drawerHeating}
             />
           </Stack>
         )}
@@ -92,13 +96,13 @@ export default function CreateTraining({
 
   if (smDown) {
     return (
-      <Dialog fullScreen open={open} TransitionComponent={Transition}>
+      <Dialog fullScreen open={open} TransitionComponent={Transition} hideBackdrop>
         <FeedBackContent />
       </Dialog>
     );
   }
   return (
-    <Dialog fullWidth maxWidth="sm" open={open}>
+    <Dialog fullWidth maxWidth="sm" open={open} hideBackdrop>
       <FeedBackContent />
     </Dialog>
   );
