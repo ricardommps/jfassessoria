@@ -1,6 +1,7 @@
 import CloseIcon from '@mui/icons-material/Close';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
 import Divider from '@mui/material/Divider';
 import Drawer from '@mui/material/Drawer';
@@ -200,6 +201,11 @@ export default function MediaSelectWorkout({
             </Box>
           </Stack>
         </Scrollbar>
+        <Box p={3}>
+          <Button color="inherit" variant="outlined" fullWidth onClick={drawer.onFalse}>
+            Fechar
+          </Button>
+        </Box>
       </Drawer>
     </>
   );
