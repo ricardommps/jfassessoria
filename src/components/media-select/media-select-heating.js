@@ -1,3 +1,5 @@
+import CloseIcon from '@mui/icons-material/Close';
+import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Checkbox from '@mui/material/Checkbox';
 import Divider from '@mui/material/Divider';
@@ -11,6 +13,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
+import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { Fragment, useCallback, useEffect, useState } from 'react';
 import Iconify from 'src/components/iconify';
@@ -103,20 +106,16 @@ export default function MediaSelectHeating({
   }, [heatingMedias]);
 
   const renderHead = (
-    <Stack
-      direction="row"
-      alignItems="center"
-      justifyContent="space-between"
-      sx={{ py: 2, pr: 1, pl: 2.5 }}
-    >
-      <Typography variant="h6" sx={{ flexGrow: 1 }}>
-        Selecione os vídeos de aquecimento
-      </Typography>
-
-      <IconButton onClick={drawer.onFalse}>
-        <Iconify icon="mingcute:close-line" />
-      </IconButton>
-    </Stack>
+    <AppBar sx={{ position: 'relative' }}>
+      <Toolbar>
+        <IconButton edge="start" color="inherit" onClick={drawer.onFalse} aria-label="close">
+          <CloseIcon />
+        </IconButton>
+        <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
+          Selecione os vídeos de aquecimento
+        </Typography>
+      </Toolbar>
+    </AppBar>
   );
 
   const handleToggle = (value) => () => {
