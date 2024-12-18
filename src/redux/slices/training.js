@@ -1,7 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import axios, { API_ENDPOINTS } from 'src/utils/axios';
 
-
 const initialState = {
   trainings: null,
   trainingsStatus: {
