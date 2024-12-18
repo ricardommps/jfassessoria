@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import axios, { API_ENDPOINTS } from 'src/utils/axios';
 
+
 const initialState = {
   trainings: null,
   trainingsStatus: {
@@ -234,16 +235,49 @@ export function getTrainingById(trainingId) {
   };
 }
 
+// export function createTraining(trainingData) {
+//   return async (dispatch) => {
+//     try {
+//       dispatch(slice.actions.createTrainingStart());
+//       const data = { ...trainingData };
+//       const response = await axios.post(API_ENDPOINTS.training.create, data);
+//       dispatch(slice.actions.createTrainingSuccess(response.data));
+//     } catch (error) {
+//       dispatch(slice.actions.createTrainingFailure(error));
+//       console.error(error);
+//     }
+//   };
+// }
+
+let cancelTokenSource = null;
+
 export function createTraining(trainingData) {
   return async (dispatch) => {
+    // Cancelar a requisição anterior, se existir
+    if (cancelTokenSource) {
+      cancelTokenSource.cancel('Nova requisição iniciada, cancelando a anterior.');
+    }
+
+    // Criar um novo CancelToken
+    cancelTokenSource = axios.CancelToken.source();
+
     try {
       dispatch(slice.actions.createTrainingStart());
+
       const data = { ...trainingData };
-      const response = await axios.post(API_ENDPOINTS.training.create, data);
+      const response = await axios.post(API_ENDPOINTS.training.create, data, {
+        cancelToken: cancelTokenSource.token,
+      });
+
       dispatch(slice.actions.createTrainingSuccess(response.data));
     } catch (error) {
-      dispatch(slice.actions.createTrainingFailure(error));
-      console.error(error);
+      if (!axios.isCancel(error)) {
+        dispatch(slice.actions.createTrainingFailure(error));
+        console.error(error);
+      }
+    } finally {
+      // Resetar o CancelToken após a conclusão da requisição
+      cancelTokenSource = null;
     }
   };
 }
