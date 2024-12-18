@@ -1,4 +1,7 @@
+import CloseIcon from '@mui/icons-material/Close';
+import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
 import Divider from '@mui/material/Divider';
 import Drawer from '@mui/material/Drawer';
@@ -11,6 +14,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
+import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { Fragment, useCallback, useEffect, useState } from 'react';
 import Iconify from 'src/components/iconify';
@@ -99,20 +103,16 @@ export default function MediaSelectStreches({
   }, [strechesMedias]);
 
   const renderHead = (
-    <Stack
-      direction="row"
-      alignItems="center"
-      justifyContent="space-between"
-      sx={{ py: 2, pr: 1, pl: 2.5 }}
-    >
-      <Typography variant="h6" sx={{ flexGrow: 1 }}>
-        Selecione os vídeos de alongamentos ativos e educativos de corrida
-      </Typography>
-
-      <IconButton onClick={drawer.onFalse}>
-        <Iconify icon="mingcute:close-line" />
-      </IconButton>
-    </Stack>
+    <AppBar sx={{ position: 'relative' }}>
+      <Toolbar>
+        <IconButton edge="start" color="inherit" onClick={drawer.onFalse} aria-label="close">
+          <CloseIcon />
+        </IconButton>
+        <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
+          Selecione os vídeos de alongamentos ativos e educativos de corrida
+        </Typography>
+      </Toolbar>
+    </AppBar>
   );
 
   const handleToggle = (value) => () => {
@@ -140,7 +140,7 @@ export default function MediaSelectStreches({
           keepMounted: true, // Garante que o Drawer não feche automaticamente ao interagir com o Dialog
           disablePortal: true, // Garante que o Drawer seja renderizado no mesmo nível do Dialog
         }}
-        sx={{ zIndex: 1500 }}
+        sx={{ zIndex: 1800 }}
       >
         {renderHead}
 
@@ -194,6 +194,11 @@ export default function MediaSelectStreches({
             </Box>
           </Stack>
         </Scrollbar>
+        <Box p={3}>
+          <Button color="inherit" variant="outlined" fullWidth onClick={drawer.onFalse}>
+            Fechar
+          </Button>
+        </Box>
       </Drawer>
     </>
   );
