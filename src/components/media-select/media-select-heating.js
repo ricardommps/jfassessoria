@@ -17,6 +17,7 @@ import Iconify from 'src/components/iconify';
 import useMedia from 'src/hooks/use-media';
 
 import LoadingProgress from '../loading-progress';
+import Scrollbar from '../scrollbar';
 
 const heatingTags = ['Aquecimento'];
 
@@ -102,7 +103,12 @@ export default function MediaSelectHeating({
   }, [heatingMedias]);
 
   const renderHead = (
-    <Stack direction="row" alignItems="center" sx={{ py: 2, pl: 2.5, pr: 1, minHeight: 68 }}>
+    <Stack
+      direction="row"
+      alignItems="center"
+      justifyContent="space-between"
+      sx={{ py: 2, pr: 1, pl: 2.5 }}
+    >
       <Typography variant="h6" sx={{ flexGrow: 1 }}>
         Selecione os vídeos de aquecimento
       </Typography>
@@ -131,9 +137,6 @@ export default function MediaSelectHeating({
       <Drawer
         open={drawer.value}
         anchor="right"
-        PaperProps={{
-          sx: { width: 1, maxWidth: 420 },
-        }}
         ModalProps={{
           keepMounted: true, // Garante que o Drawer não feche automaticamente ao interagir com o Dialog
           disablePortal: true, // Garante que o Drawer seja renderizado no mesmo nível do Dialog
@@ -143,51 +146,55 @@ export default function MediaSelectHeating({
         {renderHead}
 
         <Divider />
-        <Box px={2} pt={2}>
-          <TextField
-            fullWidth
-            placeholder="Buscar..."
-            value={searchQuery}
-            onChange={handleSearch}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <Iconify icon="eva:search-fill" sx={{ color: 'text.disabled' }} />
-                </InputAdornment>
-              ),
-            }}
-          />
-        </Box>
-        <Box p={2}>
-          {loading && <LoadingProgress />}
-          {!loading && options.length > 0 && (
+        <Scrollbar>
+          <Stack spacing={3} sx={{ p: 3 }}>
             <Box>
-              <List>
-                {options.map((item) => (
-                  <Fragment key={item.id}>
-                    <ListItem disablePadding>
-                      <ListItemButton role={undefined} dense onClick={handleToggle(item)}>
-                        <ListItemIcon>
-                          <Checkbox
-                            edge="start"
-                            tabIndex={-1}
-                            disableRipple
-                            inputProps={{ 'aria-labelledby': item.id }}
-                            checked={mediasSelected.some(
-                              (selectedMedia) => selectedMedia.id === item.id,
-                            )}
-                          />
-                        </ListItemIcon>
-                        <ListItemText id={item.id} primary={item.title} />
-                      </ListItemButton>
-                    </ListItem>
-                    <Divider component="li" />
-                  </Fragment>
-                ))}
-              </List>
+              <TextField
+                fullWidth
+                placeholder="Buscar..."
+                value={searchQuery}
+                onChange={handleSearch}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <Iconify icon="eva:search-fill" sx={{ color: 'text.disabled' }} />
+                    </InputAdornment>
+                  ),
+                }}
+              />
             </Box>
-          )}
-        </Box>
+            <Box>
+              {loading && <LoadingProgress />}
+              {!loading && options.length > 0 && (
+                <Box>
+                  <List>
+                    {options.map((item) => (
+                      <Fragment key={item.id}>
+                        <ListItem disablePadding>
+                          <ListItemButton role={undefined} dense onClick={handleToggle(item)}>
+                            <ListItemIcon>
+                              <Checkbox
+                                edge="start"
+                                tabIndex={-1}
+                                disableRipple
+                                inputProps={{ 'aria-labelledby': item.id }}
+                                checked={mediasSelected.some(
+                                  (selectedMedia) => selectedMedia.id === item.id,
+                                )}
+                              />
+                            </ListItemIcon>
+                            <ListItemText id={item.id} primary={item.title} />
+                          </ListItemButton>
+                        </ListItem>
+                        <Divider component="li" />
+                      </Fragment>
+                    ))}
+                  </List>
+                </Box>
+              )}
+            </Box>
+          </Stack>
+        </Scrollbar>
       </Drawer>
     </>
   );

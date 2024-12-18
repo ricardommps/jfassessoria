@@ -6,9 +6,19 @@ import { HOST_API_JF } from 'src/config-global';
 
 const axiosInstance = axios.create({ baseURL: HOST_API_JF });
 
+// axiosInstance.interceptors.response.use(
+//   (response) => response,
+//   (error) => Promise.reject((error.response && error.response.data) || 'Something went wrong'),
+// );
+
 axiosInstance.interceptors.response.use(
   (response) => response,
-  (error) => Promise.reject((error.response && error.response.data) || 'Something went wrong'),
+  (error) => {
+    if (axios.isCancel(error)) {
+      console.error(error.message);
+    }
+    return Promise.reject((error.response && error.response.data) || 'Something went wrong');
+  },
 );
 
 export default axiosInstance;

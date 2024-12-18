@@ -102,7 +102,7 @@ export default function CreateTraining({
     );
   }
   return (
-    <Dialog fullWidth maxWidth="sm" open={open} hideBackdrop>
+    <Dialog fullWidth open={open} hideBackdrop>
       <FeedBackContent />
     </Dialog>
   );

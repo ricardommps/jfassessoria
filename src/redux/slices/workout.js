@@ -167,30 +167,66 @@ const slice = createSlice({
 
 export default slice.reducer;
 
+let abortController = null;
+
 export function createWorkout(payload) {
   return async (dispatch) => {
+    // Cancelar a requisição anterior, se existir
+    if (abortController) {
+      abortController.abort(); // Cancela a requisição anterior
+    }
+
+    // Criar um novo AbortController para a nova requisição
+    abortController = new AbortController();
     try {
-      dispatch(slice.actions.createWorkoutStart());
+      await dispatch(slice.actions.createWorkoutStart());
       const data = { ...payload };
-      const response = await axios.post(API_ENDPOINTS.workout.root, data);
-      dispatch(slice.actions.createWorkoutSuccess(response.data));
+      const response = await axios.post(API_ENDPOINTS.workout.root, data, {
+        signal: abortController.signal,
+      });
+      await dispatch(slice.actions.createWorkoutSuccess(response.data));
+      return response;
     } catch (error) {
-      dispatch(slice.actions.createWorkoutFailure(error));
-      throw error(error);
+      if (error.name === 'CanceledError') {
+        console.error(error.message);
+      } else {
+        dispatch(slice.actions.createTrainingFailure(error));
+        console.error(error);
+        throw error(error);
+      }
+    } finally {
+      // Resetar o CancelToken após a conclusão da requisição
+      abortController = null;
     }
   };
 }
 
 export function upDateWorkout(payload, id) {
   return async (dispatch) => {
+    if (abortController) {
+      abortController.abort(); // Cancela a requisição anterior
+    }
+
+    // Criar um novo AbortController para a nova requisição
+    abortController = new AbortController();
     try {
       dispatch(slice.actions.createWorkoutStart());
       const data = { ...payload };
-      const response = await axios.put(`${API_ENDPOINTS.workout.root}/${id}`, data);
+      const response = await axios.put(`${API_ENDPOINTS.workout.root}/${id}`, data, {
+        signal: abortController.signal,
+      });
       dispatch(slice.actions.createWorkoutSuccess(response.data));
+      return response;
     } catch (error) {
-      dispatch(slice.actions.createWorkoutFailure(error));
-      throw error(error);
+      if (error.name === 'CanceledError') {
+        console.error(error.message);
+      } else {
+        dispatch(slice.actions.createTrainingFailure(error));
+        throw error(error);
+      }
+    } finally {
+      // Resetar o CancelToken após a conclusão da requisição
+      abortController = null;
     }
   };
 }

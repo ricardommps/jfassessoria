@@ -257,15 +257,29 @@ export default function FeedbackItem({ feedback, refreshList, handleWorkoutSelec
         )}
       </Grid>
       {feedback?.link && (
-        <TextMaxLine
-          asLink
-          target="_blank"
-          href={feedback?.link}
-          color="primary"
-          sx={{ maxWidth: 200 }}
-        >
-          Link do treino
-        </TextMaxLine>
+        <>
+          {feedback?.link.startsWith('http') ? (
+            <TextMaxLine
+              asLink
+              target="_blank"
+              href={feedback?.link}
+              color="primary"
+              sx={{ maxWidth: 200 }}
+            >
+              Link do treino
+            </TextMaxLine>
+          ) : (
+            <Typography
+              color="primary"
+              dangerouslySetInnerHTML={{ __html: feedback?.link }}
+              sx={{
+                maxWidth: 200, // Limita a largura máxima
+                wordWrap: 'break-word', // Quebra palavras longas
+                overflowWrap: 'break-word', // Quebra palavras longas, se necessário
+              }}
+            />
+          )}
+        </>
       )}
 
       {feedback?.intensities?.length > 0 && (
