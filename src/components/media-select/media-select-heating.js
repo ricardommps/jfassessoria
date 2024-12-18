@@ -141,7 +141,7 @@ export default function MediaSelectHeating({
           keepMounted: true, // Garante que o Drawer não feche automaticamente ao interagir com o Dialog
           disablePortal: true, // Garante que o Drawer seja renderizado no mesmo nível do Dialog
         }}
-        sx={{ zIndex: 1500 }}
+        sx={{ zIndex: 1800 }}
       >
         {renderHead}
 
