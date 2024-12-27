@@ -20,6 +20,12 @@ const initialState = {
     empty: false,
     error: null,
   },
+  workoutLoad: null,
+  workoutLoadStatus: {
+    loading: false,
+    error: null,
+    empty: false,
+  },
 };
 const slice = createSlice({
   name: 'workout',
@@ -144,6 +150,11 @@ const slice = createSlice({
       state.workoutStatus.error = null;
       state.workoutStatus.loading = true;
       state.workoutStatus.empty = false;
+
+      // state.workoutLoad = null;
+      // state.workoutLoadStatus.loading = false;
+      // state.workoutLoadStatus.error = null;
+      // state.workoutLoadStatus.empty = false;
     },
     getWorkoutSuccess(state, action) {
       const workout = action.payload;
@@ -161,6 +172,26 @@ const slice = createSlice({
       state.workout = null;
       state.workoutStatus.loading = false;
       state.workoutStatus.empty = false;
+    },
+    getWorkoutLoadStart(state) {
+      state.workoutLoad = null;
+      state.workoutLoadStatus.loading = true;
+      state.workoutLoadStatus.error = null;
+      state.workoutLoadStatus.empty = false;
+    },
+    getWorkoutLoadFailure(state, action) {
+      state.workoutLoad = null;
+      state.workoutLoadStatus.loading = false;
+      state.workoutLoadStatus.error = action.payload;
+      state.workoutLoadStatus.empty = false;
+    },
+    getWorkoutLoadSuccess(state, action) {
+      const workoutLoad = action.payload;
+
+      state.workoutLoad = workoutLoad;
+      state.workoutLoadStatus.loading = false;
+      state.workoutLoadStatus.error = null;
+      state.workoutLoadStatus.empty = !workoutLoad.length || workoutLoad.length === 0;
     },
   },
 });
@@ -299,6 +330,19 @@ export function getWorkout(id) {
   };
 }
 
+export function getWorkoutFeedback(customerId, id) {
+  return async (dispatch) => {
+    dispatch(slice.actions.getWorkoutStart());
+    try {
+      const response = await axios.get(`${API_ENDPOINTS.workout.root}/${customerId}/${id}`);
+      dispatch(slice.actions.getWorkoutSuccess(response.data));
+    } catch (error) {
+      dispatch(slice.actions.getWorkoutFailure(error));
+      throw error(error);
+    }
+  };
+}
+
 export function reviewWorkout(id, payload) {
   return async (dispatch) => {
     dispatch(slice.actions.reviewWorkoutStart());
@@ -309,6 +353,18 @@ export function reviewWorkout(id, payload) {
     } catch (error) {
       dispatch(slice.actions.reviewWorkoutFailure(error));
       throw error(error);
+    }
+  };
+}
+
+export function getWorkoutLoad(customerId, id) {
+  return async (dispatch) => {
+    dispatch(slice.actions.getWorkoutLoadStart());
+    try {
+      const response = await axios.get(`${API_ENDPOINTS.workoutLoad}/${customerId}/${id}`);
+      dispatch(slice.actions.getWorkoutLoadSuccess(response.data));
+    } catch (error) {
+      dispatch(slice.actions.getWorkoutLoadFailure(error));
     }
   };
 }

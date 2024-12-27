@@ -1,11 +1,16 @@
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
+import React, { useMemo } from 'react';
 import Scrollbar from 'src/components/scrollbar';
 
 import WorkoutItem from './workout-item';
 import WorkoutViewGroup from './workout-view-group';
 
-export default function WorkoutList({ medias, mediaOrder, exerciseInfo, workoutLoad }) {
+const WorkoutList = React.memo(({ medias, mediaOrder, exerciseInfo, isWorkoutLoad }) => {
+  const memoizedExerciseInfo = useMemo(() => {
+    return exerciseInfo;
+  }, [exerciseInfo]);
+
   return (
     <Box sx={{ p: 0, overflow: 'hidden' }}>
       <Scrollbar sx={{ height: 320 }}>
@@ -20,8 +25,8 @@ export default function WorkoutList({ medias, mediaOrder, exerciseInfo, workoutL
                   <WorkoutViewGroup
                     key={`group-${index}`}
                     media={groupedMedias}
-                    exerciseInfo={exerciseInfo}
-                    workoutLoad={workoutLoad}
+                    exerciseInfo={memoizedExerciseInfo} // Passando a versão memoizada
+                    isWorkoutLoad={isWorkoutLoad}
                   />
                 );
               }
@@ -30,10 +35,10 @@ export default function WorkoutList({ medias, mediaOrder, exerciseInfo, workoutL
               if (media?.id) {
                 return (
                   <WorkoutItem
-                    key={media.id}
+                    key={media.id} // Garantindo que a chave seja única
                     media={media}
-                    exerciseInfo={exerciseInfo}
-                    workoutLoad={workoutLoad}
+                    exerciseInfo={memoizedExerciseInfo} // Passando a versão memoizada
+                    isWorkoutLoad={isWorkoutLoad}
                   />
                 );
               }
@@ -43,4 +48,6 @@ export default function WorkoutList({ medias, mediaOrder, exerciseInfo, workoutL
       </Scrollbar>
     </Box>
   );
-}
+});
+
+export default WorkoutList;
