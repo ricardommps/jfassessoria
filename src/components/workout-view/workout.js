@@ -6,12 +6,13 @@ import CardHeader from '@mui/material/CardHeader';
 import Divider from '@mui/material/Divider';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Iconify from 'src/components/iconify/iconify';
 import Scrollbar from 'src/components/scrollbar';
 
 import WorkoutList from './workout-list';
-export default function Workout({ workout }) {
+
+const Workout = React.memo(({ workout }) => {
   const STRETCH_TAGS = ['Alongamento ativo', 'Alongamento passivo', 'Alongamentos'];
   const HEATING_TAGS = ['Aquecimento'];
   const EXCLUDED_TAGS = [...STRETCH_TAGS, ...HEATING_TAGS];
@@ -69,6 +70,7 @@ export default function Workout({ workout }) {
             medias={medias}
             mediaOrder={workout?.mediaOrder}
             exerciseInfo={workout?.exerciseInfo}
+            isWorkoutLoad={true}
           />
           {workout?.recovery && (
             <>
@@ -87,28 +89,37 @@ export default function Workout({ workout }) {
       </CardContent>
     </>
   );
-}
+});
 
-function WorkoutSection({ title, description, medias, mediaOrder, exerciseInfo }) {
-  if (!description && (!medias || medias.length === 0 || !mediaOrder?.length)) return null;
+const WorkoutSection = React.memo(
+  ({ title, description, medias, mediaOrder, exerciseInfo, isWorkoutLoad }) => {
+    if (!description && (!medias || medias.length === 0 || !mediaOrder?.length)) return null;
 
-  return (
-    <Accordion defaultExpanded elevation={0} sx={{ '&:before': { display: 'none' } }}>
-      <AccordionSummary expandIcon={<Iconify icon="eva:arrow-ios-downward-fill" />}>
-        <Typography variant="subtitle1">{title}</Typography>
-      </AccordionSummary>
-      <AccordionDetails>
-        {description && (
-          <Stack p={2}>
-            <Scrollbar>
-              <Typography sx={{ whiteSpace: 'pre-line' }}>{description}</Typography>
-            </Scrollbar>
-          </Stack>
-        )}
-        {medias && medias.length > 0 && (
-          <WorkoutList medias={medias} mediaOrder={mediaOrder} exerciseInfo={exerciseInfo} />
-        )}
-      </AccordionDetails>
-    </Accordion>
-  );
-}
+    return (
+      <Accordion defaultExpanded elevation={0} sx={{ '&:before': { display: 'none' } }}>
+        <AccordionSummary expandIcon={<Iconify icon="eva:arrow-ios-downward-fill" />}>
+          <Typography variant="subtitle1">{title}</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          {description && (
+            <Stack p={2}>
+              <Scrollbar>
+                <Typography sx={{ whiteSpace: 'pre-line' }}>{description}</Typography>
+              </Scrollbar>
+            </Stack>
+          )}
+          {medias && medias.length > 0 && (
+            <WorkoutList
+              medias={medias}
+              mediaOrder={mediaOrder}
+              exerciseInfo={exerciseInfo}
+              isWorkoutLoad={isWorkoutLoad}
+            />
+          )}
+        </AccordionDetails>
+      </Accordion>
+    );
+  },
+);
+
+export default Workout;

@@ -29,8 +29,8 @@ export default function FeedbackPopover() {
 
   const [sortedUnreviewedFinished, setSortedUnreviewedFinished] = useState([]);
 
-  const handleWorkoutSelected = (workoutId) => {
-    setWorkoutSelected(workoutId);
+  const handleWorkoutSelected = (item) => {
+    setWorkoutSelected(item);
   };
 
   const handeCloseWorkoutView = () => {
@@ -128,7 +128,8 @@ export default function FeedbackPopover() {
         <WorkoutView
           open={workoutSelected}
           onClose={handeCloseWorkoutView}
-          workoutId={workoutSelected}
+          workoutId={workoutSelected.workoutId}
+          customerId={workoutSelected.customer.id}
         />
       )}
     </>

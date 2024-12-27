@@ -328,7 +328,7 @@ export default function FeedbackItem({ feedback, refreshList, handleWorkoutSelec
         )}
         <Button
           variant="outlined"
-          onClick={() => handleWorkoutSelected(feedback.workoutId)}
+          onClick={() => handleWorkoutSelected(feedback)}
           fullWidth
           sx={{ mt: 2 }}
         >

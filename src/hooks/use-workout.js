@@ -4,6 +4,8 @@ import {
   createWorkout,
   deleteWorkout,
   getWorkout,
+  getWorkoutFeedback,
+  getWorkoutLoad,
   getWorkouts,
   reviewWorkout,
   sendWorkout,
@@ -12,8 +14,16 @@ import {
 import { useDispatch, useSelector } from 'src/redux/store';
 export default function useWorkout() {
   const dispatch = useDispatch();
-  const { workouts, workoutsStatus, workoutAction, workoutActionStatus, workout, workousStatus } =
-    useSelector((state) => state.workout);
+  const {
+    workouts,
+    workoutsStatus,
+    workoutAction,
+    workoutActionStatus,
+    workout,
+    workousStatus,
+    workoutLoad,
+    workoutLoadStatus,
+  } = useSelector((state) => state.workout);
 
   const onCreateWorkout = useCallback(
     async (payload) => {
@@ -71,6 +81,20 @@ export default function useWorkout() {
     [dispatch],
   );
 
+  const onGetWorkoutFeedback = useCallback(
+    async (customerId, id) => {
+      await dispatch(getWorkoutFeedback(customerId, id));
+    },
+    [dispatch],
+  );
+
+  const onGetWorkoutLoad = useCallback(
+    async (customerId, id) => {
+      await dispatch(getWorkoutLoad(customerId, id));
+    },
+    [dispatch],
+  );
+
   return {
     onCreateWorkout,
     onListWorkouts,
@@ -86,5 +110,9 @@ export default function useWorkout() {
     onCloneTraining,
     onDeleteTraining,
     onSendTraining,
+    onGetWorkoutLoad,
+    workoutLoad,
+    workoutLoadStatus,
+    onGetWorkoutFeedback,
   };
 }

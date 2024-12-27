@@ -17,9 +17,9 @@ const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function WorkoutView({ open, onClose, workoutId }) {
+export default function WorkoutView({ open, onClose, workoutId, customerId }) {
   const smDown = useResponsive('down', 'sm');
-  const { onGetWorkout, workout } = useWorkout();
+  const { onGetWorkoutFeedback, workout } = useWorkout();
 
   const [loading, setLoading] = useState(false);
 
@@ -27,7 +27,7 @@ export default function WorkoutView({ open, onClose, workoutId }) {
     if (workout?.id === workoutId) return;
     setLoading(true); // Indica que o processo está em execução
     try {
-      await onGetWorkout(workoutId);
+      await onGetWorkoutFeedback(customerId, workoutId);
     } catch (error) {
       console.error('Erro durante a execução:', error);
     } finally {

@@ -52,6 +52,14 @@ export default function WorkoutItemGroup({ media, exerciseInfo, index }) {
           light={media.thumbnail}
           onError={(e) => handleError(e)}
         />
+        {media.workoutLoad && (
+          <Stack direction="row" spacing={1}>
+            <Typography>Carga:</Typography>
+            <Typography fontWeight={'bold'}>
+              {media.workoutLoad.length > 0 ? media.workoutLoad[0].load : 'Não definido'}
+            </Typography>
+          </Stack>
+        )}
       </Stack>
       <Stack flexDirection={'row'}>
         <Stack spacing={1} p={2}>
