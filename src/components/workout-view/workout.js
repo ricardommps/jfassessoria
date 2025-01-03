@@ -12,14 +12,13 @@ import Scrollbar from 'src/components/scrollbar';
 
 import WorkoutList from './workout-list';
 
-const Workout = React.memo(({ workout }) => {
+const Workout = React.memo(({ workout, checkList }) => {
   const STRETCH_TAGS = ['Alongamento ativo', 'Alongamento passivo', 'Alongamentos'];
   const HEATING_TAGS = ['Aquecimento'];
   const EXCLUDED_TAGS = [...STRETCH_TAGS, ...HEATING_TAGS];
   const [mediasStretches, setMediasStretches] = useState([]);
   const [mediasHeating, setMediasHeating] = useState([]);
   const [medias, setMedias] = useState([]);
-
   const handleFilterMedias = useCallback(() => {
     if (!workout) return;
 
@@ -56,12 +55,14 @@ const Workout = React.memo(({ workout }) => {
             medias={mediasHeating}
             mediaOrder={workout?.heatingOrder}
             exerciseInfo={workout?.exerciseInfo}
+            checkList={checkList}
           />
           <WorkoutSection
             title=" Alongamentos ativos e educativos de corrida"
             medias={mediasStretches}
             mediaOrder={workout?.stretchesOrder}
             exerciseInfo={workout?.exerciseInfo}
+            checkList={checkList}
           />
 
           <WorkoutSection
@@ -71,6 +72,7 @@ const Workout = React.memo(({ workout }) => {
             mediaOrder={workout?.mediaOrder}
             exerciseInfo={workout?.exerciseInfo}
             isWorkoutLoad={true}
+            checkList={checkList}
           />
           {workout?.recovery && (
             <>
@@ -92,7 +94,7 @@ const Workout = React.memo(({ workout }) => {
 });
 
 const WorkoutSection = React.memo(
-  ({ title, description, medias, mediaOrder, exerciseInfo, isWorkoutLoad }) => {
+  ({ title, description, medias, mediaOrder, exerciseInfo, isWorkoutLoad, checkList }) => {
     if (!description && (!medias || medias.length === 0 || !mediaOrder?.length)) return null;
 
     return (
@@ -114,6 +116,7 @@ const WorkoutSection = React.memo(
               mediaOrder={mediaOrder}
               exerciseInfo={exerciseInfo}
               isWorkoutLoad={isWorkoutLoad}
+              checkList={checkList}
             />
           )}
         </AccordionDetails>

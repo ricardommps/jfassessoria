@@ -7,7 +7,7 @@ import Carousel, { CarouselArrows, useCarousel } from 'src/components/carousel';
 
 import WorkoutItemGroup from './workout-item-group';
 
-export default function WorkoutViewGroup({ media, exerciseInfo, workoutLoad }) {
+export default function WorkoutViewGroup({ media, exerciseInfo, workoutLoad, checkList }) {
   const theme = useTheme();
   const handleType = () => {
     if (media.length === 2) {
@@ -61,6 +61,7 @@ export default function WorkoutViewGroup({ media, exerciseInfo, workoutLoad }) {
             exerciseInfo={exerciseInfo}
             workoutLoad={workoutLoad}
             index={index + 1}
+            checkList={checkList}
           />
         ))}
       </Carousel>

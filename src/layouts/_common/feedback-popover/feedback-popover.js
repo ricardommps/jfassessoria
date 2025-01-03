@@ -130,6 +130,7 @@ export default function FeedbackPopover() {
           onClose={handeCloseWorkoutView}
           workoutId={workoutSelected.workoutId}
           customerId={workoutSelected.customer.id}
+          checkList={workoutSelected.checkList}
         />
       )}
     </>

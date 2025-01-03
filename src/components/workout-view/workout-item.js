@@ -5,7 +5,7 @@ import React, { useMemo } from 'react';
 import ReactPlayer from 'react-player';
 import TextMaxLine from 'src/components/text-max-line';
 
-const WorkoutItem = React.memo(({ media, exerciseInfo, isWorkoutLoad }) => {
+const WorkoutItem = React.memo(({ media, exerciseInfo, isWorkoutLoad, checkList }) => {
   const exerciseInfoById = useMemo(
     () => exerciseInfo?.find((item) => item.id === media.id),
     [exerciseInfo, media.id],
@@ -16,7 +16,20 @@ const WorkoutItem = React.memo(({ media, exerciseInfo, isWorkoutLoad }) => {
   };
 
   return (
-    <Paper sx={{ mr: 0, borderRadius: 2, position: 'relative', bgcolor: 'background.neutral' }}>
+    <Paper
+      sx={{
+        mr: 0,
+        borderRadius: 2,
+        position: 'relative',
+        bgcolor: 'background.neutral',
+        ...(media?.id &&
+          checkList?.length &&
+          checkList.includes(media.id) && {
+            border: (theme) => theme.palette.primary.main,
+            borderStyle: 'dashed',
+          }),
+      }}
+    >
       <Stack spacing={2} sx={{ px: 2, pb: 1, pt: 2.5 }}>
         <TextMaxLine variant="subtitle2" line={2}>
           {media.title}
