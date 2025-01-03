@@ -48,12 +48,13 @@ export default function FeedbackItem({ feedback, refreshList, handleWorkoutSelec
   });
 
   const { handleSubmit } = methods;
+  console.log('---feedback--', feedback);
 
   const onSubmit = useCallback(async (data) => {
     try {
       setLoading(true);
       const payload = Object.assign({}, data);
-      await onReviewWorkout(feedback.id, payload);
+      await onReviewWorkout(feedback.customer.id, feedback.id, payload);
       feedBackForm.onFalse();
       refreshList();
     } catch (err) {

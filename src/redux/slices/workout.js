@@ -343,12 +343,15 @@ export function getWorkoutFeedback(customerId, id) {
   };
 }
 
-export function reviewWorkout(id, payload) {
+export function reviewWorkout(customerId, id, payload) {
   return async (dispatch) => {
     dispatch(slice.actions.reviewWorkoutStart());
     try {
       const data = { ...payload };
-      const response = await axios.put(`${API_ENDPOINTS.finished.review}/${id}`, data);
+      const response = await axios.put(
+        `${API_ENDPOINTS.finished.review}/${customerId}/${id}`,
+        data,
+      );
       dispatch(slice.actions.reviewWorkoutSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.reviewWorkoutFailure(error));

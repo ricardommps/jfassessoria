@@ -33,8 +33,8 @@ export default function useWorkout() {
   );
 
   const onReviewWorkout = useCallback(
-    async (id, payload) => {
-      await dispatch(reviewWorkout(id, payload));
+    async (customerId, id, payload) => {
+      await dispatch(reviewWorkout(customerId, id, payload));
     },
     [dispatch],
   );
