@@ -17,7 +17,7 @@ const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function WorkoutView({ open, onClose, workoutId, customerId }) {
+export default function WorkoutView({ open, onClose, workoutId, customerId, checkList }) {
   const smDown = useResponsive('down', 'sm');
   const { onGetWorkoutFeedback, workout } = useWorkout();
 
@@ -40,7 +40,6 @@ export default function WorkoutView({ open, onClose, workoutId, customerId }) {
       initialize();
     }
   }, [workoutId]);
-
   const WorkoutContent = () => (
     <>
       <AppBar sx={{ position: 'relative' }}>
@@ -56,7 +55,7 @@ export default function WorkoutView({ open, onClose, workoutId, customerId }) {
       {loading && <LoadingProgress />}
       {!loading && workout && (
         <Box>
-          <Workout workout={workout} />
+          <Workout workout={workout} checkList={checkList} />
         </Box>
       )}
     </>

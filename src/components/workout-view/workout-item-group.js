@@ -3,7 +3,7 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import ReactPlayer from 'react-player';
 import TextMaxLine from 'src/components/text-max-line';
-export default function WorkoutItemGroup({ media, exerciseInfo, index }) {
+export default function WorkoutItemGroup({ media, exerciseInfo, index, checkList }) {
   const exerciseInfoById = exerciseInfo?.filter((item) => item.id === media.id)[0];
   const handleError = (e) => {
     console.log(e);
@@ -17,6 +17,12 @@ export default function WorkoutItemGroup({ media, exerciseInfo, index }) {
         position: 'relative',
         bgcolor: 'background.neutral',
         width: '100%',
+        ...(media?.id &&
+          checkList?.length &&
+          checkList.includes(media.id) && {
+            border: (theme) => theme.palette.primary.main,
+            borderStyle: 'dashed',
+          }),
       }}
     >
       <Stack

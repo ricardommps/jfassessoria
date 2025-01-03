@@ -6,7 +6,7 @@ import Scrollbar from 'src/components/scrollbar';
 import WorkoutItem from './workout-item';
 import WorkoutViewGroup from './workout-view-group';
 
-const WorkoutList = React.memo(({ medias, mediaOrder, exerciseInfo, isWorkoutLoad }) => {
+const WorkoutList = React.memo(({ medias, mediaOrder, exerciseInfo, isWorkoutLoad, checkList }) => {
   const memoizedExerciseInfo = useMemo(() => {
     return exerciseInfo;
   }, [exerciseInfo]);
@@ -27,6 +27,7 @@ const WorkoutList = React.memo(({ medias, mediaOrder, exerciseInfo, isWorkoutLoa
                     media={groupedMedias}
                     exerciseInfo={memoizedExerciseInfo} // Passando a versão memoizada
                     isWorkoutLoad={isWorkoutLoad}
+                    checkList={checkList}
                   />
                 );
               }
@@ -39,6 +40,7 @@ const WorkoutList = React.memo(({ medias, mediaOrder, exerciseInfo, isWorkoutLoa
                     media={media}
                     exerciseInfo={memoizedExerciseInfo} // Passando a versão memoizada
                     isWorkoutLoad={isWorkoutLoad}
+                    checkList={checkList}
                   />
                 );
               }

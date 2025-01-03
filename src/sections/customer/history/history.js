@@ -1,7 +1,6 @@
 import CloseIcon from '@mui/icons-material/Close';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import IconButton from '@mui/material/IconButton';
 import Slide from '@mui/material/Slide';
@@ -41,9 +40,9 @@ export default function History({ open, onClose, history, title, refreshList, wo
         <Box pb={2}>
           <Typography variant="body1">{title}</Typography>
         </Box>
-        <Button variant="outlined" sx={{ mt: 2 }} onClick={workoutView.onTrue}>
+        {/* <Button variant="outlined" sx={{ mt: 2 }} onClick={workoutView.onTrue}>
           Ver treino
-        </Button>
+        </Button> */}
         {sortedItems.length > 0 && (
           <>
             {sortedItems.map((item) => (
