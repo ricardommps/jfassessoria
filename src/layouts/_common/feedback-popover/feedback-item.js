@@ -1,6 +1,7 @@
 'use client';
 
 import LoadingButton from '@mui/lab/LoadingButton';
+import Alert from '@mui/material/Alert';
 import Avatar from '@mui/material/Avatar';
 import Badge from '@mui/material/Badge';
 import Box from '@mui/material/Box';
@@ -48,7 +49,6 @@ export default function FeedbackItem({ feedback, refreshList, handleWorkoutSelec
   });
 
   const { handleSubmit } = methods;
-  console.log('---feedback--', feedback);
 
   const onSubmit = useCallback(async (data) => {
     try {
@@ -124,6 +124,11 @@ export default function FeedbackItem({ feedback, refreshList, handleWorkoutSelec
         bgcolor: 'background.neutral',
       }}
     >
+      {feedback.unrealized && (
+        <Alert variant="outlined" severity="warning">
+          Treino não realizado
+        </Alert>
+      )}
       <ListItemText
         disableTypography
         primary={
