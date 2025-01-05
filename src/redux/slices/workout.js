@@ -243,7 +243,7 @@ export function upDateWorkout(payload, id) {
     try {
       dispatch(slice.actions.createWorkoutStart());
       const data = { ...payload };
-      const response = await axios.put(`${API_ENDPOINTS.workout.root}/${id}`, data, {
+      const response = await axios.put(`${API_ENDPOINTS.workout.root}/by-id/${id}`, data, {
         signal: abortController.signal,
       });
       dispatch(slice.actions.createWorkoutSuccess(response.data));
@@ -267,7 +267,7 @@ export function cloneWorkout(id, qntCopy) {
     dispatch(slice.actions.cloneWorkoutStart());
     try {
       const response = await axios.get(
-        `${API_ENDPOINTS.workout.root}/clone/${id}?qntCopy=${qntCopy}`,
+        `${API_ENDPOINTS.workout.root}/clone-workout/${id}?qntCopy=${qntCopy}`,
       );
       dispatch(slice.actions.cloneWorkoutSuccess(response.data));
     } catch (error) {
@@ -294,7 +294,7 @@ export function deleteWorkout(id) {
   return async (dispatch) => {
     dispatch(slice.actions.cloneWorkoutStart());
     try {
-      const response = await axios.delete(`${API_ENDPOINTS.workout.root}/${id}`);
+      const response = await axios.delete(`${API_ENDPOINTS.workout.root}/by-id/${id}`);
       dispatch(slice.actions.cloneWorkoutSuccess(response.data));
     } catch (error) {
       console.error(error);
@@ -321,7 +321,7 @@ export function getWorkout(id) {
   return async (dispatch) => {
     dispatch(slice.actions.getWorkoutStart());
     try {
-      const response = await axios.get(`${API_ENDPOINTS.workout.root}/${id}`);
+      const response = await axios.get(`${API_ENDPOINTS.workout.root}/by-id/${id}`);
       dispatch(slice.actions.getWorkoutSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.getWorkoutFailure(error));
@@ -334,7 +334,9 @@ export function getWorkoutFeedback(customerId, id) {
   return async (dispatch) => {
     dispatch(slice.actions.getWorkoutStart());
     try {
-      const response = await axios.get(`${API_ENDPOINTS.workout.root}/${customerId}/${id}`);
+      const response = await axios.get(
+        `${API_ENDPOINTS.workout.root}/feedback/${customerId}/${id}`,
+      );
       dispatch(slice.actions.getWorkoutSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.getWorkoutFailure(error));
@@ -364,7 +366,7 @@ export function getWorkoutLoad(customerId, id) {
   return async (dispatch) => {
     dispatch(slice.actions.getWorkoutLoadStart());
     try {
-      const response = await axios.get(`${API_ENDPOINTS.workoutLoad}/${customerId}/${id}`);
+      const response = await axios.get(`${API_ENDPOINTS.workoutLoad}/feedback/${customerId}/${id}`);
       dispatch(slice.actions.getWorkoutLoadSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.getWorkoutLoadFailure(error));
