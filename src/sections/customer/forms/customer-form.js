@@ -88,6 +88,7 @@ export default function CustomerForm({ customer, loading, setLoading }) {
       city: customer?.city || '',
       state: customer?.state || '',
       district: customer?.district || '',
+      isYoungLife: customer?.isYoungLife || false,
     }),
     [customer],
   );
@@ -149,6 +150,13 @@ export default function CustomerForm({ customer, loading, setLoading }) {
     [setValue],
   );
 
+  const handleChangeYoungLife = useCallback(
+    (event) => {
+      setValue('isYoungLife', event.target.checked);
+    },
+    [setValue],
+  );
+
   useEffect(() => {
     reset(defaultValues);
   }, [customer]);
@@ -204,6 +212,19 @@ export default function CustomerForm({ customer, loading, setLoading }) {
                 <RHFRadioGroup row spacing={4} name="maritalStatus" options={MARITAL_OPTIONS} />
               </Stack>
             </Stack>
+            <Box pt={3}>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={Boolean(values.isYoungLife)}
+                    color="primary"
+                    onChange={handleChangeYoungLife}
+                  />
+                }
+                label="Aluno da Young Life"
+                labelPlacement="end"
+              />
+            </Box>
           </Box>
         </Card>
         <Card sx={{ p: 3, mt: 3 }}>
