@@ -814,7 +814,7 @@ export default function TrainingForm({
                               }}
                             >
                               <WorkoutView
-                                medias={filterMedias(values.medias)}
+                                medias={filterWorkoutFind(values.medias)}
                                 mediaOrder={values.mediaOrder}
                                 handleSaveExerciseInfo={handleSaveExerciseInfo}
                                 exerciseInfo={values.exerciseInfo}
