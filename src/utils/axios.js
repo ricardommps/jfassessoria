@@ -125,4 +125,8 @@ export const API_ENDPOINTS = {
     unreviewedFinished: '/api/v2/finished/unreviewedFinished',
   },
   workoutLoad: '/api/v2/workout-load',
+  invoice: {
+    root: '/api/v2/invoice',
+    all: '/api/v2/invoice/all',
+  },
 };

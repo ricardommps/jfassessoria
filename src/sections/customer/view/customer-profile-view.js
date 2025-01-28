@@ -14,6 +14,7 @@ import { paths } from 'src/routes/paths';
 import Anamnese from '../anamnese';
 import CustomerForm from '../forms/customer-form';
 import SecurityForm from '../forms/security-form';
+import Invoice from '../invoice';
 import Notifications from '../notifications';
 import ProfileCover from '../profile/profile-cover';
 
@@ -22,6 +23,12 @@ const TABS = [
     value: 'profile',
     label: 'Perfil',
     icon: <Iconify icon="solar:user-id-bold" width={24} />,
+  },
+  {
+    value: 'invoice',
+    label: 'Faturas',
+    icon: <Iconify icon="solar:dollar-bold" width={24} />,
+    disabled: true,
   },
   {
     value: 'security',
@@ -130,13 +137,16 @@ export default function CustomerProfileView() {
               value={tab.value}
               icon={tab.icon}
               label={tab.label}
-              disabled={loading}
+              disabled={loading || tab.disabled}
             />
           ))}
         </Tabs>
       </Card>
       {currentTab === 'profile' && (
         <CustomerForm customer={customer} loading={loading} setLoading={setLoading} />
+      )}
+      {currentTab === 'invoice' && (
+        <Invoice customer={customer} loading={loading} setLoading={setLoading} />
       )}
       {currentTab === 'security' && (
         <SecurityForm customer={customer} loading={loading} setLoading={setLoading} />
