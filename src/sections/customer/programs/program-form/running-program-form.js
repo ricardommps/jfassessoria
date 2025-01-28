@@ -108,6 +108,7 @@ export default function RunningProgramForm({
       type: program?.type || 1,
       startDate: program?.startDate || null,
       endDate: program?.endDate || null,
+      additionalInformation: program?.additionalInformation || '',
     }),
     [],
   );
@@ -305,6 +306,12 @@ export default function RunningProgramForm({
         <>
           <Box rowGap={3} columnGap={2} display="grid" pt={1}>
             <RHFTextField name="name" label="Titulo *" variant="standard" />
+            <RHFTextField
+              name="additionalInformation"
+              label="Informações adicionais"
+              multiline
+              rows={6}
+            />
             <RHFTextField name="goal" label="Objetivo" variant="standard" />
             <RHFSelect name="difficultyLevel" label="Nível de dificuldade *" variant="standard">
               {DIFFICULTYLEVELOPTIONS.map((option) => (
