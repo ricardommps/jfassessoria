@@ -137,7 +137,7 @@ export default function TrainingForm({
           delete newData.medias;
           const payload = {
             workout: newData,
-            medias: mediasID,
+            medias: uniqueMedias,
           };
           if (!type || type === 1) {
             payload.workout.running = true;

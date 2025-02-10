@@ -170,9 +170,6 @@ export default function TrainingItem({
             spacing={3}
           >
             <Stack>
-              <TextMaxLine variant="subtitle1" line={1}>
-                {getModuleName(training.name)}
-              </TextMaxLine>
               <TextMaxLine variant="subtitle2" line={1}>
                 {training.subtitle}
               </TextMaxLine>
