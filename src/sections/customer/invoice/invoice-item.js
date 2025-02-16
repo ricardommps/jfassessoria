@@ -30,15 +30,15 @@ export default function InvoiceItem({
   onDeleteInvoice,
   handleSuccess,
   handleSendNotification,
+  notification,
 }) {
   const popover = usePopover();
   const view = useBoolean();
   const onDelete = useBoolean();
-  const notification = useBoolean();
+
   const [messageInvoice, setMessageInvoice] = useState(
     'Seu comprovante de pagamento já está disponivel',
   );
-
   const handleDelete = useCallback(async () => {
     try {
       setLoading(true);
@@ -145,16 +145,17 @@ export default function InvoiceItem({
             <Iconify icon="iconamoon:send-fill" />
             Ver comprovante
           </MenuItem>
-
-          <MenuItem
-            onClick={() => {
-              view.onTrue();
-              popover.onClose();
-            }}
-          >
-            <Iconify icon="mdi:add-alert" />
-            Enviar notificação de pagamento
-          </MenuItem>
+          {invoice.status === 'paid' && (
+            <MenuItem
+              onClick={() => {
+                notification.onTrue();
+                popover.onClose();
+              }}
+            >
+              <Iconify icon="mdi:add-alert" />
+              Enviar notificação de pagamento
+            </MenuItem>
+          )}
 
           <MenuItem
             onClick={() => {
@@ -220,7 +221,7 @@ export default function InvoiceItem({
               variant="outlined"
               value={messageInvoice}
               multiline
-              maxRows={4}
+              rows={6}
               onChange={(e) => {
                 setMessageInvoice(e.target.value);
               }}
@@ -231,7 +232,7 @@ export default function InvoiceItem({
           <LoadingButton
             variant="contained"
             color="success"
-            onClick={handleSendNotification}
+            onClick={() => handleSendNotification(messageInvoice, invoice)}
             loading={loading}
           >
             Confirmar

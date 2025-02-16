@@ -28,7 +28,6 @@ const TABS = [
     value: 'invoice',
     label: 'Faturas',
     icon: <Iconify icon="solar:dollar-bold" width={24} />,
-    disabled: true,
   },
   {
     value: 'security',
