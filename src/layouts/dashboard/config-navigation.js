@@ -54,12 +54,7 @@ export function useNavData() {
         subheader: 'Joana Foltz Assessoria Esportiva',
         items: [
           { title: 'Dashboard', path: paths.dashboard.root, icon: ICONS.dashboard },
-          {
-            title: 'Assessoria',
-            titleMini: 'Assessoria',
-            path: paths.dashboard.customersRacing,
-            icon: ICONS.runner,
-          },
+
           {
             title: 'Alunos',
             titleMini: 'Alunos',

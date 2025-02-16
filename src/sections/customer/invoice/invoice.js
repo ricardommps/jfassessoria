@@ -16,6 +16,7 @@ export default function Invoice({ customer, loading, setLoading }) {
   const { invoices, onGetInvoices, onCreateAndEditInvoice, onDeleteInvoice } = useInvoice();
   const { onCreateAndEdit } = useNotifications();
   const openForm = useBoolean();
+  const notification = useBoolean();
 
   const [invoiceSelected, setInvoiceSelected] = useState();
 
@@ -37,6 +38,7 @@ export default function Invoice({ customer, loading, setLoading }) {
 
   const handleSuccess = () => {
     openForm.onFalse();
+    notification.onFalse();
     setInvoiceSelected(null);
     initialize();
   };
@@ -72,12 +74,15 @@ export default function Invoice({ customer, loading, setLoading }) {
   );
 
   const handleSendNotification = useCallback(
-    async (data) => {
+    async (message, invoice) => {
       setLoading(true);
       try {
         const payload = {
           recipientId: customer.id,
-          ...data,
+          title: 'Olá',
+          content: message,
+          type: 'invoice',
+          link: `/invoice/download/${invoice.id}`,
         };
         await onCreateAndEdit(payload);
         enqueueSnackbar('Notificação enviada com sucesso!', {
@@ -91,7 +96,7 @@ export default function Invoice({ customer, loading, setLoading }) {
         });
       } finally {
         setLoading(false);
-        handleClose();
+        handleSuccess();
       }
     },
     [customer.id],
@@ -148,6 +153,7 @@ export default function Invoice({ customer, loading, setLoading }) {
                       onDeleteInvoice={onDeleteInvoice}
                       handleSuccess={handleSuccess}
                       handleSendNotification={handleSendNotification}
+                      notification={notification}
                     />
                   </Fragment>
                 ))}
