@@ -27,7 +27,7 @@ export default function ProgramsList({ onSelectProgram, type, vs2 }) {
   return (
     <>
       {(filteredPrograms?.length || allProgramsStatus?.loading) && (
-        <List dense sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+        <List dense sx={{ width: '100%', bgcolor: 'background.paper' }}>
           {(allProgramsStatus.loading ? Array.from(new Array(3)) : filteredPrograms).map(
             (program, index) => {
               const labelId = `checkbox-list-secondary-label-${program?.id}`;
