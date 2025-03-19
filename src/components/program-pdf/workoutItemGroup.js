@@ -1,4 +1,4 @@
-import { Font, StyleSheet, Text, View } from '@react-pdf/renderer';
+import { Font, Link, StyleSheet, Text, View } from '@react-pdf/renderer';
 import { useMemo } from 'react';
 
 Font.register({
@@ -49,6 +49,7 @@ const useStyles = () =>
         },
         subtitle1: { fontSize: 10, fontWeight: 400, textTransform: 'uppercase' },
         subtitle2: { fontSize: 10, fontWeight: 500 },
+        link: { fontSize: 10, color: 'blue', textDecoration: 'underline' },
       }),
     [],
   );
@@ -95,6 +96,11 @@ export default function WorkoutItemGroup({ media, exerciseInfo, index }) {
             <Text style={styles.subtitle2}>{exerciseInfoById.cadence}</Text>
           </View>
         )}
+        <View style={styles.gridContainer}>
+          <Link src={media.videoUrl} style={styles.link}>
+            Link do vídeo demonstrativo
+          </Link>
+        </View>
       </View>
     </View>
   );
