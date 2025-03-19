@@ -23,6 +23,8 @@ import Label from 'src/components/label';
 import TextMaxLine from 'src/components/text-max-line';
 import { useBoolean } from 'src/hooks/use-boolean';
 import useProgram from 'src/hooks/use-program';
+import { useResponsive } from 'src/hooks/use-responsive';
+import PreviewPdf from 'src/sections/program/preview-pdf';
 // components
 // utils
 
@@ -36,6 +38,7 @@ export default function ProgramItem({
   const { onDeleteProgramAsync } = useProgram();
   const popover = usePopover();
   const deleteProgram = useBoolean();
+  const viewPdf = useBoolean();
 
   const [loading, setLoading] = useState(false);
 
@@ -162,6 +165,20 @@ export default function ProgramItem({
           <EditIcon sx={{ fontSize: '22px', width: '22px', height: '30px' }} />
           Editar programa
         </MenuItem>
+        {program.type === 2 && (
+          <MenuItem
+            onClick={() => {
+              viewPdf.onTrue();
+              popover.onClose();
+            }}
+          >
+            <Iconify
+              icon="ic:baseline-picture-as-pdf"
+              sx={{ fontSize: '22px', width: '22px', height: '30px' }}
+            />
+            Gerar PDF
+          </MenuItem>
+        )}
 
         <MenuItem
           onClick={() => {
@@ -172,17 +189,6 @@ export default function ProgramItem({
           <AppSettingsAltIcon sx={{ fontSize: '22px', width: '22px', height: '30px' }} />
           Treinos
         </MenuItem>
-
-        {false && (
-          <MenuItem
-            onClick={() => {
-              popover.onClose();
-            }}
-          >
-            <PrintIcon sx={{ fontSize: '22px', width: '22px', height: '30px' }} />
-            Pdf
-          </MenuItem>
-        )}
 
         <MenuItem
           onClick={() => {
@@ -219,6 +225,9 @@ export default function ProgramItem({
           </LoadingButton>
         }
       />
+      {viewPdf.value && (
+        <PreviewPdf open={viewPdf.value} onClose={viewPdf.onFalse} programId={program.id} />
+      )}
     </>
   );
 }

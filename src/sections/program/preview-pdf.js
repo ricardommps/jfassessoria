@@ -3,38 +3,23 @@ import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
+import Stack from '@mui/material/Stack';
+import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
-import { PDFViewer } from '@react-pdf/renderer';
-import { useEffect, useState } from 'react';
-import { useUpdateEffect } from 'react-use';
+import { PDFDownloadLink, PDFViewer } from '@react-pdf/renderer';
+import NProgress from 'nprogress';
+import { useEffect } from 'react';
+import ProgramPdf from 'src/components/program-pdf/program-pdf';
 import useProgram from 'src/hooks/use-program';
-import { extrapolation } from 'src/utils/extrapolation';
+import { useResponsive } from 'src/hooks/use-responsive';
 
-import ProgramPdf from './program-pdf';
 export default function PreviewPdf({ open, onClose, programId }) {
+  const smDown = useResponsive('down', 'sm');
   const { viewPdfStatus, viewPdf, onViewPdf } = useProgram();
   useEffect(() => {
     onViewPdf(programId);
   }, []);
 
-  const [currentExtrapolation, setCurrentExtrapolation] = useState(null);
-  const [pdfReady, setpdfReady] = useState(false);
-
-  const getExtrapolationByPv = () => {
-    const resultValue = extrapolation[viewPdf.pv];
-    setCurrentExtrapolation(resultValue);
-    setpdfReady(true);
-  };
-
-  useUpdateEffect(() => {
-    if (viewPdf) {
-      if (viewPdf?.type === 2) {
-        setpdfReady(true);
-        return;
-      }
-      getExtrapolationByPv();
-    }
-  }, [viewPdf]);
   return (
     <Dialog fullScreen open={open}>
       <Box sx={{ height: 1, display: 'flex', flexDirection: 'column' }}>
@@ -56,10 +41,40 @@ export default function PreviewPdf({ open, onClose, programId }) {
               </Typography>
             </Box>
           )}
-          {viewPdf && !viewPdfStatus.loading && pdfReady && (
-            <PDFViewer width="100%" height="100%" style={{ border: 'none' }}>
-              <ProgramPdf program={viewPdf} currentExtrapolation={currentExtrapolation} />
-            </PDFViewer>
+          {viewPdf && !viewPdfStatus.loading && (
+            <>
+              {smDown ? (
+                <Stack spacing={2} alignItems="center" pt={1}>
+                  <PDFDownloadLink
+                    document={<ProgramPdf program={viewPdf} />}
+                    fileName={`${viewPdf.name}.pdf`}
+                    style={{ textDecoration: 'none' }}
+                    prefetch={false}
+                  >
+                    {({ loading }) => (
+                      <Tooltip title="Download">
+                        <Button
+                          variant="contained"
+                          disabled={loading}
+                          onClick={() => {
+                            NProgress.done();
+                            if (!loading) {
+                              setTimeout(onClose, 500); // Pequeno delay para garantir que o download iniciou antes de fechar
+                            }
+                          }}
+                        >
+                          {loading ? 'Carregando Pdf...' : 'Baixar PDF com os treinos'}
+                        </Button>
+                      </Tooltip>
+                    )}
+                  </PDFDownloadLink>
+                </Stack>
+              ) : (
+                <PDFViewer width="100%" height="100%" style={{ border: 'none' }}>
+                  <ProgramPdf program={viewPdf} />
+                </PDFViewer>
+              )}
+            </>
           )}
         </Box>
       </Box>
