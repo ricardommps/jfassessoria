@@ -1,11 +1,27 @@
-import { Text, View } from '@react-pdf/renderer';
-import { useCallback, useEffect, useState } from 'react';
+import { Font, StyleSheet, Text, View } from '@react-pdf/renderer';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import WorkoutViewItemPdf from './workoutViewItemPdf';
 
 const STRETCH_TAGS = ['Alongamento ativo', 'Alongamento passivo', 'Alongamentos'];
 const HEATING_TAGS = ['Aquecimento'];
+
+Font.register({
+  family: 'Roboto',
+  fonts: [{ src: '/fonts/Roboto-Regular.ttf' }, { src: '/fonts/Roboto-Bold.ttf' }],
+});
+
+const useStyles = () =>
+  useMemo(
+    () =>
+      StyleSheet.create({
+        h4: { fontSize: 11, fontWeight: 700, color: '#0084B4' },
+      }),
+    [],
+  );
+
 export default function WorkoutViewPdf({ workout }) {
+  const styles = useStyles();
   const [mediasStretches, setMediasStretches] = useState([]);
   const [mediasHeating, setMediasHeating] = useState([]);
   const [medias, setMedias] = useState([]);
@@ -61,6 +77,8 @@ export default function WorkoutViewPdf({ workout }) {
           medias={mediasHeating}
           mediaOrder={workout?.heatingOrder}
           exerciseInfo={workout?.exerciseInfo}
+          heating={workout?.heating}
+          styles={styles}
         />
       </View>
       <View style={{ paddingBottom: 10 }}>
@@ -85,13 +103,23 @@ export default function WorkoutViewPdf({ workout }) {
   );
 }
 
-function WorkoutSection({ title, description, medias, mediaOrder, exerciseInfo, isWorkoutLoad }) {
+function WorkoutSection({
+  title,
+  description,
+  medias,
+  mediaOrder,
+  exerciseInfo,
+  isWorkoutLoad,
+  heating,
+  styles,
+}) {
   if (!description && (!medias || medias.length === 0 || !mediaOrder?.length)) return null;
   return (
     <>
       <Text style={{ fontWeight: 'bold', fontSize: 14, fontFamily: 'Roboto', marginBottom: 15 }}>
         {title}
       </Text>
+      {heating && styles && <Text style={styles.h4}>{heating}</Text>}
       {medias && medias.length > 0 && (
         <WorkoutViewItemPdf
           medias={medias}

@@ -36,7 +36,6 @@ const useStyles = () =>
 export default function WorkoutSingleItem({ media, exerciseInfo }) {
   const styles = useStyles();
   const exerciseInfoById = exerciseInfo?.find((item) => item.id === media.id);
-  console.log('---media', media.videoUrl);
   return (
     <View style={styles.row}>
       <Text style={styles.h4}>{media.title}</Text>
