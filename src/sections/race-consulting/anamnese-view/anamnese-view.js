@@ -249,71 +249,78 @@ export function AnamneseView({ open, onClose, customerId, ...other }) {
                 {anamnese.intentionsStartingSportsConsultancy}
               </Stack>
               <Stack spacing={0.5}>
-                <Box sx={{ color: 'text.disabled' }}>18 - Está buscando assessoria de corrida?</Box>
+                <Box sx={{ color: 'text.disabled' }}>
+                  18 - Quantos e quais dias da semana pretendes treinar? Quando for tens em média
+                  quanto tempo para a sessão?
+                </Box>
+                {anamnese.daysTheWeekSportsConsultancy}
+              </Stack>
+              <Stack spacing={0.5}>
+                <Box sx={{ color: 'text.disabled' }}>19 - Está buscando assessoria de corrida?</Box>
                 {anamnese.lookingForRacingAdvice ? 'Sim' : 'Não'}
               </Stack>
               {anamnese.lookingForRacingAdvice === 'true' && (
                 <>
                   <Stack spacing={0.5}>
                     <Box sx={{ color: 'text.disabled' }}>
-                      19 - Sobre sua experiência com a prática de corrida:
+                      20 - Sobre sua experiência com a prática de corrida:
                     </Box>
                     {anamnese.runningExperience}
                   </Stack>
                   <Stack spacing={0.5}>
                     <Box sx={{ color: 'text.disabled' }}>
-                      20 - Se você corre, qual foi sua maior distância percorrida?
+                      21 - Se você corre, qual foi sua maior distância percorrida?
                     </Box>
                     {anamnese.longestRunningDistance}
                   </Stack>
                   <Stack spacing={0.5}>
                     <Box sx={{ color: 'text.disabled' }}>
-                      21 - Se você corre, qual foi sua melhor marca e em qual distância ela
+                      22 - Se você corre, qual foi sua melhor marca e em qual distância ela
                       aconteceu?
                     </Box>
                     {anamnese.bestRunningTime}
                   </Stack>
                   <Stack spacing={0.5}>
                     <Box sx={{ color: 'text.disabled' }}>
-                      22 - Sobre seu treino de fortalecimento:
+                      23 - Sobre seu treino de fortalecimento:
                     </Box>
                     {anamnese.strengtheningTraining}
                   </Stack>
                   <Stack spacing={0.5}>
                     <Box sx={{ color: 'text.disabled' }}>
-                      23 - Sobre sua experiência com competições de corrida:
+                      24 - Sobre sua experiência com competições de corrida:
                     </Box>
                     {anamnese.runningCompetitionExperience}
                   </Stack>
                   <Stack spacing={0.5}>
                     <Box sx={{ color: 'text.disabled' }}>
-                      24 - Por que você está procurando uma assessoria de corrida?
+                      25 - Por que você está procurando uma assessoria de corrida?
                     </Box>
                     {anamnese.youLookingForRaceConsultancy}
                   </Stack>
                   <Stack spacing={0.5}>
                     <Box sx={{ color: 'text.disabled' }}>
-                      25 - Você pretende participar de provas de corrida no futuro?
+                      26 - Você pretende participar de provas de corrida no futuro?
                     </Box>
                     {anamnese.runningEventsFuture ? 'Sim' : 'Não'}
                   </Stack>
                   <Stack spacing={0.5}>
                     <Box sx={{ color: 'text.disabled' }}>
-                      26 - Você já tem alguma prova de corrida em seu calendário futuro? Se sim,
+                      27 - Você já tem alguma prova de corrida em seu calendário futuro? Se sim,
                       qual distância pretende correr? E qual a data do(s) evento(s)?
                     </Box>
                     {anamnese.raceOnYourFutureCalendar}
                   </Stack>
                   <Stack spacing={0.5}>
                     <Box sx={{ color: 'text.disabled' }}>
-                      27 - Quantos dias da semana você pretende e pode correr? E quanto tempo você
+                      28 - Quantos dias da semana você pretende e pode correr? E quanto tempo você
                       tem para as sessões?
                     </Box>
                     {anamnese.daysOfTheWeekRun}
                   </Stack>
                   <Stack spacing={0.5}>
                     <Box sx={{ color: 'text.disabled' }}>
-                      28 - Você possui relógio de corrida? Se sim, qual?
+                      29 - Você possui relógio de corrida? Se sim, qual?
                     </Box>
                     {anamnese.hasRunningClock}
                   </Stack>
