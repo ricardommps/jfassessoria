@@ -96,6 +96,12 @@ export default function WorkoutItemGroup({ media, exerciseInfo, index }) {
             <Text style={styles.subtitle2}>{exerciseInfoById.cadence}</Text>
           </View>
         )}
+        {exerciseInfoById?.comments && (
+          <View style={styles.section}>
+            <Text style={styles.subtitle1}>OBSERVAÇÕES:</Text>
+            <Text style={styles.subtitle2}>{exerciseInfoById.comments}</Text>
+          </View>
+        )}
         <View style={styles.gridContainer}>
           <Link src={media.videoUrl} style={styles.link}>
             Link do vídeo demonstrativo

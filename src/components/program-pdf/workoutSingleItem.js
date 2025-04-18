@@ -73,6 +73,12 @@ export default function WorkoutSingleItem({ media, exerciseInfo }) {
           <Text style={styles.subtitle2}>{exerciseInfoById?.cadence || 'N/A'}</Text>
         </View>
       )}
+      {exerciseInfoById?.comments && (
+        <View style={styles.gridContainer}>
+          <Text style={styles.subtitle1}>OBSERVAÇÕES:</Text>
+          <Text style={styles.subtitle2}>{exerciseInfoById.comments}</Text>
+        </View>
+      )}
       <View style={styles.gridContainer}>
         <Link src={media.videoUrl} style={styles.link}>
           Link do vídeo demonstrativo

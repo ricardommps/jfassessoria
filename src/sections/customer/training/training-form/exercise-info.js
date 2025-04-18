@@ -25,6 +25,7 @@ export default function ExerciseInfo({ open, onClose, title, id, onSave, exercis
       rir: exerciseInfoById?.rir || '',
       method: exerciseInfoById?.method || '',
       cadence: exerciseInfoById?.cadence || '',
+      comments: exerciseInfoById?.comments || '',
     }),
     [],
   );
@@ -73,6 +74,13 @@ export default function ExerciseInfo({ open, onClose, title, id, onSave, exercis
                   name="cadence"
                   label="Cadência/velocidade de movimento"
                   variant="standard"
+                />
+                <RHFTextField
+                  name="comments"
+                  label="Observações"
+                  variant="standard"
+                  multiline
+                  rows={3}
                 />
               </Box>
             </>
