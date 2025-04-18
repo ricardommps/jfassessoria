@@ -83,7 +83,15 @@ export default function WorkoutViewItem({
           </ListItem>
 
           <>
-            <Accordion sx={{ marginLeft: 1, marginRight: 1, mb: 2 }}>
+            <Accordion
+              sx={{
+                marginLeft: 1,
+                marginRight: 1,
+                '&.MuiAccordion-root:last-of-type': {
+                  marginBottom: 2, // 16px
+                },
+              }}
+            >
               <AccordionSummary
                 aria-controls="heationg-content"
                 id="heationg-header"
@@ -93,7 +101,7 @@ export default function WorkoutViewItem({
               </AccordionSummary>
               <AccordionDetails>
                 <Stack flexDirection={'row'}>
-                  <Stack>
+                  <Stack gap={1}>
                     <Stack flexDirection="row" spacing={1}>
                       <Typography sx={{ fontSize: '0.75rem', textTransform: 'uppercase' }}>
                         MÉTODO:
@@ -157,6 +165,19 @@ export default function WorkoutViewItem({
                         }}
                       >
                         {exerciseInfoById?.cadence || 0}
+                      </Typography>
+                    </Stack>
+                    <Stack flexDirection="column">
+                      <Typography sx={{ fontSize: '0.75rem', textTransform: 'uppercase' }}>
+                        Observações:
+                      </Typography>
+                      <Typography
+                        sx={{
+                          fontSize: '0.75rem',
+                          color: 'text.primary',
+                        }}
+                      >
+                        {exerciseInfoById?.comments}
                       </Typography>
                     </Stack>
                   </Stack>
