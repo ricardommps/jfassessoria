@@ -15,24 +15,10 @@ export const _tags = [
   'Alongamento passivo',
   'Aquecimento',
   'Adutordecoxa',
+  'Aeróbico',
 ];
 
 export const tagOptions = _tags.map((tag) => ({
   value: tag,
   label: tag,
 }));
-
-// #Dorsais
-// #Peitoral
-// #Deltóides
-// #Tríceps
-// #bBíceps
-// #Quadríceps
-// #Posteriordecoxa
-// #Glúteos
-// #Panturrilha
-// #Core
-// #Mobilidade
-// #Establidade
-// #Alongamento ativo
-// #Alongamento passivo
