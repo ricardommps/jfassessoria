@@ -503,16 +503,16 @@ export default function TrainingForm({
       )}
     </>
   );
-
+  const availableTags = _tags.filter((tag) => tag !== 'Aquecimento');
   const renderTags = (
     <Stack spacing={1.5}>
       {toggleTags.value && (
         <Autocomplete
           multiple
           freeSolo
-          options={_tags.map((option) => option)}
+          options={availableTags}
           getOptionLabel={(option) => option}
-          defaultValue={_tags.slice(0, 3)}
+          defaultValue={availableTags.slice(0, 3)}
           value={values.tags}
           onChange={(event, newValue) => {
             handleChangeTags(newValue);
