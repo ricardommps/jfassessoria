@@ -119,7 +119,10 @@ function WorkoutSection({
       <Text style={{ fontWeight: 'bold', fontSize: 14, fontFamily: 'Roboto', marginBottom: 15 }}>
         {title}
       </Text>
-      {heating && styles && <Text style={styles.h4}>{heating}</Text>}
+
+      {(typeof heating === 'number' || (typeof heating === 'string' && heating.trim() !== '')) &&
+        styles && <Text style={styles.h4}>{String(heating)}</Text>}
+
       {medias && medias.length > 0 && (
         <WorkoutViewItemPdf
           medias={medias}

@@ -78,25 +78,25 @@ export default function WorkoutItemGroup({ media, exerciseInfo, index }) {
             <Text style={styles.subtitle2}>{exerciseInfoById.reps}</Text>
           </View>
         )}
-        {exerciseInfoById?.reset > 0 && (
+        {exerciseInfoById?.reset?.length > 0 && (
           <View style={styles.section}>
             <Text style={styles.subtitle1}>INTERVALO DE RECUPERAÇÃO:</Text>
             <Text style={styles.subtitle2}>{exerciseInfoById.reset}</Text>
           </View>
         )}
-        {exerciseInfoById?.rir && (
+        {exerciseInfoById?.rir?.length > 0 && (
           <View style={styles.section}>
             <Text style={styles.subtitle1}>REP. DE RESERVA:</Text>
             <Text style={styles.subtitle2}>{exerciseInfoById.rir}</Text>
           </View>
         )}
-        {exerciseInfoById?.cadence && (
+        {exerciseInfoById?.cadence?.length > 0 && (
           <View style={styles.section}>
             <Text style={styles.subtitle1}>CADÊNCIA / VEL. DE MOV.:</Text>
             <Text style={styles.subtitle2}>{exerciseInfoById.cadence}</Text>
           </View>
         )}
-        {exerciseInfoById?.comments && (
+        {exerciseInfoById?.comments?.length > 0 && (
           <View style={styles.section}>
             <Text style={styles.subtitle1}>OBSERVAÇÕES:</Text>
             <Text style={styles.subtitle2}>{exerciseInfoById.comments}</Text>

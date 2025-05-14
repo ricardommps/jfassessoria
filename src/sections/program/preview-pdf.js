@@ -17,9 +17,10 @@ export default function PreviewPdf({ open, onClose, programId }) {
   const smDown = useResponsive('down', 'sm');
   const { viewPdfStatus, viewPdf, onViewPdf } = useProgram();
   useEffect(() => {
-    onViewPdf(programId);
-  }, []);
-
+    if (programId) {
+      onViewPdf(programId);
+    }
+  }, [programId]);
   return (
     <Dialog fullScreen open={open}>
       <Box sx={{ height: 1, display: 'flex', flexDirection: 'column' }}>

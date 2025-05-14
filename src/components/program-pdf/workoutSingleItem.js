@@ -39,44 +39,51 @@ export default function WorkoutSingleItem({ media, exerciseInfo }) {
   return (
     <View style={styles.row}>
       <Text style={styles.h4}>{media.title}</Text>
-      {exerciseInfoById?.method && exerciseInfoById?.method.length > 0 && (
+      {exerciseInfoById?.method && exerciseInfoById?.method?.length > 0 && (
         <View style={styles.gridContainer}>
           <Text style={styles.subtitle1}>MÉTODO:</Text>
           <Text style={styles.subtitle2}>{exerciseInfoById?.method || 'N/A'}</Text>
         </View>
       )}
 
-      {exerciseInfoById?.reps && exerciseInfoById?.reps.length > 0 && (
+      {exerciseInfoById?.reps && exerciseInfoById?.reps?.length > 0 && (
         <View style={styles.gridContainer}>
           <Text style={styles.subtitle1}>RANGE DE REPETIÇÕES:</Text>
           <Text style={styles.subtitle2}>{exerciseInfoById?.reps || 'N/A'}</Text>
         </View>
       )}
 
-      {exerciseInfoById?.reset && exerciseInfoById?.reset.length > 0 && (
+      {(typeof exerciseInfoById?.reset === 'number' ||
+        (typeof exerciseInfoById?.reset === 'string' && exerciseInfoById.reset.trim() !== '')) && (
         <View style={styles.gridContainer}>
           <Text style={styles.subtitle1}>INTERVALO DE RECUPERAÇÃO:</Text>
-          <Text style={styles.subtitle2}>{exerciseInfoById?.reset || 'N/A'}</Text>
+          <Text style={styles.subtitle2}>{String(exerciseInfoById.reset)}</Text>
         </View>
       )}
 
-      {exerciseInfoById?.rir && exerciseInfoById?.rir.length > 0 && (
+      {(typeof exerciseInfoById?.rir === 'number' ||
+        (typeof exerciseInfoById?.rir === 'string' && exerciseInfoById.rir.trim() !== '')) && (
         <View style={styles.gridContainer}>
           <Text style={styles.subtitle1}>REPETIÇÂO DE RESERVA:</Text>
-          <Text style={styles.subtitle2}>{exerciseInfoById?.rir || 'N/A'}</Text>
+          <Text style={styles.subtitle2}>{String(exerciseInfoById.rir)}</Text>
         </View>
       )}
 
-      {exerciseInfoById?.cadence && exerciseInfoById?.cadence.length > 0 && (
+      {(typeof exerciseInfoById?.cadence === 'number' ||
+        (typeof exerciseInfoById?.cadence === 'string' &&
+          exerciseInfoById.cadence.trim() !== '')) && (
         <View style={styles.gridContainer}>
           <Text style={styles.subtitle1}>CADÊNCIA / VEL. DE MOV.:</Text>
-          <Text style={styles.subtitle2}>{exerciseInfoById?.cadence || 'N/A'}</Text>
+          <Text style={styles.subtitle2}>{String(exerciseInfoById.cadence)}</Text>
         </View>
       )}
-      {exerciseInfoById?.comments && (
+
+      {(typeof exerciseInfoById?.comments === 'number' ||
+        (typeof exerciseInfoById?.comments === 'string' &&
+          exerciseInfoById.comments.trim() !== '')) && (
         <View style={styles.gridContainer}>
           <Text style={styles.subtitle1}>OBSERVAÇÕES:</Text>
-          <Text style={styles.subtitle2}>{exerciseInfoById.comments}</Text>
+          <Text style={styles.subtitle2}>{String(exerciseInfoById.comments)}</Text>
         </View>
       )}
       <View style={styles.gridContainer}>
