@@ -39,27 +39,33 @@ export default function Training({ open, program, handleCloseTraining }) {
     <>
       {smDown ? (
         <Box>
-          {loading && <LoadingProgress />}
-          <TrainingListMobile
-            open={open}
-            handleClose={handleCloseTraining}
-            loading={loading}
-            trainings={workouts}
-            trainingsStatus={workoutsStatus}
-            refreshList={refreshList}
-            program={program}
-          />
+          {loading ? (
+            <LoadingProgress />
+          ) : (
+            <TrainingListMobile
+              open={open}
+              handleClose={handleCloseTraining}
+              loading={loading}
+              trainings={workouts}
+              trainingsStatus={workoutsStatus}
+              refreshList={refreshList}
+              program={program}
+            />
+          )}
         </Box>
       ) : (
         <Box>
-          {loading && <LoadingProgress />}
-          <TrainingList
-            trainings={workouts}
-            trainingsStatus={workoutsStatus}
-            handleClose={handleCloseTraining}
-            program={program}
-            refreshList={refreshList}
-          />
+          {loading ? (
+            <LoadingProgress />
+          ) : (
+            <TrainingList
+              trainings={workouts}
+              trainingsStatus={workoutsStatus}
+              handleClose={handleCloseTraining}
+              program={program}
+              refreshList={refreshList}
+            />
+          )}
         </Box>
       )}
     </>

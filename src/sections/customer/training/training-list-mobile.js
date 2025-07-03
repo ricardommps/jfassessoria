@@ -10,12 +10,14 @@ import Stack from '@mui/material/Stack';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { enqueueSnackbar } from 'notistack';
-import { forwardRef, useCallback, useState } from 'react';
+import { forwardRef, useCallback, useEffect, useState } from 'react';
 import { ConfirmDialog } from 'src/components/confirm-dialog';
 import Iconify from 'src/components/iconify/iconify';
 import LoadingProgress from 'src/components/loading-progress';
 import ProgramInfo from 'src/components/program-info/program-info';
+import TrainingVolume from 'src/components/training-volume/trainingVolume';
 import { useBoolean } from 'src/hooks/use-boolean';
+import useFinished from 'src/hooks/use-finished';
 import useWorkout from 'src/hooks/use-workout';
 
 import SendTraining from './send-training/send-training';
@@ -36,11 +38,13 @@ export default function TrainingListMobile({
   program,
 }) {
   const { id, type, vs2 } = program;
+  const volume = useBoolean();
   const create = useBoolean();
   const programInfo = useBoolean();
 
   const confirm = useBoolean();
   const { onSendTraining } = useWorkout();
+  const { onClearVolumeState } = useFinished();
 
   const [openSend, setOpenSend] = useState({
     open: false,
@@ -131,6 +135,21 @@ export default function TrainingListMobile({
       training: openSend.training,
     });
   }, []);
+
+  const initialize = useCallback(async () => {
+    try {
+      onClearVolumeState();
+    } catch (error) {
+      console.error(error);
+    }
+  }, [program.id]);
+
+  useEffect(() => {
+    if (program.id) {
+      initialize();
+    }
+  }, [program.id, initialize]);
+
   return (
     <>
       <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
@@ -149,13 +168,18 @@ export default function TrainingListMobile({
           <>
             <Box p={2}>
               <Stack
-                direction="column"
+                direction="row"
                 spacing={2}
                 sx={{
-                  justifyContent: 'flex-start',
+                  justifyContent: 'flex-end',
                   alignItems: 'flex-end',
                 }}
               >
+                {type === 1 && (
+                  <Button variant="contained" sx={{ mb: 2 }} onClick={volume.onTrue}>
+                    Volume
+                  </Button>
+                )}
                 <Button
                   variant="contained"
                   startIcon={<Iconify icon="mingcute:add-line" />}
@@ -207,6 +231,14 @@ export default function TrainingListMobile({
                 programsIdSelected={programsIdSelected}
                 type={type}
                 vs2={vs2}
+              />
+            )}
+            {volume.value && (
+              <TrainingVolume
+                open={volume.value}
+                onClose={volume.onFalse}
+                programId={program.id}
+                customerId={program.customerId}
               />
             )}
             <ConfirmDialog
