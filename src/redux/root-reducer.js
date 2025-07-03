@@ -5,6 +5,7 @@ import anamneseReducer from './slices/anamnese';
 import customerReducer from './slices/customers';
 import feedbackReducer from './slices/feedback';
 import feedbackTrainingReducer from './slices/feedback-training';
+import finishedReducer from './slices/finished';
 import finishedTrainingReducer from './slices/finished-training';
 import invoicesReducer from './slices/invoice';
 import mediasReducer from './slices/medias';
@@ -57,4 +58,5 @@ export const rootReducer = combineReducers({
   workout: workoutReducer,
   feedback: feedbackReducer,
   invoice: invoicesReducer,
+  finished: finishedReducer,
 });
