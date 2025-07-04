@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import axios, { API_ENDPOINTS } from 'src/utils/axios';
+import { API_ENDPOINTS, jfAppApi } from 'src/utils/axios';
 
 const initialState = {
   notifications: [],
@@ -170,7 +170,7 @@ export function getNotificationsReq(customerId) {
   return async (dispatch) => {
     dispatch(slice.actions.getNotificationsStart());
     try {
-      const response = await axios.get(`${API_ENDPOINTS.notifications.all}/${customerId}`);
+      const response = await jfAppApi.get(`${API_ENDPOINTS.notifications.all}/${customerId}`);
       dispatch(slice.actions.getNotificationsSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.getNotificationsFailure(error));
@@ -182,7 +182,7 @@ export function getNotificationReq(id) {
   return async (dispatch) => {
     dispatch(slice.actions.getNotificationStart());
     try {
-      const response = await axios.get(`${API_ENDPOINTS.notifications.root}/${id}`);
+      const response = await jfAppApi.get(`${API_ENDPOINTS.notifications.root}/${id}`);
       dispatch(slice.actions.getNotificationSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.getNotificationFailure(error));
@@ -194,7 +194,9 @@ export function readAtReq(notificationId) {
   return async (dispatch) => {
     dispatch(slice.actions.readAtStart());
     try {
-      const response = await axios.get(`${API_ENDPOINTS.notifications.readAt}/${notificationId}`);
+      const response = await jfAppApi.get(
+        `${API_ENDPOINTS.notifications.readAt}/${notificationId}`,
+      );
       dispatch(slice.actions.readAtSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.readAteFailure(error));
@@ -206,7 +208,9 @@ export function deleteNoticifationReq(notificationId) {
   return async (dispatch) => {
     dispatch(slice.actions.deleteNotificationStart());
     try {
-      const response = await axios.delete(`${API_ENDPOINTS.notifications.root}/${notificationId}`);
+      const response = await jfAppApi.delete(
+        `${API_ENDPOINTS.notifications.root}/${notificationId}`,
+      );
       dispatch(slice.actions.deleteNotificationSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.deleteNotificationFailure(error));
@@ -219,13 +223,13 @@ export function createAndEditReq(payload, notificationId) {
     dispatch(slice.actions.createAndEditStart());
     try {
       if (notificationId) {
-        const response = await axios.put(
+        const response = await jfAppApi.put(
           `${API_ENDPOINTS.notifications.root}/${notificationId}`,
           payload,
         );
         dispatch(slice.actions.createAndEditSuccess(response.data));
       } else {
-        const response = await axios.post(`${API_ENDPOINTS.notifications.root}`, payload);
+        const response = await jfAppApi.post(`${API_ENDPOINTS.notifications.root}`, payload);
         dispatch(slice.actions.createAndEditSuccess(response.data));
       }
     } catch (error) {

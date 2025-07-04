@@ -12,32 +12,34 @@ import LoadingProgress from 'src/components/loading-progress';
 import { useBoolean } from 'src/hooks/use-boolean';
 import { useResponsive } from 'src/hooks/use-responsive';
 import useWorkout from 'src/hooks/use-workout';
+import useWorkouts from 'src/hooks/use-workouts';
 
-import TrainingForm from './training-form';
+import TrainingFormApp from './training-form-app';
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function CreateTraining({
+export default function CreateTrainingApp({
   open,
   trainingId,
   onClose,
   handleSuccessCreate,
   program,
 }) {
-  console.log('--CreateTraining--');
+  console.log('--CreateTrainingApp--');
   const smDown = useResponsive('down', 'sm');
   const drawerHeating = useBoolean();
 
-  const { onCreateWorkout, onGetWorkout, workout, onUpdateWorkout } = useWorkout();
+  const { onCreateWorkouts, onGetWorkoutItem, workoutItem, onUpdateWorkouts } = useWorkouts();
 
   const [loading, setLoading] = useState(false);
+  const [loadingForm, setLoadingForm] = useState(false);
 
   const initialize = useCallback(async () => {
     try {
       setLoading(true);
-      await onGetWorkout(trainingId);
+      await onGetWorkoutItem(trainingId);
     } catch (error) {
       console.error(error);
     } finally {
@@ -53,7 +55,7 @@ export default function CreateTraining({
             <CloseIcon />
           </IconButton>
           <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-            Criar treino
+            Criar treino novo modelo
           </Typography>
         </Toolbar>
       </AppBar>
@@ -62,26 +64,30 @@ export default function CreateTraining({
         {loading && <LoadingProgress />}
         {!loading && !trainingId && (
           <Stack spacing={3} sx={{ pt: 1 }}>
-            <TrainingForm
-              onUpdateTraining={onUpdateWorkout}
-              onCreateTraining={onCreateWorkout}
+            <TrainingFormApp
+              onUpdateWorkouts={onUpdateWorkouts}
+              onCreateWorkouts={onCreateWorkouts}
               program={program}
               handleSuccessCreate={handleSuccessCreate}
               onClose={onClose}
               drawerHeating={drawerHeating}
+              setLoadingForm={setLoadingForm}
+              loadingForm={loadingForm}
             />
           </Stack>
         )}
-        {!loading && workout && (
+        {!loading && workoutItem && (
           <Stack spacing={3} sx={{ pt: 1 }}>
-            <TrainingForm
-              training={workout}
-              onUpdateTraining={onUpdateWorkout}
-              onCreateTraining={onCreateWorkout}
+            <TrainingFormApp
+              workout={workoutItem}
+              onUpdateWorkouts={onUpdateWorkouts}
+              onCreateWorkouts={onCreateWorkouts}
               program={program}
               handleSuccessCreate={handleSuccessCreate}
               onClose={onClose}
               drawerHeating={drawerHeating}
+              setLoadingForm={setLoadingForm}
+              loadingForm={loadingForm}
             />
           </Stack>
         )}

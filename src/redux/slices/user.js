@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import axios, { API_ENDPOINTS } from 'src/utils/axios';
+import { API_ENDPOINTS, jfAppApi } from 'src/utils/axios';
 const initialState = {
   changePasswordSuccess: null,
   changePasswordStatus: {
@@ -38,7 +38,7 @@ export function changePassword(updatePassword) {
     try {
       const data = { ...updatePassword };
       delete data.confirmNewPassword;
-      const response = await axios.patch(API_ENDPOINTS.user.changePassword, data);
+      const response = await jfAppApi.patch(API_ENDPOINTS.user.changePassword, data);
       dispatch(slice.actions.changePasswordSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.changePasswordFailure(error));

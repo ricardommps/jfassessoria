@@ -42,14 +42,19 @@ export default function WorkoutViewItem({
   useEffect(() => {
     if (medias?.length > 0) {
       const mediaFind = medias.find((m) => m.id === mediaItem);
+      console.log('----mediaFind--', mediaFind);
       if (mediaFind) {
-        const exerciseInfoFilter = exerciseInfo?.filter((item) => item.id === mediaFind?.id)[0];
+        const exerciseInfoFilter = exerciseInfo?.filter(
+          (item) => item.mediaId === mediaFind?.id,
+        )[0];
         setexErciseInfoById(exerciseInfoFilter);
       }
       setMedia(mediaFind);
     }
   }, [medias, exerciseInfo]);
-
+  console.log('----exerciseInfo--', exerciseInfo);
+  console.log('----medias--', medias);
+  console.log('----exerciseInfoById--', exerciseInfoById);
   return (
     <>
       {media && (

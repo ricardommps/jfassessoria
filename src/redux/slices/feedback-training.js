@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import axios, { API_ENDPOINTS } from 'src/utils/axios';
+import { API_ENDPOINTS, jfAppApi } from 'src/utils/axios';
 const initialState = {
   feedbackSave: null,
   feedbackSaveStatus: {
@@ -73,7 +73,7 @@ export function feedbackSaveReq(saveData) {
     dispatch(slice.actions.feedbackSaveStart());
     try {
       const data = { ...saveData };
-      const response = await axios.post(API_ENDPOINTS.feedbacktraining.save, data);
+      const response = await jfAppApi.post(API_ENDPOINTS.feedbacktraining.save, data);
       dispatch(slice.actions.feedbackSaveSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.feedbackSaveFailure(error));
@@ -86,7 +86,7 @@ export function feedbackUpdateReq(updateData) {
     dispatch(slice.actions.feedbackUpdateStart());
     try {
       const data = { ...updateData };
-      const response = await axios.put(API_ENDPOINTS.feedbacktraining.save, data);
+      const response = await jfAppApi.put(API_ENDPOINTS.feedbacktraining.save, data);
       dispatch(slice.actions.feedbackUpdateSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.feedbackUpdateFailure(error));

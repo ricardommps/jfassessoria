@@ -3,7 +3,7 @@
 import PropTypes from 'prop-types';
 import { useCallback, useEffect, useMemo, useReducer } from 'react';
 // utils
-import axios, { API_ENDPOINTS } from 'src/utils/axios';
+import { API_ENDPOINTS, jfAppApi } from 'src/utils/axios';
 
 //
 import { AuthContext } from './auth-context';
@@ -63,7 +63,7 @@ export function AuthProvider({ children }) {
       if (accessToken && isValidToken(accessToken)) {
         setSession(accessToken);
 
-        const response = await axios.get(API_ENDPOINTS.auth.me);
+        const response = await jfAppApi.get(API_ENDPOINTS.auth.me);
         const { user } = response.data;
         dispatch({
           type: 'INITIAL',
@@ -101,7 +101,7 @@ export function AuthProvider({ children }) {
       password,
     };
 
-    const response = await axios.post(API_ENDPOINTS.auth.login, data);
+    const response = await jfAppApi.post(API_ENDPOINTS.auth.login, data);
     const { accessToken, user } = response.data;
 
     setSession(accessToken);
@@ -123,7 +123,7 @@ export function AuthProvider({ children }) {
       lastName,
     };
 
-    const response = await axios.post(API_ENDPOINTS.auth.register, data);
+    const response = await jfAppApi.post(API_ENDPOINTS.auth.register, data);
 
     const { accessToken, user } = response.data;
 

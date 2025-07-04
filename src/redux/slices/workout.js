@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import axios, { API_ENDPOINTS } from 'src/utils/axios';
+import { API_ENDPOINTS, jfAppApi } from 'src/utils/axios';
 
 const initialState = {
   workouts: null,
@@ -212,7 +212,7 @@ export function createWorkout(payload) {
     try {
       await dispatch(slice.actions.createWorkoutStart());
       const data = { ...payload };
-      const response = await axios.post(API_ENDPOINTS.workout.root, data, {
+      const response = await jfAppApi.post(API_ENDPOINTS.workout.root, data, {
         signal: abortController.signal,
       });
       await dispatch(slice.actions.createWorkoutSuccess(response.data));
@@ -243,7 +243,7 @@ export function upDateWorkout(payload, id) {
     try {
       dispatch(slice.actions.createWorkoutStart());
       const data = { ...payload };
-      const response = await axios.put(`${API_ENDPOINTS.workout.root}/by-id/${id}`, data, {
+      const response = await jfAppApi.put(`${API_ENDPOINTS.workout.root}/by-id/${id}`, data, {
         signal: abortController.signal,
       });
       dispatch(slice.actions.createWorkoutSuccess(response.data));
@@ -266,7 +266,7 @@ export function cloneWorkout(id, qntCopy) {
   return async (dispatch) => {
     dispatch(slice.actions.cloneWorkoutStart());
     try {
-      const response = await axios.get(
+      const response = await jfAppApi.get(
         `${API_ENDPOINTS.workout.root}/clone-workout/${id}?qntCopy=${qntCopy}`,
       );
       dispatch(slice.actions.cloneWorkoutSuccess(response.data));
@@ -281,7 +281,7 @@ export function sendWorkout(payload) {
   return async (dispatch) => {
     dispatch(slice.actions.sendWorkoutStart());
     try {
-      const response = await axios.post(`${API_ENDPOINTS.workout.root}/send`, payload);
+      const response = await jfAppApi.post(`${API_ENDPOINTS.workout.root}/send`, payload);
       dispatch(slice.actions.sendWorkoutSuccess(response.data));
     } catch (error) {
       console.error(error);
@@ -294,7 +294,7 @@ export function deleteWorkout(id) {
   return async (dispatch) => {
     dispatch(slice.actions.cloneWorkoutStart());
     try {
-      const response = await axios.delete(`${API_ENDPOINTS.workout.root}/by-id/${id}`);
+      const response = await jfAppApi.delete(`${API_ENDPOINTS.workout.root}/by-id/${id}`);
       dispatch(slice.actions.cloneWorkoutSuccess(response.data));
     } catch (error) {
       console.error(error);
@@ -308,7 +308,9 @@ export function getWorkouts(programId, type) {
     const workoutType = type === 1 ? 'running' : 'gym';
     dispatch(slice.actions.getWorkoutsStart());
     try {
-      const response = await axios.get(`${API_ENDPOINTS.workout.root}/${workoutType}/${programId}`);
+      const response = await jfAppApi.get(
+        `${API_ENDPOINTS.workout.root}/${workoutType}/${programId}`,
+      );
       dispatch(slice.actions.getWorkoutsSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.getWorkoutsFailure(error));
@@ -321,7 +323,7 @@ export function getWorkout(id) {
   return async (dispatch) => {
     dispatch(slice.actions.getWorkoutStart());
     try {
-      const response = await axios.get(`${API_ENDPOINTS.workout.root}/by-id/${id}`);
+      const response = await jfAppApi.get(`${API_ENDPOINTS.workout.root}/by-id/${id}`);
       dispatch(slice.actions.getWorkoutSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.getWorkoutFailure(error));
@@ -334,7 +336,7 @@ export function getWorkoutFeedback(customerId, id) {
   return async (dispatch) => {
     dispatch(slice.actions.getWorkoutStart());
     try {
-      const response = await axios.get(
+      const response = await jfAppApi.get(
         `${API_ENDPOINTS.workout.root}/feedback/${customerId}/${id}`,
       );
       dispatch(slice.actions.getWorkoutSuccess(response.data));
@@ -350,7 +352,7 @@ export function reviewWorkout(customerId, id, payload) {
     dispatch(slice.actions.reviewWorkoutStart());
     try {
       const data = { ...payload };
-      const response = await axios.put(
+      const response = await jfAppApi.put(
         `${API_ENDPOINTS.finished.review}/${customerId}/${id}`,
         data,
       );
@@ -366,7 +368,9 @@ export function getWorkoutLoad(customerId, id) {
   return async (dispatch) => {
     dispatch(slice.actions.getWorkoutLoadStart());
     try {
-      const response = await axios.get(`${API_ENDPOINTS.workoutLoad}/feedback/${customerId}/${id}`);
+      const response = await jfAppApi.get(
+        `${API_ENDPOINTS.workoutLoad}/feedback/${customerId}/${id}`,
+      );
       dispatch(slice.actions.getWorkoutLoadSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.getWorkoutLoadFailure(error));

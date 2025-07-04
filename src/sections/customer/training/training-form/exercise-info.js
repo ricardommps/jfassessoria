@@ -19,7 +19,7 @@ export default function ExerciseInfo({ open, onClose, title, id, onSave, exercis
 
   const defaultValues = useMemo(
     () => ({
-      id: id,
+      mediaId: id,
       reps: exerciseInfoById?.reps || '',
       reset: exerciseInfoById?.reset || '',
       rir: exerciseInfoById?.rir || '',
@@ -61,27 +61,16 @@ export default function ExerciseInfo({ open, onClose, title, id, onSave, exercis
             </Typography>
             <>
               <Box rowGap={3} columnGap={2} display="grid" pt={1}>
-                <RHFTextField name="method" label="Método" variant="standard" />
-                <RHFTextField name="reps" label="Range de repetições" variant="standard" />
+                <RHFTextField name="method" label="Método" />
+                <RHFTextField name="reps" label="Range de repetições" />
                 <RHFTextField
                   name="reset"
                   label="Intervalo de recuperação(segundos)"
-                  variant="standard"
                   type={'number'}
                 />
-                <RHFTextField name="rir" label="Repetições de reserva" variant="standard" />
-                <RHFTextField
-                  name="cadence"
-                  label="Cadência/velocidade de movimento"
-                  variant="standard"
-                />
-                <RHFTextField
-                  name="comments"
-                  label="Observações"
-                  variant="standard"
-                  multiline
-                  rows={3}
-                />
+                <RHFTextField name="rir" label="Repetições de reserva" />
+                <RHFTextField name="cadence" label="Cadência/velocidade de movimento" />
+                <RHFTextField name="comments" label="Observações" multiline rows={3} />
               </Box>
             </>
           </>

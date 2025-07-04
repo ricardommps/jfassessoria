@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import axios, { API_ENDPOINTS } from 'src/utils/axios';
+import { API_ENDPOINTS, jfAppApi } from 'src/utils/axios';
 
 const initialState = {
   medias: [],
@@ -127,7 +127,7 @@ export function getListMedias() {
   return async (dispatch) => {
     dispatch(slice.actions.getAllMediasStart());
     try {
-      const response = await axios.get(`${API_ENDPOINTS.medias.root}`);
+      const response = await jfAppApi.get(`${API_ENDPOINTS.medias.root}`);
       dispatch(slice.actions.getAllMediasSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.getAllMediasFailure(error));
@@ -139,7 +139,7 @@ export function getMediasWithStretchTag() {
   return async (dispatch) => {
     dispatch(slice.actions.getAllMediasStart());
     try {
-      const response = await axios.get(`${API_ENDPOINTS.medias.root}/stretchTag`);
+      const response = await jfAppApi.get(`${API_ENDPOINTS.medias.root}/stretchTag`);
       dispatch(slice.actions.getAllMediasSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.getAllMediasFailure(error));
@@ -154,10 +154,12 @@ export function getMediasWithTagFiltered(tags = []) {
       // Convert the tags array to a comma-separated string for the query parameter
       if (tags?.length > 0) {
         const tagsQuery = tags.join(',');
-        const response = await axios.get(`${API_ENDPOINTS.medias.root}/filtered?tags=${tagsQuery}`);
+        const response = await jfAppApi.get(
+          `${API_ENDPOINTS.medias.root}/filtered?tags=${tagsQuery}`,
+        );
         dispatch(slice.actions.getAllMediasSuccess(response.data));
       } else {
-        const response = await axios.get(`${API_ENDPOINTS.medias.root}`);
+        const response = await jfAppApi.get(`${API_ENDPOINTS.medias.root}`);
         dispatch(slice.actions.getAllMediasSuccess(response.data));
       }
     } catch (error) {
@@ -172,10 +174,10 @@ export function createMedia(payload, mediaId) {
     try {
       const data = { ...payload };
       if (mediaId) {
-        const response = await axios.put(`${API_ENDPOINTS.medias.root}/${mediaId}`, data);
+        const response = await jfAppApi.put(`${API_ENDPOINTS.medias.root}/${mediaId}`, data);
         dispatch(slice.actions.createMediaSuccess(response.data));
       } else {
-        const response = await axios.post(`${API_ENDPOINTS.medias.root}`, data);
+        const response = await jfAppApi.post(`${API_ENDPOINTS.medias.root}`, data);
         dispatch(slice.actions.createMediaSuccess(response.data));
       }
     } catch (error) {
@@ -188,7 +190,7 @@ export function getMediaById(id) {
   return async (dispatch) => {
     dispatch(slice.actions.getMediaStart());
     try {
-      const response = await axios.get(`${API_ENDPOINTS.medias.root}/${id}`);
+      const response = await jfAppApi.get(`${API_ENDPOINTS.medias.root}/${id}`);
       dispatch(slice.actions.getMediaSuccess(response.data));
     } catch (error) {
       console.error(error);
@@ -201,7 +203,7 @@ export function deleteMediaById(id) {
   return async (dispatch) => {
     dispatch(slice.actions.deleteStart());
     try {
-      const response = await axios.delete(`${API_ENDPOINTS.medias.root}/${id}`);
+      const response = await jfAppApi.delete(`${API_ENDPOINTS.medias.root}/${id}`);
       dispatch(slice.actions.deleteSuccess(response.data));
     } catch (error) {
       console.error(error);

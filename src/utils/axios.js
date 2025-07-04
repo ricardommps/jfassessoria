@@ -1,27 +1,44 @@
 import axios from 'axios';
 // config
-import { HOST_API_JF } from 'src/config-global';
+import { HOST_API_JF, HOST_API_JF_APP } from 'src/config-global';
 
 // ----------------------------------------------------------------------
 
-const axiosInstance = axios.create({ baseURL: HOST_API_JF });
-
-// axiosInstance.interceptors.response.use(
-//   (response) => response,
-//   (error) => Promise.reject((error.response && error.response.data) || 'Something went wrong'),
-// );
-
-axiosInstance.interceptors.response.use(
-  (response) => response,
-  (error) => {
+// Interceptor comum para ambas as instâncias
+const createResponseInterceptor = () => ({
+  onFulfilled: (response) => response,
+  onRejected: (error) => {
     if (axios.isCancel(error)) {
-      console.error(error.message);
+      console.error('Request cancelled:', error.message);
+      return Promise.reject(error);
     }
-    return Promise.reject((error.response && error.response.data) || 'Something went wrong');
-  },
-);
 
-export default axiosInstance;
+    const errorMessage = error.response?.data || 'Something went wrong';
+    console.error('API Error:', errorMessage);
+
+    return Promise.reject(errorMessage);
+  },
+});
+
+export const jfAppApi = axios.create({
+  baseURL: HOST_API_JF,
+  timeout: 10000, // timeout opcional
+});
+
+// Instância para JF
+export const jfApi = axios.create({
+  baseURL: HOST_API_JF_APP,
+  timeout: 10000, // timeout opcional
+});
+
+// Aplicar interceptors
+const interceptor = createResponseInterceptor();
+jfAppApi.interceptors.response.use(interceptor.onFulfilled, interceptor.onRejected);
+jfApi.interceptors.response.use(interceptor.onFulfilled, interceptor.onRejected);
+
+export const JF_APP_ENDPOINTS = {
+  workouts: '/api/v2/workouts',
+};
 
 export const API_ENDPOINTS = {
   chat: '/api/chat',
@@ -123,7 +140,6 @@ export const API_ENDPOINTS = {
   finished: {
     review: '/api/v2/finished/review',
     unreviewedFinished: '/api/v2/finished/unreviewedFinished',
-    volume: '/api/v2/finished/getVolumeByCustomer',
   },
   workoutLoad: '/api/v2/workout-load',
   invoice: {

@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import axios, { API_ENDPOINTS } from 'src/utils/axios';
+import { API_ENDPOINTS, jfAppApi } from 'src/utils/axios';
 
 const initialState = {
   trainings: null,
@@ -201,7 +201,7 @@ export function getTrainings(programId) {
   return async (dispatch) => {
     dispatch(slice.actions.getTrainingsStart());
     try {
-      const response = await axios.get(`${API_ENDPOINTS.training.list}/${programId}`);
+      const response = await jfAppApi.get(`${API_ENDPOINTS.training.list}/${programId}`);
       dispatch(slice.actions.getTrainingsSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.getTrainingsFailure(error));
@@ -213,7 +213,7 @@ export function listTrainings(programId) {
   return async (dispatch) => {
     dispatch(slice.actions.getTrainingsStart());
     try {
-      const response = await axios.get(`${API_ENDPOINTS.training.trainings}/${programId}`);
+      const response = await jfAppApi.get(`${API_ENDPOINTS.training.trainings}/${programId}`);
       dispatch(slice.actions.getTrainingsSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.getTrainingsFailure(error));
@@ -225,7 +225,7 @@ export function getTrainingById(trainingId) {
   return async (dispatch) => {
     dispatch(slice.actions.getTrainingStart());
     try {
-      const response = await axios.get(`${API_ENDPOINTS.training.details}/${trainingId}`);
+      const response = await jfAppApi.get(`${API_ENDPOINTS.training.details}/${trainingId}`);
       dispatch(slice.actions.getTrainingSuccess(response.data));
     } catch (error) {
       console.error(error);
@@ -233,20 +233,6 @@ export function getTrainingById(trainingId) {
     }
   };
 }
-
-// export function createTraining(trainingData) {
-//   return async (dispatch) => {
-//     try {
-//       dispatch(slice.actions.createTrainingStart());
-//       const data = { ...trainingData };
-//       const response = await axios.post(API_ENDPOINTS.training.create, data);
-//       dispatch(slice.actions.createTrainingSuccess(response.data));
-//     } catch (error) {
-//       dispatch(slice.actions.createTrainingFailure(error));
-//       console.error(error);
-//     }
-//   };
-// }
 
 let cancelTokenSource = null;
 
@@ -258,19 +244,19 @@ export function createTraining(trainingData) {
     }
 
     // Criar um novo CancelToken
-    cancelTokenSource = axios.CancelToken.source();
+    cancelTokenSource = jfAppApi.CancelToken.source();
 
     try {
       dispatch(slice.actions.createTrainingStart());
 
       const data = { ...trainingData };
-      const response = await axios.post(API_ENDPOINTS.training.create, data, {
+      const response = await jfAppApi.post(API_ENDPOINTS.training.create, data, {
         cancelToken: cancelTokenSource.token,
       });
 
       dispatch(slice.actions.createTrainingSuccess(response.data));
     } catch (error) {
-      if (!axios.isCancel(error)) {
+      if (!jfAppApi.isCancel(error)) {
         dispatch(slice.actions.createTrainingFailure(error));
         console.error(error);
       }
@@ -285,7 +271,7 @@ export function updateTraining(trainingUpadate, trainingId) {
   return async (dispatch) => {
     try {
       const dataUpdate = { ...trainingUpadate };
-      const response = await axios.put(
+      const response = await jfAppApi.put(
         `${API_ENDPOINTS.training.update}/${trainingId}`,
         dataUpdate,
       );
@@ -319,7 +305,7 @@ export function callCloneTraining(trainingData) {
     dispatch(slice.actions.cloneTrainingStart());
     try {
       const data = { ...trainingData };
-      const response = await axios.post(API_ENDPOINTS.training.clonewithmedias, data);
+      const response = await jfAppApi.post(API_ENDPOINTS.training.clonewithmedias, data);
       dispatch(slice.actions.cloneTrainingStartSuccess(response.data));
     } catch (error) {
       console.error(error);
@@ -332,7 +318,7 @@ export function callCloneTrainingNew(trainingId, qntCopy) {
   return async (dispatch) => {
     dispatch(slice.actions.cloneTrainingStart());
     try {
-      const response = await axios.get(
+      const response = await jfAppApi.get(
         `${API_ENDPOINTS.training.clonewithmedias}/${trainingId}?qntCopy=${qntCopy}`,
       );
       dispatch(slice.actions.cloneTrainingStartSuccess(response.data));
@@ -348,7 +334,7 @@ export function sendTraining(sendPayload) {
     dispatch(slice.actions.sendTrainingStart());
     try {
       const data = { ...sendPayload };
-      const response = await axios.post(API_ENDPOINTS.training.sendNew, data);
+      const response = await jfAppApi.post(API_ENDPOINTS.training.sendNew, data);
       dispatch(slice.actions.sendTrainingSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.sendTrainingFailure(error));
@@ -360,7 +346,7 @@ export function deleteTrainingReq(trainingId) {
   return async (dispatch) => {
     dispatch(slice.actions.deleteTrainingStart());
     try {
-      const response = await axios.delete(`${API_ENDPOINTS.training.delete}/${trainingId}`);
+      const response = await jfAppApi.delete(`${API_ENDPOINTS.training.delete}/${trainingId}`);
       dispatch(slice.actions.deleteTrainingSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.deleteTrainingFailure(error));
