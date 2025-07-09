@@ -43,7 +43,6 @@ export default function TrainingFormApp({
   loadingForm,
 }) {
   const { id, type } = program;
-  console.log('--type---', type);
   const tablePv = useTablePvContext();
   const exertionZone = useBoolean();
 
@@ -228,15 +227,12 @@ export default function TrainingFormApp({
 
   const handleChangeIsWorkoutLoad = useCallback(
     (event, index) => {
-      console.log('--handleChangeIsWorkoutLoad--', { checked: event.target.checked, index });
       setValue(`workoutItems[${index}].isWorkoutLoad`, event.target.checked);
     },
     [setValue],
   );
 
   const handleSaveMediasInfo = (mediaInfo, index) => {
-    console.log('---mediaInfo-', mediaInfo);
-    console.log('----TESTE---', values.workoutItems?.[index]);
     const existingMediasInfo = values.workoutItems?.[index]?.mediaInfo || [];
     const currentIndex = existingMediasInfo.findIndex((item) => item.mediaId === mediaInfo.mediaId);
     const newMediasInfo = [...existingMediasInfo];
@@ -313,10 +309,6 @@ export default function TrainingFormApp({
   };
 
   const handleRemoveMedia = (mediaIdToRemove, index) => {
-    console.log('--handleRemoveMedia--', {
-      mediaIdToRemove,
-      index,
-    });
     const existingMedias = values.workoutItems?.[index]?.medias || [];
     const existingMediaOrder = values.workoutItems?.[index]?.mediaOrder || [];
 
@@ -334,7 +326,12 @@ export default function TrainingFormApp({
         return mediaGroup;
       })
       // Remove grupos vazios após a filtragem
-      .filter((mediaGroup) => Array.isArray(mediaGroup) && mediaGroup.length > 0);
+      .filter((mediaGroup) => {
+        if (Array.isArray(mediaGroup)) {
+          return mediaGroup.length > 0;
+        }
+        return true; // Mantém itens que não são arrays
+      });
 
     // Remove do mediaOrder
     const processMediaOrder = (orderItem) => {
@@ -402,8 +399,6 @@ export default function TrainingFormApp({
       reset(defaultValues);
     }
   }, [workout, reset, defaultValues]);
-
-  console.log('---loading', loadingForm);
 
   return (
     <>

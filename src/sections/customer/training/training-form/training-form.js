@@ -377,7 +377,6 @@ export default function TrainingForm({
   };
 
   const handleSaveExerciseInfo = (data) => {
-    console.log('--handleSaveExerciseInfo-', data);
     const exerciseInfo = values.exerciseInfo;
     const currentIndex = exerciseInfo.findIndex((item) => item.mediaId === data.id);
 

@@ -40,15 +40,15 @@ export default function useWorkout() {
   );
 
   const onCloneTraining = useCallback(
-    async (trainingId, qntCopy) => {
-      await dispatch(cloneWorkout(trainingId, qntCopy));
+    async (trainingId, qntCopy, v2) => {
+      await dispatch(cloneWorkout(trainingId, qntCopy, v2));
     },
     [dispatch],
   );
 
   const onSendTraining = useCallback(
-    async (payload) => {
-      await dispatch(sendWorkout(payload));
+    async (payload, v2) => {
+      await dispatch(sendWorkout(payload, v2));
     },
     [dispatch],
   );
@@ -82,8 +82,8 @@ export default function useWorkout() {
   );
 
   const onGetWorkoutFeedback = useCallback(
-    async (customerId, id) => {
-      await dispatch(getWorkoutFeedback(customerId, id));
+    async (customerId, id, source) => {
+      await dispatch(getWorkoutFeedback(customerId, id, source));
     },
     [dispatch],
   );

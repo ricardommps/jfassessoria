@@ -27,7 +27,6 @@ export default function CreateTrainingApp({
   handleSuccessCreate,
   program,
 }) {
-  console.log('--CreateTrainingApp--');
   const smDown = useResponsive('down', 'sm');
   const drawerHeating = useBoolean();
 

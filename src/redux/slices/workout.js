@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { API_ENDPOINTS, jfAppApi } from 'src/utils/axios';
+import { API_ENDPOINTS, JF_APP_ENDPOINTS, jfApi, jfAppApi } from 'src/utils/axios';
 
 const initialState = {
   workouts: null,
@@ -262,13 +262,21 @@ export function upDateWorkout(payload, id) {
   };
 }
 
-export function cloneWorkout(id, qntCopy) {
+export function cloneWorkout(id, qntCopy, v2) {
   return async (dispatch) => {
     dispatch(slice.actions.cloneWorkoutStart());
     try {
-      const response = await jfAppApi.get(
-        `${API_ENDPOINTS.workout.root}/clone-workout/${id}?qntCopy=${qntCopy}`,
-      );
+      let response;
+      if (v2) {
+        response = await jfApi.get(
+          `${JF_APP_ENDPOINTS.workouts}/clone?workoutId=${id}&qnt=${qntCopy}`,
+        );
+      } else {
+        response = await jfAppApi.get(
+          `${API_ENDPOINTS.workout.root}/clone-workout/${id}?qntCopy=${qntCopy}`,
+        );
+      }
+
       dispatch(slice.actions.cloneWorkoutSuccess(response.data));
     } catch (error) {
       console.error(error);
@@ -277,11 +285,21 @@ export function cloneWorkout(id, qntCopy) {
   };
 }
 
-export function sendWorkout(payload) {
+export function sendWorkout(payload, v2) {
   return async (dispatch) => {
     dispatch(slice.actions.sendWorkoutStart());
     try {
-      const response = await jfAppApi.post(`${API_ENDPOINTS.workout.root}/send`, payload);
+      let response;
+      if (v2) {
+        response = await jfApi.get(`${JF_APP_ENDPOINTS.workouts}/send`, {
+          params: {
+            workoutId: payload.workoutId,
+            programsId: payload.programsId.join(','), // ← converte array para string CSV
+          },
+        });
+      } else {
+        response = await jfAppApi.post(`${API_ENDPOINTS.workout.root}/send`, payload);
+      }
       dispatch(slice.actions.sendWorkoutSuccess(response.data));
     } catch (error) {
       console.error(error);
@@ -332,17 +350,20 @@ export function getWorkout(id) {
   };
 }
 
-export function getWorkoutFeedback(customerId, id) {
+export function getWorkoutFeedback(customerId, id, source) {
   return async (dispatch) => {
     dispatch(slice.actions.getWorkoutStart());
     try {
-      const response = await jfAppApi.get(
-        `${API_ENDPOINTS.workout.root}/feedback/${customerId}/${id}`,
-      );
+      let response = '';
+      if (source === 'new') {
+        response = await jfApi.get(`${JF_APP_ENDPOINTS.workouts}/workout?id=${id}`);
+      } else {
+        response = await jfAppApi.get(`${API_ENDPOINTS.workout.root}/feedback/${customerId}/${id}`);
+      }
       dispatch(slice.actions.getWorkoutSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.getWorkoutFailure(error));
-      throw error(error);
+      throw error;
     }
   };
 }
@@ -359,7 +380,7 @@ export function reviewWorkout(customerId, id, payload) {
       dispatch(slice.actions.reviewWorkoutSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.reviewWorkoutFailure(error));
-      throw error(error);
+      throw error;
     }
   };
 }

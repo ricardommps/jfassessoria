@@ -39,35 +39,39 @@ export default function Training({ open, program, handleCloseTraining }) {
     }
   }, [id, initialize]);
 
-  console.log('---workoutsNew---', workoutsNew);
   return (
     <>
-      {smDown ? (
-        <Box>
-          {loading && <LoadingProgress />}
-          <TrainingListMobile
-            open={open}
-            handleClose={handleCloseTraining}
-            loading={loading}
-            trainings={workouts}
-            trainingsStatus={workoutsStatus}
-            refreshList={refreshList}
-            program={program}
-          />
-        </Box>
+      {loading ? (
+        <LoadingProgress />
       ) : (
-        <Box>
-          {loading && <LoadingProgress />}
-          <TrainingList
-            trainings={workouts}
-            trainingsStatus={workoutsStatus}
-            workouts={workoutsNew}
-            workoutsNewStatus={workoutsNewStatus}
-            handleClose={handleCloseTraining}
-            program={program}
-            refreshList={refreshList}
-          />
-        </Box>
+        <>
+          {smDown ? (
+            <Box>
+              <TrainingListMobile
+                open={open}
+                handleClose={handleCloseTraining}
+                loading={loading}
+                trainings={workouts}
+                trainingsStatus={workoutsStatus}
+                refreshList={refreshList}
+                program={program}
+              />
+            </Box>
+          ) : (
+            <Box>
+              {loading && <LoadingProgress />}
+              <TrainingList
+                trainings={workouts}
+                trainingsStatus={workoutsStatus}
+                workouts={workoutsNew}
+                workoutsNewStatus={workoutsNewStatus}
+                handleClose={handleCloseTraining}
+                program={program}
+                refreshList={refreshList}
+              />
+            </Box>
+          )}
+        </>
       )}
     </>
   );

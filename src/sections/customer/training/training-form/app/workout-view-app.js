@@ -132,8 +132,6 @@ export default function WorkoutViewApp({
   const handleItemDrag = (mediaOrder, source, destination) => {
     const sourceIsTopLevel = source.droppableId === 'top-level';
     const destIsTopLevel = destination.droppableId === 'top-level';
-    console.log('sourceIsTopLevel', sourceIsTopLevel);
-    console.log('destIsTopLevel', destIsTopLevel);
     let sourceGroupIndex = null;
     let destGroupIndex = null;
 
@@ -286,6 +284,7 @@ export default function WorkoutViewApp({
                                 providedGroupDrag={providedGroupDrag}
                                 handleSaveMediasInfo={handleSaveMediaInfo}
                                 mediaInfo={mediaInfo}
+                                handleRemoveMedia={handleRemoveMedia}
                               />
                             </div>
                           )}

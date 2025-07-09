@@ -11,9 +11,11 @@ import CustomPopover, { usePopover } from 'src/components/custom-popover';
 import Iconify from 'src/components/iconify/iconify';
 import LoadingProgress from 'src/components/loading-progress';
 import ProgramInfo from 'src/components/program-info/program-info';
+import TrainingVolume from 'src/components/training-volume/trainingVolume';
 import { useBoolean } from 'src/hooks/use-boolean';
 import useWorkout from 'src/hooks/use-workout';
 
+import TrainingListAction from './components/training-list-action';
 import SendTraining from './send-training/send-training';
 import CreateTrainingApp from './training-form/app/create-training-app';
 import CreateTraining from './training-form/create-training';
@@ -45,6 +47,7 @@ export default function TrainingList({
   const createApp = useBoolean();
   const confirm = useBoolean();
   const programInfo = useBoolean();
+  const volume = useBoolean();
   const { onSendTraining } = useWorkout();
 
   const popover = usePopover();
@@ -52,6 +55,7 @@ export default function TrainingList({
   const [openSend, setOpenSend] = useState({
     open: false,
     training: null,
+    v2: false,
   });
   const [action, setAction] = useState({
     title: null,
@@ -79,6 +83,7 @@ export default function TrainingList({
     setOpenSend({
       open: false,
       training: null,
+      v2: false,
     });
   };
 
@@ -93,11 +98,12 @@ export default function TrainingList({
     [programsIdSelected],
   );
 
-  const handleOpenSend = (training, event) => {
+  const handleOpenSend = (training, v2, event) => {
     event.stopPropagation();
     setOpenSend({
       open: true,
       training: training,
+      v2: v2,
     });
   };
 
@@ -110,7 +116,7 @@ export default function TrainingList({
         workoutId: openSend.training.id,
         programsId: [...programsIdSelected],
       };
-      await onSendTraining(payload);
+      await onSendTraining(payload, openSend.v2);
 
       enqueueSnackbar('Treino enviado com sucesso!', {
         autoHideDuration: 8000,
@@ -143,7 +149,6 @@ export default function TrainingList({
   }, []);
 
   const handleOpenCreateTraining = (value) => {
-    console.log('----VALUE--', value);
     if (value === 1) {
       create.onTrue();
       createApp.onFalse();
@@ -161,53 +166,14 @@ export default function TrainingList({
           {!loading && (
             <>
               <Box p={2}>
-                <Stack
-                  direction="row"
-                  spacing={2}
-                  sx={{
-                    justifyContent: 'flex-end',
-                    alignItems: 'flex-start',
-                  }}
-                >
-                  <Button variant="contained" sx={{ mb: 2 }} onClick={handleClose}>
-                    Fechar
-                  </Button>
-
-                  <Button
-                    size="medium"
-                    color="inherit"
-                    variant="contained"
-                    endIcon={<Iconify icon="eva:arrow-ios-downward-fill" />}
-                    sx={{ textTransform: 'capitalize', mb: 2 }}
-                    onClick={popover.onOpen}
-                  >
-                    Novo treino
-                  </Button>
-                  <CustomPopover
-                    open={popover.open}
-                    onClose={popover.onClose}
-                    arrow="top-right"
-                    sx={{ width: 'auto' }}
-                  >
-                    {NEW_OPTIONS.map((option) => (
-                      <MenuItem
-                        key={option.value}
-                        selected={option.value === 0}
-                        onClick={() => {
-                          popover.onClose();
-                          handleOpenCreateTraining(option.value);
-                        }}
-                      >
-                        {option.label}
-                      </MenuItem>
-                    ))}
-                  </CustomPopover>
-                </Stack>
-                <Box pb={2}>
-                  <Alert variant="outlined" severity="info" onClick={programInfo.onTrue}>
-                    Informações do programa
-                  </Alert>
-                </Box>
+                <TrainingListAction
+                  type={type}
+                  volume={volume}
+                  popover={popover}
+                  programInfo={programInfo}
+                  handleOpenCreateTraining={handleOpenCreateTraining}
+                  handleClose={handleClose}
+                />
                 <Stack spacing={2}>
                   {(!workoutsNewStatus.loading || !loading) &&
                     !workoutsNewStatus.empty &&
@@ -276,6 +242,14 @@ export default function TrainingList({
               programsIdSelected={programsIdSelected}
               type={type}
               vs2={vs2}
+            />
+          )}
+          {volume.value && (
+            <TrainingVolume
+              open={volume.value}
+              onClose={volume.onFalse}
+              programId={program.id}
+              customerId={program.customerId}
             />
           )}
           <ConfirmDialog

@@ -112,7 +112,7 @@ export default function TrainingItem({
   const handleCloneTraining = useCallback(async () => {
     try {
       setLoading(true);
-      await onCloneTraining(training.id, qntCopy);
+      await onCloneTraining(training.id, qntCopy, v2);
       copy.onFalse();
       setQntCopy(1);
       refreshList();
@@ -180,9 +180,6 @@ export default function TrainingItem({
   const countReview = training?.history?.filter(
     (item) => item.review === false || !item.review,
   ).length;
-  if (v2) {
-    console.log('---training--V2', training);
-  }
   return (
     <>
       <Stack component={Card} direction="row" sx={{ opacity: opacityCard() }}>
@@ -282,7 +279,7 @@ export default function TrainingItem({
 
         <MenuItem
           onClick={(e) => {
-            handleOpenSend(training, e);
+            handleOpenSend(training, v2, e);
             popover.onClose();
           }}
         >

@@ -12,12 +12,13 @@ import { useResponsive } from 'src/hooks/use-responsive';
 import useWorkout from 'src/hooks/use-workout';
 
 import Workout from './workout';
+import WorkoutNew from './workout-new/workout-new';
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function WorkoutView({ open, onClose, workoutId, customerId, checkList }) {
+export default function WorkoutView({ open, onClose, workoutId, customerId, checkList, source }) {
   const smDown = useResponsive('down', 'sm');
   const { onGetWorkoutFeedback, workout } = useWorkout();
 
@@ -27,13 +28,13 @@ export default function WorkoutView({ open, onClose, workoutId, customerId, chec
     if (workout?.id === workoutId) return;
     setLoading(true); // Indica que o processo está em execução
     try {
-      await onGetWorkoutFeedback(customerId, workoutId);
+      await onGetWorkoutFeedback(customerId, workoutId, source);
     } catch (error) {
       console.error('Erro durante a execução:', error);
     } finally {
       setLoading(false); // Finaliza o estado de carregamento
     }
-  }, [workoutId, workout]);
+  }, [workoutId]);
 
   useEffect(() => {
     if (workoutId) {
@@ -52,12 +53,18 @@ export default function WorkoutView({ open, onClose, workoutId, customerId, chec
           </Typography>
         </Toolbar>
       </AppBar>
-      {loading && <LoadingProgress />}
-      {!loading && workout && (
-        <Box>
-          <Workout workout={workout} checkList={checkList} />
-        </Box>
-      )}
+      <>
+        {loading && <LoadingProgress />}
+        {!loading && workout && (
+          <Box>
+            {source === 'new' ? (
+              <WorkoutNew workout={workout} checkList={checkList} />
+            ) : (
+              <Workout workout={workout} checkList={checkList} />
+            )}
+          </Box>
+        )}
+      </>
     </>
   );
   if (smDown) {

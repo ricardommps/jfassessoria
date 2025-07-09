@@ -148,7 +148,6 @@ export default function SelectMedia({ open, handleSave, mediasSelected, onClose,
     handleSave(currentMediasSelected, index);
     onClose();
   };
-  console.log('---mediasSelected', mediasSelected);
   return (
     <>
       <Drawer

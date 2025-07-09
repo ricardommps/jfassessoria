@@ -93,6 +93,7 @@ export default function FeedbackPopover() {
       setSortedUnreviewedFinished(sortedItems);
     }
   }, [unreviewedFinished, setSortedUnreviewedFinished]);
+
   return (
     <>
       <IconButton
@@ -126,11 +127,12 @@ export default function FeedbackPopover() {
       </Drawer>
       {workoutSelected && (
         <WorkoutView
-          open={workoutSelected}
+          open={Boolean(workoutSelected)}
           onClose={handeCloseWorkoutView}
           workoutId={workoutSelected.workoutId}
           customerId={workoutSelected.customer.id}
           checkList={workoutSelected.checkList}
+          source={workoutSelected?.workout?.source}
         />
       )}
     </>
