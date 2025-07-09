@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import axios, { API_ENDPOINTS } from 'src/utils/axios';
+import { API_ENDPOINTS, jfAppApi } from 'src/utils/axios';
 const initialState = {
   payments: [],
   paymentsStatus: {
@@ -91,7 +91,7 @@ export function getPayments(customerId) {
   return async (dispatch) => {
     dispatch(slice.actions.getPaymentsStart());
     try {
-      const response = await axios.get(`${API_ENDPOINTS.payment.list}/${customerId}`);
+      const response = await jfAppApi.get(`${API_ENDPOINTS.payment.list}/${customerId}`);
       dispatch(slice.actions.getPaymentsSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.getPaymentsFailure(error));
@@ -104,7 +104,7 @@ export function paymentCreatedReq(payment) {
     dispatch(slice.actions.paymentCreatedStart());
     try {
       const data = { ...payment };
-      const response = await axios.post(API_ENDPOINTS.payment.created, data);
+      const response = await jfAppApi.post(API_ENDPOINTS.payment.created, data);
       dispatch(slice.actions.paymentCreatedSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.paymentCreatedFailure(error));
@@ -117,7 +117,10 @@ export function updatePayment(paymentUpadate, paymentId) {
     dispatch(slice.actions.updatePaymentStart());
     try {
       const dataUpdate = { ...paymentUpadate };
-      const response = await axios.put(`${API_ENDPOINTS.payment.created}/${paymentId}`, dataUpdate);
+      const response = await jfAppApi.put(
+        `${API_ENDPOINTS.payment.created}/${paymentId}`,
+        dataUpdate,
+      );
       dispatch(slice.actions.updatePaymentSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.updatePaymentFailure());
@@ -130,7 +133,7 @@ export function deletePayment(paymentId) {
   return async (dispatch) => {
     dispatch(slice.actions.deletePaymentStart());
     try {
-      const response = await axios.delete(`${API_ENDPOINTS.payment.delete}/${paymentId}`);
+      const response = await jfAppApi.delete(`${API_ENDPOINTS.payment.delete}/${paymentId}`);
       dispatch(slice.actions.deletePaymentSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.deletePaymentFailure(error));

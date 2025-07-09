@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import axios, { API_ENDPOINTS } from 'src/utils/axios';
+import { API_ENDPOINTS, jfAppApi } from 'src/utils/axios';
 
 const initialState = {
   listByReview: [],
@@ -141,7 +141,9 @@ export function getListAllDone(customerId) {
   return async (dispatch) => {
     dispatch(slice.actions.getListAllDoneStart());
     try {
-      const response = await axios.get(`${API_ENDPOINTS.finishedtraining.allDone}/${customerId}`);
+      const response = await jfAppApi.get(
+        `${API_ENDPOINTS.finishedtraining.allDone}/${customerId}`,
+      );
       dispatch(slice.actions.getListAllDoneSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.getListAllDoneFailure(error));
@@ -153,7 +155,7 @@ export function getListByReview(customerId) {
   return async (dispatch) => {
     dispatch(slice.actions.getListByReviewStart());
     try {
-      const response = await axios.get(
+      const response = await jfAppApi.get(
         `${API_ENDPOINTS.finishedtraining.listByReview}/${customerId}`,
       );
       dispatch(slice.actions.getListByReviewSuccess(response.data));
@@ -169,7 +171,7 @@ export function getTrainingReview(id, type) {
     try {
       let url = `${API_ENDPOINTS.finishedtraining.trainingReview}/${id}`;
       if (type === 'training') url = `${API_ENDPOINTS.finishedtraining.trainingReviewId}/${id}`;
-      const response = await axios.get(url);
+      const response = await jfAppApi.get(url);
       dispatch(slice.actions.getTrainingReviewSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.getTrainingReviewFailure(error));
@@ -182,7 +184,7 @@ export function updateFinishedTrainingReq(finishedUpadate) {
     dispatch(slice.actions.updateFinishedTrainingStart());
     try {
       const dataUpdate = { ...finishedUpadate };
-      const response = await axios.put(`${API_ENDPOINTS.finishedtraining.update}`, dataUpdate);
+      const response = await jfAppApi.put(`${API_ENDPOINTS.finishedtraining.update}`, dataUpdate);
       dispatch(slice.actions.updateFinishedTrainingSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.updateFinishedTrainingFailure(error));

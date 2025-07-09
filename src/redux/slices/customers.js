@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import axios, { API_ENDPOINTS } from 'src/utils/axios';
+import { API_ENDPOINTS, jfAppApi } from 'src/utils/axios';
 const initialState = {
   customers: [],
   customersStatus: {
@@ -187,7 +187,7 @@ export function getCustomersReview() {
   return async (dispatch) => {
     dispatch(slice.actions.getCustomerReviewStart());
     try {
-      const response = await axios.get(API_ENDPOINTS.customerAll);
+      const response = await jfAppApi.get(API_ENDPOINTS.customerAll);
       dispatch(slice.actions.getCustomerReviewSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.getCustomerReviewFailure(error));
@@ -199,7 +199,7 @@ export function getCustomers() {
   return async (dispatch) => {
     dispatch(slice.actions.getCustomersStart());
     try {
-      const response = await axios.get(API_ENDPOINTS.customer);
+      const response = await jfAppApi.get(API_ENDPOINTS.customer);
       dispatch(slice.actions.getCustomersSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.getCustomersFailure(error));
@@ -211,7 +211,7 @@ export function getCustomerV2() {
   return async (dispatch) => {
     dispatch(slice.actions.getCustomersStart());
     try {
-      const response = await axios.get(`${API_ENDPOINTS.customer}`);
+      const response = await jfAppApi.get(`${API_ENDPOINTS.customer}`);
       dispatch(slice.actions.getCustomersSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.getCustomersFailure(error));
@@ -223,7 +223,7 @@ export function getCustomerById(customerId) {
   return async (dispatch) => {
     dispatch(slice.actions.getCustomerStart());
     try {
-      const response = await axios.get(`${API_ENDPOINTS.profile}/${customerId}`);
+      const response = await jfAppApi.get(`${API_ENDPOINTS.profile}/${customerId}`);
       dispatch(slice.actions.getCustomerSuccess(response.data));
     } catch (error) {
       console.error(error);
@@ -236,7 +236,7 @@ export function createCustomer(customerData) {
   return async (dispatch) => {
     try {
       const data = { ...customerData };
-      const response = await axios.post(API_ENDPOINTS.customer, data);
+      const response = await jfAppApi.post(API_ENDPOINTS.customer, data);
       dispatch(slice.actions.createCustomerSuccess(response.data));
     } catch (error) {
       // Obtém uma mensagem de erro detalhada, se disponível
@@ -250,7 +250,7 @@ export function updateCustomer(customerUpadate, customerId) {
   return async (dispatch) => {
     try {
       const dataUpdate = { ...customerUpadate };
-      const response = await axios.put(`${API_ENDPOINTS.customer}/${customerId}`, dataUpdate);
+      const response = await jfAppApi.put(`${API_ENDPOINTS.customer}/${customerId}`, dataUpdate);
       dispatch(slice.actions.updateCustomerSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.customerError());
@@ -270,7 +270,7 @@ export function deleteCustomerReq(customerId) {
   return async (dispatch) => {
     dispatch(slice.actions.deleteCustomerStart());
     try {
-      const response = await axios.delete(`${API_ENDPOINTS.customer}/${customerId}`);
+      const response = await jfAppApi.delete(`${API_ENDPOINTS.customer}/${customerId}`);
       dispatch(slice.actions.deleteCustomerSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.deleteCustomerFailure(error));
@@ -284,7 +284,7 @@ export function changePassword(updatePassword, customerId) {
     try {
       const data = { ...updatePassword };
       delete data.confirmNewPassword;
-      const response = await axios.patch(`${API_ENDPOINTS.changePassword}/${customerId}`, data);
+      const response = await jfAppApi.patch(`${API_ENDPOINTS.changePassword}/${customerId}`, data);
       dispatch(slice.actions.changePasswordSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.changePasswordFailure(error));

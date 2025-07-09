@@ -1,22 +1,37 @@
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import MenuItem from '@mui/material/MenuItem';
 import Stack from '@mui/material/Stack';
 import { enqueueSnackbar } from 'notistack';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import DialogProvider from 'src/app/context/dialog-provider';
 import { ConfirmDialog } from 'src/components/confirm-dialog';
+import CustomPopover, { usePopover } from 'src/components/custom-popover';
 import Iconify from 'src/components/iconify/iconify';
 import LoadingProgress from 'src/components/loading-progress';
 import ProgramInfo from 'src/components/program-info/program-info';
 import TrainingVolume from 'src/components/training-volume/trainingVolume';
 import { useBoolean } from 'src/hooks/use-boolean';
-import useFinished from 'src/hooks/use-finished';
 import useWorkout from 'src/hooks/use-workout';
 
+import TrainingListAction from './components/training-list-action';
 import SendTraining from './send-training/send-training';
+import CreateTrainingApp from './training-form/app/create-training-app';
 import CreateTraining from './training-form/create-training';
 import TrainingItem from './training-item';
+
+export const NEW_OPTIONS = [
+  {
+    value: 1,
+    label: 'Versão 1',
+  },
+  {
+    value: 2,
+    label: 'Versão app',
+  },
+];
+
 export default function TrainingList({
   loading,
   trainings,
@@ -24,18 +39,23 @@ export default function TrainingList({
   handleClose,
   program,
   refreshList,
+  workouts,
+  workoutsNewStatus,
 }) {
   const { type, vs2 } = program;
   const create = useBoolean();
+  const createApp = useBoolean();
   const confirm = useBoolean();
   const programInfo = useBoolean();
   const volume = useBoolean();
   const { onSendTraining } = useWorkout();
-  const { onClearVolumeState } = useFinished();
+
+  const popover = usePopover();
 
   const [openSend, setOpenSend] = useState({
     open: false,
     training: null,
+    v2: false,
   });
   const [action, setAction] = useState({
     title: null,
@@ -49,10 +69,12 @@ export default function TrainingList({
 
   const handleCloseCreate = () => {
     create.onFalse();
+    createApp.onFalse();
   };
 
   const handleSuccessCreate = () => {
     create.onFalse();
+    createApp.onFalse();
     refreshList();
   };
 
@@ -61,6 +83,7 @@ export default function TrainingList({
     setOpenSend({
       open: false,
       training: null,
+      v2: false,
     });
   };
 
@@ -75,11 +98,12 @@ export default function TrainingList({
     [programsIdSelected],
   );
 
-  const handleOpenSend = (training, event) => {
+  const handleOpenSend = (training, v2, event) => {
     event.stopPropagation();
     setOpenSend({
       open: true,
       training: training,
+      v2: v2,
     });
   };
 
@@ -92,7 +116,7 @@ export default function TrainingList({
         workoutId: openSend.training.id,
         programsId: [...programsIdSelected],
       };
-      await onSendTraining(payload);
+      await onSendTraining(payload, openSend.v2);
 
       enqueueSnackbar('Treino enviado com sucesso!', {
         autoHideDuration: 8000,
@@ -124,60 +148,51 @@ export default function TrainingList({
     });
   }, []);
 
-  const initialize = useCallback(async () => {
-    try {
-      onClearVolumeState();
-    } catch (error) {
-      console.error(error);
+  const handleOpenCreateTraining = (value) => {
+    if (value === 1) {
+      create.onTrue();
+      createApp.onFalse();
+    } else {
+      createApp.onTrue();
+      create.onFalse();
     }
-  }, [program.id]);
-
-  useEffect(() => {
-    if (program.id) {
-      initialize();
-    }
-  }, [program.id, initialize]);
+  };
 
   return (
     <>
       <DialogProvider>
         <Box>
-          {loading ? (
-            <LoadingProgress />
-          ) : (
+          {loading && <LoadingProgress />}
+          {!loading && (
             <>
               <Box p={2}>
-                <Stack
-                  direction="row"
-                  spacing={2}
-                  sx={{
-                    justifyContent: 'flex-end',
-                    alignItems: 'flex-start',
-                  }}
-                >
-                  <Button variant="contained" sx={{ mb: 2 }} onClick={handleClose}>
-                    Fechar
-                  </Button>
-                  {type === 1 && (
-                    <Button variant="contained" sx={{ mb: 2 }} onClick={volume.onTrue}>
-                      Volume
-                    </Button>
-                  )}
-                  <Button
-                    variant="contained"
-                    startIcon={<Iconify icon="mingcute:add-line" />}
-                    sx={{ mb: 2 }}
-                    onClick={create.onTrue}
-                  >
-                    Novo treino
-                  </Button>
-                </Stack>
-                <Box pb={2}>
-                  <Alert variant="outlined" severity="info" onClick={programInfo.onTrue}>
-                    Informações do programa
-                  </Alert>
-                </Box>
+                <TrainingListAction
+                  type={type}
+                  volume={volume}
+                  popover={popover}
+                  programInfo={programInfo}
+                  handleOpenCreateTraining={handleOpenCreateTraining}
+                  handleClose={handleClose}
+                />
                 <Stack spacing={2}>
+                  {(!workoutsNewStatus.loading || !loading) &&
+                    !workoutsNewStatus.empty &&
+                    workouts && (
+                      <>
+                        {workouts?.map((training) => (
+                          <TrainingItem
+                            key={training.id}
+                            training={training}
+                            program={program}
+                            refreshList={refreshList}
+                            handleSuccessCreate={handleSuccessCreate}
+                            handleOpenSend={handleOpenSend}
+                            v2={true}
+                          />
+                        ))}
+                      </>
+                    )}
+
                   {(!trainingsStatus.loading || !loading) &&
                     !trainingsStatus.empty &&
                     trainings && (
@@ -196,49 +211,58 @@ export default function TrainingList({
                     )}
                 </Stack>
               </Box>
-              {create.value && (
-                <CreateTraining
-                  open={create.value}
-                  program={program}
-                  onClose={handleCloseCreate}
-                  handleSuccessCreate={handleSuccessCreate}
-                />
-              )}
-
-              {openSend?.open && (
-                <SendTraining
-                  open={openSend.open}
-                  onClose={handleCloseSend}
-                  training={openSend.training}
-                  onSelectProgram={handleSelectProgram}
-                  handleSendTraining={handleSendTraining}
-                  loading={sendLoading}
-                  programsIdSelected={programsIdSelected}
-                  type={type}
-                  vs2={vs2}
-                />
-              )}
-              {volume.value && (
-                <TrainingVolume
-                  open={volume.value}
-                  onClose={volume.onFalse}
-                  programId={program.id}
-                  customerId={program.customerId}
-                />
-              )}
-              <ConfirmDialog
-                open={confirm.value}
-                onClose={confirm.onFalse}
-                title={action?.title}
-                content={action?.message}
-                action={
-                  <Button variant="contained" color="success" onClick={onConfirmSend}>
-                    Confirmar
-                  </Button>
-                }
-              />
             </>
           )}
+          {create.value && (
+            <CreateTraining
+              open={create.value}
+              program={program}
+              onClose={handleCloseCreate}
+              handleSuccessCreate={handleSuccessCreate}
+            />
+          )}
+
+          {createApp.value && (
+            <CreateTrainingApp
+              open={createApp.value}
+              program={program}
+              onClose={handleCloseCreate}
+              handleSuccessCreate={handleSuccessCreate}
+            />
+          )}
+
+          {openSend?.open && (
+            <SendTraining
+              open={openSend.open}
+              onClose={handleCloseSend}
+              training={openSend.training}
+              onSelectProgram={handleSelectProgram}
+              handleSendTraining={handleSendTraining}
+              loading={sendLoading}
+              programsIdSelected={programsIdSelected}
+              type={type}
+              vs2={vs2}
+            />
+          )}
+          {volume.value && (
+            <TrainingVolume
+              open={volume.value}
+              onClose={volume.onFalse}
+              programId={program.id}
+              customerId={program.customerId}
+            />
+          )}
+          <ConfirmDialog
+            open={confirm.value}
+            onClose={confirm.onFalse}
+            title={action?.title}
+            content={action?.message}
+            action={
+              <Button variant="contained" color="success" onClick={onConfirmSend}>
+                Confirmar
+              </Button>
+            }
+          />
         </Box>
       </DialogProvider>
       {programInfo.value && (

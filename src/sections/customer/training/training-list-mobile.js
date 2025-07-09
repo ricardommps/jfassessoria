@@ -12,7 +12,7 @@ import Typography from '@mui/material/Typography';
 import { enqueueSnackbar } from 'notistack';
 import { forwardRef, useCallback, useEffect, useState } from 'react';
 import { ConfirmDialog } from 'src/components/confirm-dialog';
-import Iconify from 'src/components/iconify/iconify';
+import CustomPopover, { usePopover } from 'src/components/custom-popover';
 import LoadingProgress from 'src/components/loading-progress';
 import ProgramInfo from 'src/components/program-info/program-info';
 import TrainingVolume from 'src/components/training-volume/trainingVolume';
@@ -20,7 +20,9 @@ import { useBoolean } from 'src/hooks/use-boolean';
 import useFinished from 'src/hooks/use-finished';
 import useWorkout from 'src/hooks/use-workout';
 
+import TrainingListAction from './components/training-list-action';
 import SendTraining from './send-training/send-training';
+import CreateTrainingApp from './training-form/app/create-training-app';
 import CreateTraining from './training-form/create-training';
 import TrainingItem from './training-item';
 
@@ -37,10 +39,12 @@ export default function TrainingListMobile({
   refreshList,
   program,
 }) {
-  const { id, type, vs2 } = program;
+  const { type, vs2 } = program;
   const volume = useBoolean();
   const create = useBoolean();
+  const createApp = useBoolean();
   const programInfo = useBoolean();
+  const popover = usePopover();
 
   const confirm = useBoolean();
   const { onSendTraining } = useWorkout();
@@ -62,9 +66,12 @@ export default function TrainingListMobile({
 
   const handleCloseCreate = () => {
     create.onFalse();
+    createApp.onFalse();
   };
+
   const handleSuccessCreate = () => {
     create.onFalse();
+    createApp.onFalse();
     refreshList();
   };
 
@@ -136,6 +143,16 @@ export default function TrainingListMobile({
     });
   }, []);
 
+  const handleOpenCreateTraining = (value) => {
+    if (value === 1) {
+      create.onTrue();
+      createApp.onFalse();
+    } else {
+      createApp.onTrue();
+      create.onFalse();
+    }
+  };
+
   const initialize = useCallback(async () => {
     try {
       onClearVolumeState();
@@ -167,33 +184,14 @@ export default function TrainingListMobile({
         {!loading && (
           <>
             <Box p={2}>
-              <Stack
-                direction="row"
-                spacing={2}
-                sx={{
-                  justifyContent: 'flex-end',
-                  alignItems: 'flex-end',
-                }}
-              >
-                {type === 1 && (
-                  <Button variant="contained" sx={{ mb: 2 }} onClick={volume.onTrue}>
-                    Volume
-                  </Button>
-                )}
-                <Button
-                  variant="contained"
-                  startIcon={<Iconify icon="mingcute:add-line" />}
-                  sx={{ mb: 2, ml: 4 }}
-                  onClick={create.onTrue}
-                >
-                  Novo
-                </Button>
-              </Stack>
-              <Box pb={2}>
-                <Alert variant="outlined" severity="info" onClick={programInfo.onTrue}>
-                  Informações do programa
-                </Alert>
-              </Box>
+              <TrainingListAction
+                type={type}
+                volume={volume}
+                popover={popover}
+                programInfo={programInfo}
+                handleOpenCreateTraining={handleOpenCreateTraining}
+                handleClose={handleClose}
+              />
               <Stack spacing={2}>
                 {(!trainingsStatus.loading || !loading) && !trainingsStatus.empty && trainings && (
                   <>
@@ -214,6 +212,15 @@ export default function TrainingListMobile({
             {create.value && (
               <CreateTraining
                 open={create.value}
+                program={program}
+                onClose={handleCloseCreate}
+                handleSuccessCreate={handleSuccessCreate}
+              />
+            )}
+
+            {createApp.value && (
+              <CreateTrainingApp
+                open={createApp.value}
                 program={program}
                 onClose={handleCloseCreate}
                 handleSuccessCreate={handleSuccessCreate}

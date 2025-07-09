@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import axios, { API_ENDPOINTS } from 'src/utils/axios';
+import { API_ENDPOINTS, jfAppApi } from 'src/utils/axios';
 
 const initialState = {
   anamnese: null,
@@ -49,9 +49,9 @@ export function getAnamnese(customerId) {
   return async (dispatch) => {
     dispatch(slice.actions.getAnamneseStart());
     try {
-      const response = await axios.get(`${API_ENDPOINTS.anamnese.byCustomer}/${customerId}`);
+      const response = await jfAppApi.get(`${API_ENDPOINTS.anamnese.byCustomer}/${customerId}`);
       if (response.data.read === false && response.data.id) {
-        await axios.put(`${API_ENDPOINTS.anamnese.byCustomer}/${response.data.id}`);
+        await jfAppApi.put(`${API_ENDPOINTS.anamnese.byCustomer}/${response.data.id}`);
       }
       dispatch(slice.actions.getAnamneseSuccess(response.data));
     } catch (error) {

@@ -1,7 +1,7 @@
 // routes
 import { paths } from 'src/routes/paths';
 // utils
-import axios from 'src/utils/axios';
+import { jfApi, jfAppApi } from 'src/utils/axios';
 
 // ----------------------------------------------------------------------
 
@@ -62,7 +62,8 @@ export const setSession = (accessToken) => {
   if (accessToken) {
     localStorage.setItem('accessToken', accessToken);
 
-    axios.defaults.headers.common.Authorization = accessToken;
+    jfAppApi.defaults.headers.common.Authorization = accessToken;
+    jfApi.defaults.headers.common.Authorization = accessToken;
 
     // This function below will handle when token is expired
     const { exp } = jwtDecode(accessToken); // ~3 days by minimals server
@@ -70,6 +71,7 @@ export const setSession = (accessToken) => {
   } else {
     localStorage.removeItem('accessToken');
 
-    delete axios.defaults.headers.common.Authorization;
+    delete jfAppApi.defaults.headers.common.Authorization;
+    delete jfApi.defaults.headers.common.Authorization;
   }
 };

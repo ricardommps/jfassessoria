@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import axios, { API_ENDPOINTS } from 'src/utils/axios';
+import { API_ENDPOINTS, jfAppApi } from 'src/utils/axios';
 
 const initialState = {
   allPrograms: null,
@@ -383,7 +383,7 @@ export function getAllPrograms() {
   return async (dispatch) => {
     dispatch(slice.actions.getAllProgramsStart());
     try {
-      const response = await axios.get(`${API_ENDPOINTS.program.all}`);
+      const response = await jfAppApi.get(`${API_ENDPOINTS.program.all}`);
       dispatch(slice.actions.getAllProgramsSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.getAllProgramsFailure(error));
@@ -395,7 +395,7 @@ export function getAllPChart() {
   return async (dispatch) => {
     dispatch(slice.actions.getAllChartStart());
     try {
-      const response = await axios.get(`${API_ENDPOINTS.program.allChart}`);
+      const response = await jfAppApi.get(`${API_ENDPOINTS.program.allChart}`);
       dispatch(slice.actions.getAllChartuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.getAllChartFailure(error));
@@ -407,7 +407,7 @@ export function getPrograms(customerId) {
   return async (dispatch) => {
     dispatch(slice.actions.getProgramsStart());
     try {
-      const response = await axios.get(`${API_ENDPOINTS.program.list}/${customerId}`);
+      const response = await jfAppApi.get(`${API_ENDPOINTS.program.list}/${customerId}`);
       dispatch(slice.actions.getProgramsSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.getProgramsFailure(error));
@@ -419,7 +419,7 @@ export function getProgramsV2(customerId) {
   return async (dispatch) => {
     dispatch(slice.actions.getProgramsStart());
     try {
-      const response = await axios.get(`${API_ENDPOINTS.program.list}/${customerId}/v2`);
+      const response = await jfAppApi.get(`${API_ENDPOINTS.program.list}/${customerId}/v2`);
       dispatch(slice.actions.getProgramsSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.getProgramsFailure(error));
@@ -431,7 +431,7 @@ export function getProgramById(programId) {
   return async (dispatch) => {
     dispatch(slice.actions.getProgramStart());
     try {
-      const response = await axios.get(`${API_ENDPOINTS.program.register}/${programId}`);
+      const response = await jfAppApi.get(`${API_ENDPOINTS.program.register}/${programId}`);
       dispatch(slice.actions.getProgramSuccess(response.data));
     } catch (error) {
       console.error(error);
@@ -445,7 +445,7 @@ export function createProgram(programData) {
     try {
       dispatch(slice.actions.createProgramStart());
       const data = { ...programData };
-      const response = await axios.post(API_ENDPOINTS.program.register, data);
+      const response = await jfAppApi.post(API_ENDPOINTS.program.register, data);
       dispatch(slice.actions.createProgramSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.createProgramFailure(error));
@@ -458,7 +458,7 @@ export function updateProgram(programUpadate, programId) {
   return async (dispatch) => {
     try {
       const dataUpdate = { ...programUpadate };
-      const response = await axios.put(
+      const response = await jfAppApi.put(
         `${API_ENDPOINTS.program.register}/${programId}`,
         dataUpdate,
       );
@@ -474,7 +474,7 @@ export function cloneProgram(cloneProgram) {
     dispatch(slice.actions.cloneProgramStart());
     try {
       const data = { ...cloneProgram };
-      const response = await axios.post(API_ENDPOINTS.program.clone, data);
+      const response = await jfAppApi.post(API_ENDPOINTS.program.clone, data);
       dispatch(slice.actions.cloneProgramSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.cloneProgramFailure(error));
@@ -487,7 +487,7 @@ export function sendProgram(sendPayload) {
     dispatch(slice.actions.sendProgramStart());
     try {
       const data = { ...sendPayload };
-      const response = await axios.post(API_ENDPOINTS.program.send, data);
+      const response = await jfAppApi.post(API_ENDPOINTS.program.send, data);
       dispatch(slice.actions.sendProgramSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.sendProgramFailure(error));
@@ -511,7 +511,7 @@ export function getViewPdf(programId) {
   return async (dispatch) => {
     dispatch(slice.actions.getViewPdfStart());
     try {
-      const response = await axios.get(`${API_ENDPOINTS.program.viewPdf}/${programId}`);
+      const response = await jfAppApi.get(`${API_ENDPOINTS.program.viewPdf}/${programId}`);
       dispatch(slice.actions.getViewPdfSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.getViewPdfFailure(error));
@@ -523,7 +523,7 @@ export function deleteProgramReq(programId) {
   return async (dispatch) => {
     dispatch(slice.actions.deleteProgramStart());
     try {
-      const response = await axios.delete(`${API_ENDPOINTS.program.delete}/${programId}`);
+      const response = await jfAppApi.delete(`${API_ENDPOINTS.program.delete}/${programId}`);
       dispatch(slice.actions.deleteProgramSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.deleteProgramFailure(error));
@@ -535,7 +535,7 @@ export function hideProgramReq(programId) {
   return async (dispatch) => {
     dispatch(slice.actions.hideProgramStart());
     try {
-      const response = await axios.put(`${API_ENDPOINTS.program.hide}/${programId}`);
+      const response = await jfAppApi.put(`${API_ENDPOINTS.program.hide}/${programId}`);
       dispatch(slice.actions.hideProgramSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.hideProgramFailure(error));
@@ -547,7 +547,7 @@ export function showProgramReq(programId) {
   return async (dispatch) => {
     dispatch(slice.actions.showProgramStart());
     try {
-      const response = await axios.put(`${API_ENDPOINTS.program.show}/${programId}`);
+      const response = await jfAppApi.put(`${API_ENDPOINTS.program.show}/${programId}`);
       dispatch(slice.actions.showProgramSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.showProgramFailure(error));
@@ -559,7 +559,7 @@ export function getArchivedPrograms(customerId) {
   return async (dispatch) => {
     dispatch(slice.actions.getArchivedProgramsStart());
     try {
-      const response = await axios.get(`${API_ENDPOINTS.program.archived}/${customerId}`);
+      const response = await jfAppApi.get(`${API_ENDPOINTS.program.archived}/${customerId}`);
       dispatch(slice.actions.getArchivedProgramsSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.getArchivedProgramsFailure(error));

@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import axios, { API_ENDPOINTS } from 'src/utils/axios';
+import { API_ENDPOINTS, jfAppApi } from 'src/utils/axios';
 
 const initialState = {
   invoices: [],
@@ -90,7 +90,7 @@ export function getInvoicesReq(customerId) {
   return async (dispatch) => {
     dispatch(slice.actions.getInvoicesStart());
     try {
-      const response = await axios.get(`${API_ENDPOINTS.invoice.all}/${customerId}`);
+      const response = await jfAppApi.get(`${API_ENDPOINTS.invoice.all}/${customerId}`);
       dispatch(slice.actions.getInvoicesSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.getInvoicesFailure(error));
@@ -105,13 +105,13 @@ export function createAndEditReq(payload, invoiceId) {
     delete invoicePayload.id;
     try {
       if (invoiceId) {
-        const response = await axios.put(
+        const response = await jfAppApi.put(
           `${API_ENDPOINTS.invoice.root}/${invoiceId}`,
           invoicePayload,
         );
         dispatch(slice.actions.createAndEditSuccess(response.data));
       } else {
-        const response = await axios.post(`${API_ENDPOINTS.invoice.root}`, invoicePayload);
+        const response = await jfAppApi.post(`${API_ENDPOINTS.invoice.root}`, invoicePayload);
         dispatch(slice.actions.createAndEditSuccess(response.data));
       }
     } catch (error) {
@@ -126,7 +126,7 @@ export function deleteInvoiceReq(invoiceId) {
   return async (dispatch) => {
     dispatch(slice.actions.deleteInvoiceStart());
     try {
-      const response = await axios.delete(`${API_ENDPOINTS.invoice.root}/${invoiceId}`);
+      const response = await jfAppApi.delete(`${API_ENDPOINTS.invoice.root}/${invoiceId}`);
       dispatch(slice.actions.deleteInvoicenSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.deleteInvoiceFailure(error));

@@ -30,11 +30,13 @@ import TextMaxLine from 'src/components/text-max-line';
 import WorkoutView from 'src/components/workout-view';
 import { useBoolean } from 'src/hooks/use-boolean';
 import useWorkout from 'src/hooks/use-workout';
+import useWorkouts from 'src/hooks/use-workouts';
 import { fDate } from 'src/utils/format-time';
 import { getModuleName } from 'src/utils/training-modules';
 
 import History from '../history/history';
 import FeedBack from './feedback';
+import CreateTrainingApp from './training-form/app/create-training-app';
 import CreateTraining from './training-form/create-training';
 // components
 // utils
@@ -45,17 +47,22 @@ export default function TrainingItem({
   handleSuccessCreate,
   handleOpenSend,
   program,
+  v2 = false,
 }) {
   const { type } = program;
   const popover = usePopover();
   const feedBack = useBoolean();
   const create = useBoolean();
+  const createApp = useBoolean();
   const history = useBoolean();
   const workoutView = useBoolean();
   const copy = useBoolean();
   const deleteTraining = useBoolean();
 
+  const isRunning = training.running || type === 1;
+
   const { onCloneTraining, onDeleteTraining } = useWorkout();
+  const { onDeleteWorkouts } = useWorkouts();
 
   const [qntCopy, setQntCopy] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -66,7 +73,7 @@ export default function TrainingItem({
 
   const statusTraining = () => {
     if (training.published) {
-      if (type === 1 && !training.finished) {
+      if (isRunning && !training.finished) {
         return (
           <Label variant="soft" color={'primary'}>
             Treino agendado
@@ -105,7 +112,7 @@ export default function TrainingItem({
   const handleCloneTraining = useCallback(async () => {
     try {
       setLoading(true);
-      await onCloneTraining(training.id, qntCopy);
+      await onCloneTraining(training.id, qntCopy, v2);
       copy.onFalse();
       setQntCopy(1);
       refreshList();
@@ -124,10 +131,18 @@ export default function TrainingItem({
     }
   }, [training.id, qntCopy]);
 
+  const deleteWorkout = useCallback(async () => {
+    if (v2) {
+      await onDeleteWorkouts(training.id);
+    } else {
+      await onDeleteTraining(training.id);
+    }
+  }, [onDeleteTraining, onDeleteWorkouts]);
+
   const handleDelectTraining = useCallback(async () => {
     try {
       setLoading(true);
-      await onDeleteTraining(training.id);
+      await deleteWorkout();
       deleteTraining.onFalse();
       refreshList();
       enqueueSnackbar('Treino deletado com sucesso!', {
@@ -150,7 +165,19 @@ export default function TrainingItem({
     setQntCopy(1);
   };
 
-  const countReview = training?.history.filter(
+  const handleOpenCreate = () => {
+    if (v2) {
+      create.onFalse();
+      createApp.onTrue();
+    } else {
+      create.onTrue();
+      createApp.onFalse();
+    }
+    feedBack.onFalse();
+    popover.onClose();
+  };
+
+  const countReview = training?.history?.filter(
     (item) => item.review === false || !item.review,
   ).length;
   return (
@@ -170,10 +197,21 @@ export default function TrainingItem({
             spacing={3}
           >
             <Stack>
-              {type === 1 && (
-                <TextMaxLine variant="subtitle1" line={1}>
-                  {getModuleName(training.name)}
-                </TextMaxLine>
+              {v2 && (
+                <Label
+                  color="warning"
+                  sx={{ textTransform: 'unset', height: 22, mb: 1, width: 30, fontSize: 15 }}
+                >
+                  V2
+                </Label>
+              )}
+
+              {isRunning && (
+                <Stack>
+                  <TextMaxLine variant="subtitle1" line={1}>
+                    {getModuleName(v2 ? training.title : training.name)}
+                  </TextMaxLine>
+                </Stack>
               )}
               <TextMaxLine variant="subtitle2" line={1}>
                 {training.subtitle}
@@ -224,13 +262,7 @@ export default function TrainingItem({
           width: 160,
         }}
       >
-        <MenuItem
-          onClick={() => {
-            create.onTrue();
-            feedBack.onFalse();
-            popover.onClose();
-          }}
-        >
+        <MenuItem onClick={handleOpenCreate}>
           <EditIcon sx={{ fontSize: '22px', width: '22px', height: '30px' }} />
           Editar
         </MenuItem>
@@ -247,7 +279,7 @@ export default function TrainingItem({
 
         <MenuItem
           onClick={(e) => {
-            handleOpenSend(training, e);
+            handleOpenSend(training, v2, e);
             popover.onClose();
           }}
         >
@@ -277,6 +309,16 @@ export default function TrainingItem({
       {create.value && (
         <CreateTraining
           open={create.value}
+          program={program}
+          trainingId={training.id}
+          onClose={handleCloseCreate}
+          handleSuccessCreate={handleSuccessCreate}
+        />
+      )}
+
+      {createApp.value && (
+        <CreateTrainingApp
+          open={createApp.value}
           program={program}
           trainingId={training.id}
           onClose={handleCloseCreate}

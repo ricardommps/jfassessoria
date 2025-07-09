@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import axios, { API_ENDPOINTS } from 'src/utils/axios';
+import { API_ENDPOINTS, jfAppApi } from 'src/utils/axios';
 const initialState = {
   metrics: [],
   metricsStatus: {
@@ -175,7 +175,7 @@ export function getListPerformanceMetrics(id, startDate, endDate, module) {
   return async (dispatch) => {
     dispatch(slice.actions.getPerformanceMetricsStart());
     try {
-      const response = await axios.get(
+      const response = await jfAppApi.get(
         `${API_ENDPOINTS.metrics.performance}/${id}/${startDate}/${endDate}/${module}`,
       );
       dispatch(slice.actions.getPerformanceMetricsSuccess(response.data));
@@ -189,7 +189,7 @@ export function getListPhysiologicalMetrics(id, startDate, endDate) {
   return async (dispatch) => {
     dispatch(slice.actions.getPerformanceMetricsStart());
     try {
-      const response = await axios.get(
+      const response = await jfAppApi.get(
         `${API_ENDPOINTS.metrics.physiological}/${id}/${startDate}/${endDate}`,
       );
       dispatch(slice.actions.getPerformanceMetricsSuccess(response.data));
@@ -203,7 +203,7 @@ export function getFindMetrics(id) {
   return async (dispatch) => {
     dispatch(slice.actions.getFindMetricsStart());
     try {
-      const response = await axios.get(`${API_ENDPOINTS.metrics.find}/${id}`);
+      const response = await jfAppApi.get(`${API_ENDPOINTS.metrics.find}/${id}`);
       dispatch(slice.actions.getFindMetricsSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.getFindMetricsFailure(error));
@@ -215,7 +215,7 @@ export function getFindMetric(id) {
   return async (dispatch) => {
     dispatch(slice.actions.getFindMetricStart());
     try {
-      const response = await axios.get(`${API_ENDPOINTS.metrics.findById}/${id}`);
+      const response = await jfAppApi.get(`${API_ENDPOINTS.metrics.findById}/${id}`);
       dispatch(slice.actions.getFindMetricSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.getFindMetricFailure(error));
@@ -228,7 +228,7 @@ export function createChartReq(payload) {
     dispatch(slice.actions.createChartStart());
     try {
       const data = { ...payload };
-      const response = await axios.post(API_ENDPOINTS.metrics.create, data);
+      const response = await jfAppApi.post(API_ENDPOINTS.metrics.create, data);
       dispatch(slice.actions.createChartSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.createChartsFailure(error));
@@ -241,7 +241,7 @@ export function updateChartReq(payload, id) {
     dispatch(slice.actions.createChartStart());
     try {
       const data = { ...payload };
-      const response = await axios.put(`${API_ENDPOINTS.metrics.create}/${id}`, data);
+      const response = await jfAppApi.put(`${API_ENDPOINTS.metrics.create}/${id}`, data);
       dispatch(slice.actions.createChartSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.createChartsFailure(error));
@@ -259,7 +259,7 @@ export function deleteMetricReq(id) {
   return async (dispatch) => {
     dispatch(slice.actions.deleteMetricStart());
     try {
-      const response = await axios.delete(`${API_ENDPOINTS.metrics}/${id}`);
+      const response = await jfAppApi.delete(`${API_ENDPOINTS.metrics}/${id}`);
       dispatch(slice.actions.deleteMetricSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.deleteMetricFailure(error));
