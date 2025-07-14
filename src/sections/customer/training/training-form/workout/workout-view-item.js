@@ -44,7 +44,7 @@ export default function WorkoutViewItem({
       const mediaFind = medias.find((m) => m.id === mediaItem);
       if (mediaFind) {
         const exerciseInfoFilter = exerciseInfo?.filter(
-          (item) => item.mediaId === mediaFind?.id,
+          (item) => item.mediaId === mediaFind?.id || item.id === mediaFind?.id,
         )[0];
         setexErciseInfoById(exerciseInfoFilter);
       }
