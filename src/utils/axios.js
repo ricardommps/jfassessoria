@@ -140,6 +140,7 @@ export const API_ENDPOINTS = {
   finished: {
     review: '/api/v2/finished/review',
     unreviewedFinished: '/api/v2/finished/unreviewedFinished',
+    volume: '/api/v2/finished/getVolumeByCustomer',
   },
   workoutLoad: '/api/v2/workout-load',
   invoice: {
