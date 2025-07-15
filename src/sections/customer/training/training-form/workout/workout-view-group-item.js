@@ -31,7 +31,9 @@ export default function WorkoutViewGroupItem({
   handleRemoveWorkout,
 }) {
   const mediaItem = medias.find((m) => m.id === media);
-  const exerciseInfoById = exerciseInfo?.filter((item) => item.id === mediaItem?.id)[0];
+  const exerciseInfoById = exerciseInfo?.filter(
+    (item) => item.mediaId === mediaItem?.id || item.id === mediaItem?.id,
+  )[0];
   const player = useBoolean();
   const info = useBoolean();
 

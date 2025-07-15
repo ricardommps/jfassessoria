@@ -379,7 +379,7 @@ export default function TrainingForm({
   const handleSaveExerciseInfo = (data) => {
     const exerciseInfo = values.exerciseInfo;
     const currentIndex = exerciseInfo.findIndex(
-      (item) => item.mediaId === data.id || item.id === data.id,
+      (item) => item.id === data.mediaId || item.mediaId === data.mediaId,
     );
     const newExerciseInfo = [...values.exerciseInfo];
 

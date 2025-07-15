@@ -234,7 +234,9 @@ export default function TrainingFormApp({
 
   const handleSaveMediasInfo = (mediaInfo, index) => {
     const existingMediasInfo = values.workoutItems?.[index]?.mediaInfo || [];
+
     const currentIndex = existingMediasInfo.findIndex((item) => item.mediaId === mediaInfo.mediaId);
+
     const newMediasInfo = [...existingMediasInfo];
     if (currentIndex === -1) {
       newMediasInfo.push(mediaInfo);
@@ -243,7 +245,6 @@ export default function TrainingFormApp({
     }
     setValue(`workoutItems[${index}].mediaInfo`, newMediasInfo);
   };
-
   const handleSaveMedias = (mediasSelected, index) => {
     const existingMedias = values.workoutItems?.[index]?.medias || [];
     const existingMediaOrder = values.workoutItems?.[index]?.mediaOrder || [];
