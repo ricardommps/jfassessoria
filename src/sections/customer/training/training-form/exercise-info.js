@@ -19,7 +19,8 @@ export default function ExerciseInfo({ open, onClose, title, id, onSave, exercis
 
   const defaultValues = useMemo(
     () => ({
-      id: id,
+      id: exerciseInfoById?.id,
+      mediaId: exerciseInfoById?.mediaId || id,
       reps: exerciseInfoById?.reps || '',
       reset: exerciseInfoById?.reset || '',
       rir: exerciseInfoById?.rir || '',
