@@ -48,7 +48,7 @@ export function getVolume(customerId, programId, startDate, endDate) {
     dispatch(slice.actions.getVolumeStart());
     try {
       const response = await jfApi.get(
-        `${JF_APP_ENDPOINTS.finished}/getVolume?programId=${programId}&startDate=${startDate}&endDate=${endDate}`,
+        `${JF_APP_ENDPOINTS.finished}/getVolumeByCustomer/${customerId}?programId=${programId}&startDate=${startDate}&endDate=${endDate}`,
       );
       dispatch(slice.actions.getVolumeSuccess(response.data));
     } catch (error) {
