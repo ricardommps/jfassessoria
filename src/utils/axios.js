@@ -38,6 +38,7 @@ jfApi.interceptors.response.use(interceptor.onFulfilled, interceptor.onRejected)
 
 export const JF_APP_ENDPOINTS = {
   workouts: '/api/v2/workouts',
+  finished: '/api/v2/finished',
 };
 
 export const API_ENDPOINTS = {
