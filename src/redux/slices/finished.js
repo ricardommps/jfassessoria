@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { API_ENDPOINTS, jfAppApi } from 'src/utils/axios';
+import { API_ENDPOINTS, JF_APP_ENDPOINTS, jfApi, jfAppApi } from 'src/utils/axios';
 
 const initialState = {
   volume: [],
@@ -47,8 +47,8 @@ export function getVolume(customerId, programId, startDate, endDate) {
   return async (dispatch) => {
     dispatch(slice.actions.getVolumeStart());
     try {
-      const response = await jfAppApi.get(
-        `${API_ENDPOINTS.finished.volume}/${customerId}?programId=${programId}&startDate=${startDate}&endDate=${endDate}`,
+      const response = await jfApi.get(
+        `${JF_APP_ENDPOINTS.finished}/getVolume?programId=${programId}&startDate=${startDate}&endDate=${endDate}`,
       );
       dispatch(slice.actions.getVolumeSuccess(response.data));
     } catch (error) {
