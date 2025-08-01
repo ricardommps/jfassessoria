@@ -55,6 +55,8 @@ export default function Training({ open, program, handleCloseTraining }) {
                 trainingsStatus={workoutsStatus}
                 refreshList={refreshList}
                 program={program}
+                workouts={workoutsNew}
+                workoutsNewStatus={workoutsNewStatus}
               />
             </Box>
           ) : (
