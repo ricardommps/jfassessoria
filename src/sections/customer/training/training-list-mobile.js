@@ -38,6 +38,8 @@ export default function TrainingListMobile({
   trainingsStatus,
   refreshList,
   program,
+  workouts,
+  workoutsNewStatus,
 }) {
   const { type, vs2 } = program;
   const volume = useBoolean();
@@ -166,7 +168,6 @@ export default function TrainingListMobile({
       initialize();
     }
   }, [program.id, initialize]);
-
   return (
     <>
       <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
@@ -193,6 +194,24 @@ export default function TrainingListMobile({
                 handleClose={handleClose}
               />
               <Stack spacing={2}>
+                {(!workoutsNewStatus.loading || !loading) &&
+                  !workoutsNewStatus.empty &&
+                  workouts && (
+                    <>
+                      {workouts?.map((training) => (
+                        <TrainingItem
+                          key={training.id}
+                          training={training}
+                          program={program}
+                          refreshList={refreshList}
+                          handleSuccessCreate={handleSuccessCreate}
+                          handleOpenSend={handleOpenSend}
+                          v2={true}
+                        />
+                      ))}
+                    </>
+                  )}
+
                 {(!trainingsStatus.loading || !loading) && !trainingsStatus.empty && trainings && (
                   <>
                     {trainings?.map((training) => (
