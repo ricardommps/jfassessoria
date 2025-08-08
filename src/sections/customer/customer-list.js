@@ -26,7 +26,6 @@ const TABLE_HEAD = [
   { id: 'name', label: 'Name' },
   { id: 'validate', label: 'Data de troca', width: 220 },
   { id: 'active', label: 'Status', width: 80 },
-  { id: 'active', label: 'Status', width: 80 },
   { id: 'hasanamneses', label: 'Anamnese', width: 30 },
   { id: '', width: 90 },
 ];
