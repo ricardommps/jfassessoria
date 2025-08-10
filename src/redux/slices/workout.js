@@ -373,8 +373,12 @@ export function reviewWorkout(customerId, id, payload) {
     dispatch(slice.actions.reviewWorkoutStart());
     try {
       const data = { ...payload };
-      const response = await jfAppApi.put(
-        `${API_ENDPOINTS.finished.review}/${customerId}/${id}`,
+      // const response = await jfAppApi.put(
+      //   `${API_ENDPOINTS.finished.review}/${customerId}/${id}`,
+      //   data,
+      // );
+      const response = await jfApi.put(
+        `${JF_APP_ENDPOINTS.finished}/review/${customerId}/${id}`,
         data,
       );
       dispatch(slice.actions.reviewWorkoutSuccess(response.data));
