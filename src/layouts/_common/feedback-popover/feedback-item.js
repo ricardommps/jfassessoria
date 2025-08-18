@@ -181,10 +181,10 @@ export default function FeedbackItem({ feedback, refreshList, handleWorkoutSelec
       )}
       <Grid container spacing={2}>
         {feedback.distanceInMeters && (
-          <Grid item xs={12} sm={6}>
+          <Grid xs={12} sm={6}>
             <Stack direction="row" alignItems="center">
               <ListItemText
-                primary={`Distância em metros`}
+                primary="Distância em metros"
                 secondary={convertMetersToKilometersFormat(feedback.distanceInMeters, true)}
                 primaryTypographyProps={{
                   typography: 'body2',
@@ -200,11 +200,12 @@ export default function FeedbackItem({ feedback, refreshList, handleWorkoutSelec
             </Stack>
           </Grid>
         )}
+
         {feedback.durationInSeconds && (
-          <Grid item xs={12} sm={6}>
+          <Grid xs={12} sm={6}>
             <Stack direction="row" alignItems="center">
               <ListItemText
-                primary={`Tempo total`}
+                primary="Tempo total"
                 secondary={convertSecondsToHourMinuteFormat(feedback.durationInSeconds)}
                 primaryTypographyProps={{
                   typography: 'body2',
@@ -220,11 +221,12 @@ export default function FeedbackItem({ feedback, refreshList, handleWorkoutSelec
             </Stack>
           </Grid>
         )}
+
         {feedback.paceInSeconds && Number(feedback.paceInSeconds) > 0 && (
-          <Grid item xs={12} sm={6}>
+          <Grid xs={12} sm={6}>
             <Stack direction="row" alignItems="center">
               <ListItemText
-                primary={`Pace médio da sessão`}
+                primary="Pace médio da sessão"
                 secondary={convertPaceToSpeed(feedback.paceInSeconds, true)}
                 primaryTypographyProps={{
                   typography: 'body2',
@@ -242,10 +244,10 @@ export default function FeedbackItem({ feedback, refreshList, handleWorkoutSelec
         )}
 
         {feedback.rpe > 0 && (
-          <Grid item xs={12} sm={6}>
+          <Grid xs={12} sm={6}>
             <Stack direction="row" alignItems="center">
               <ListItemText
-                primary={`RPE`}
+                primary="RPE"
                 secondary={feedback?.rpe}
                 primaryTypographyProps={{
                   typography: 'body2',
@@ -262,6 +264,7 @@ export default function FeedbackItem({ feedback, refreshList, handleWorkoutSelec
           </Grid>
         )}
       </Grid>
+
       {feedback?.link && (
         <>
           {feedback?.link.startsWith('http') ? (
@@ -279,9 +282,9 @@ export default function FeedbackItem({ feedback, refreshList, handleWorkoutSelec
               color="primary"
               dangerouslySetInnerHTML={{ __html: feedback?.link }}
               sx={{
-                maxWidth: 200, // Limita a largura máxima
-                wordWrap: 'break-word', // Quebra palavras longas
-                overflowWrap: 'break-word', // Quebra palavras longas, se necessário
+                maxWidth: 200,
+                wordWrap: 'break-word',
+                overflowWrap: 'break-word',
               }}
             />
           )}
@@ -290,7 +293,7 @@ export default function FeedbackItem({ feedback, refreshList, handleWorkoutSelec
 
       {feedback?.intensities?.length > 0 && (
         <Stack pt={2}>
-          <Typography variant="body2" sx={{ flexGrow: 1 }} color={'text.primary'}>
+          <Typography variant="body2" sx={{ flexGrow: 1 }} color="text.primary">
             Intensidade dos esforços
           </Typography>
           {renderIntensities()}
@@ -346,7 +349,7 @@ export default function FeedbackItem({ feedback, refreshList, handleWorkoutSelec
 
   return (
     <Stack
-      direction={'row'}
+      direction="row"
       disableRipple
       sx={{
         p: 2.5,
@@ -355,7 +358,6 @@ export default function FeedbackItem({ feedback, refreshList, handleWorkoutSelec
       }}
     >
       {renderAvatar}
-
       <Stack sx={{ flexGrow: 1 }}>
         {renderName}
         {renderFinishedItem}
