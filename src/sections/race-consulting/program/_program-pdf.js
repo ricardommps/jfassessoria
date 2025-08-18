@@ -91,7 +91,7 @@ export default function ProgramPdf({ program, notificationPdf }) {
     <Document>
       <Page size="A4" style={styles.page} renderMode="svg">
         <View style={[styles.gridContainer, styles.mb40]} fixed>
-          <Image source="/logo/logo_preta.png" style={{ width: 48, height: 48 }} />
+          <Image source="/logo/logo.png" style={{ width: 48, height: 48 }} />
           <View style={{ alignItems: 'flex-end', flexDirection: 'column' }}>
             <Text style={styles.h3}>Joana Foltz Muller</Text>
             <Text> 031842-G/SC </Text>

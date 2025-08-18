@@ -284,7 +284,7 @@ export default function ProgramPdf({ program, currentExtrapolation }) {
       <Page size="A4" renderMode="svg">
         <View style={styles.header} fixed>
           <View style={styles.headerLeft}>
-            <Image source="/logo/logo_preta.png" style={{ width: 60, height: 60 }} />
+            <Image source="/logo/logo.png" style={{ width: 60, height: 60 }} />
           </View>
           <View style={styles.headerRight}>
             <Text>Joana Foltz Muller</Text>

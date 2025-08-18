@@ -15,15 +15,16 @@ import { bgGradient } from 'src/theme/css';
 
 export default function AuthClassicLayout({ children, image }) {
   const theme = useTheme();
-
   const upMd = useResponsive('up', 'md');
 
-  const renderLogo = (
+  const renderLogoDesktop = (
     <Logo
       sx={{
         zIndex: 9,
         position: 'absolute',
-        m: { xs: 2, md: 5 },
+        m: 5,
+        width: 80,
+        height: 80,
       }}
     />
   );
@@ -35,7 +36,7 @@ export default function AuthClassicLayout({ children, image }) {
         mx: 'auto',
         maxWidth: 480,
         px: { xs: 2, md: 8 },
-        py: { xs: 15, md: 30 },
+        py: { xs: 6, md: 30 }, // menor no mobile para aproximar do logo
       }}
     >
       {children}
@@ -62,7 +63,7 @@ export default function AuthClassicLayout({ children, image }) {
         component="img"
         alt="auth"
         src={image || '/assets/illustrations/logo.png'}
-        sx={{ maxWidth: 320 }}
+        sx={{ maxWidth: 320, width: 320 }}
       />
     </Stack>
   );
@@ -70,16 +71,22 @@ export default function AuthClassicLayout({ children, image }) {
   return (
     <Stack
       component="main"
-      direction="row"
-      sx={{
-        minHeight: '100vh',
-      }}
+      direction={{ xs: 'column', md: 'row' }} // <- coluna no mobile
+      sx={{ minHeight: '100vh' }}
     >
-      {renderLogo}
+      {upMd && renderLogoDesktop}
 
       {upMd && renderSection}
 
-      {renderContent}
+      <Stack sx={{ flex: 1 }}>
+        {!upMd && (
+          <Box sx={{ display: 'flex', justifyContent: 'center', pt: 4 }}>
+            <Logo sx={{ width: 96, height: 96 }} />
+          </Box>
+        )}
+
+        {renderContent}
+      </Stack>
     </Stack>
   );
 }
