@@ -5,7 +5,7 @@ import { m } from 'framer-motion';
 import PropTypes from 'prop-types';
 
 //
-import Logo from '../logo';
+import LogoLoading from '../logo-loading';
 
 // ----------------------------------------------------------------------
 
@@ -40,7 +40,7 @@ export default function SplashScreen({ sx, ...other }) {
             repeat: Infinity,
           }}
         >
-          <Logo disabledLink sx={{ width: 64, height: 64 }} />
+          <LogoLoading disabledLink sx={{ width: 64, height: 64 }} />
         </m.div>
 
         <Box

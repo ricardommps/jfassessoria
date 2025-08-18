@@ -96,11 +96,12 @@ export default function TrainingListMobile({
     [programsIdSelected],
   );
 
-  const handleOpenSend = (training, event) => {
+  const handleOpenSend = (training, v2, event) => {
     event.stopPropagation();
     setOpenSend({
       open: true,
       training: training,
+      v2: v2,
     });
   };
 
