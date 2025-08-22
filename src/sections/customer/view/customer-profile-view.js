@@ -99,6 +99,7 @@ export default function CustomerProfileView() {
         links={[
           { name: 'Dashboard', href: paths.dashboard.root },
           { name: 'Alunos', href: paths.dashboard.customer.root },
+          { name: 'Programas', href: paths.dashboard.customer.program(id) },
           { name: customer?.name },
         ]}
         sx={{
