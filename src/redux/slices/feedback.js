@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { API_ENDPOINTS, jfAppApi } from 'src/utils/axios';
+import { JF_APP_ENDPOINTS, jfApi } from 'src/utils/axios';
 
 const initialState = {
   unreviewedFinished: [],
@@ -46,7 +46,7 @@ export function getUnreviewedFinished() {
   return async (dispatch) => {
     dispatch(slice.actions.getUnreviewedFinishedStart());
     try {
-      const response = await jfAppApi.get(API_ENDPOINTS.finished.unreviewedFinished);
+      const response = await jfApi.get(`${JF_APP_ENDPOINTS.finished}/unreviewedFinished`);
       dispatch(slice.actions.getUnreviewedFinishedSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.getUnreviewedFinishedFailure(error));

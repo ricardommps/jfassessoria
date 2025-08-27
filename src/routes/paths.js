@@ -2,6 +2,7 @@
 
 const ROOTS = {
   AUTH: '/auth',
+  PRIVACY: '/privacy',
   DASHBOARD: '/dashboard',
 };
 
@@ -16,6 +17,8 @@ export const paths = {
       register: `${ROOTS.AUTH}/jwt/register`,
     },
   },
+  privacy: '/privacy',
+  contact: '/contact-us',
   // DASHBOARD
   dashboard: {
     root: ROOTS.DASHBOARD,

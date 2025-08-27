@@ -20,6 +20,7 @@ import { useBoolean } from 'src/hooks/use-boolean';
 import useFinished from 'src/hooks/use-finished';
 import useWorkout from 'src/hooks/use-workout';
 
+import Notification from './components/notification';
 import TrainingListAction from './components/training-list-action';
 import SendTraining from './send-training/send-training';
 import CreateTrainingApp from './training-form/app/create-training-app';
@@ -41,11 +42,12 @@ export default function TrainingListMobile({
   workouts,
   workoutsNewStatus,
 }) {
-  const { type, vs2 } = program;
+  const { type, vs2, customerId } = program;
   const volume = useBoolean();
   const create = useBoolean();
   const createApp = useBoolean();
   const programInfo = useBoolean();
+  const notification = useBoolean();
   const popover = usePopover();
 
   const confirm = useBoolean();
@@ -65,6 +67,14 @@ export default function TrainingListMobile({
   const [sendLoading, setSendLoading] = useState(false);
 
   const [programsIdSelected, setProgramsIdSelected] = useState([]);
+
+  const handleOpenNotification = () => {
+    notification.onTrue();
+  };
+
+  const handleCloseNotification = () => {
+    notification.onFalse();
+  };
 
   const handleCloseCreate = () => {
     create.onFalse();
@@ -193,6 +203,7 @@ export default function TrainingListMobile({
                 programInfo={programInfo}
                 handleOpenCreateTraining={handleOpenCreateTraining}
                 handleClose={handleClose}
+                handleOpenNotification={handleOpenNotification}
               />
               <Stack spacing={2}>
                 {(!workoutsNewStatus.loading || !loading) &&
@@ -284,6 +295,13 @@ export default function TrainingListMobile({
       </Dialog>
       {programInfo.value && (
         <ProgramInfo open={programInfo.value} onClose={programInfo.onFalse} program={program} />
+      )}
+      {notification.value && (
+        <Notification
+          open={notification.value}
+          onClose={handleCloseNotification}
+          recipientId={customerId}
+        />
       )}
     </>
   );

@@ -1,20 +1,18 @@
-import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import MenuItem from '@mui/material/MenuItem';
 import Stack from '@mui/material/Stack';
 import { enqueueSnackbar } from 'notistack';
 import { useCallback, useState } from 'react';
 import DialogProvider from 'src/app/context/dialog-provider';
 import { ConfirmDialog } from 'src/components/confirm-dialog';
-import CustomPopover, { usePopover } from 'src/components/custom-popover';
-import Iconify from 'src/components/iconify/iconify';
+import { usePopover } from 'src/components/custom-popover';
 import LoadingProgress from 'src/components/loading-progress';
 import ProgramInfo from 'src/components/program-info/program-info';
 import TrainingVolume from 'src/components/training-volume/trainingVolume';
 import { useBoolean } from 'src/hooks/use-boolean';
 import useWorkout from 'src/hooks/use-workout';
 
+import Notification from './components/notification';
 import TrainingListAction from './components/training-list-action';
 import SendTraining from './send-training/send-training';
 import CreateTrainingApp from './training-form/app/create-training-app';
@@ -42,12 +40,13 @@ export default function TrainingList({
   workouts,
   workoutsNewStatus,
 }) {
-  const { type, vs2 } = program;
+  const { type, vs2, customerId } = program;
   const create = useBoolean();
   const createApp = useBoolean();
   const confirm = useBoolean();
   const programInfo = useBoolean();
   const volume = useBoolean();
+  const notification = useBoolean();
   const { onSendTraining } = useWorkout();
 
   const popover = usePopover();
@@ -66,6 +65,14 @@ export default function TrainingList({
   const [sendLoading, setSendLoading] = useState(false);
 
   const [programsIdSelected, setProgramsIdSelected] = useState([]);
+
+  const handleOpenNotification = () => {
+    notification.onTrue();
+  };
+
+  const handleCloseNotification = () => {
+    notification.onFalse();
+  };
 
   const handleCloseCreate = () => {
     create.onFalse();
@@ -173,6 +180,7 @@ export default function TrainingList({
                   programInfo={programInfo}
                   handleOpenCreateTraining={handleOpenCreateTraining}
                   handleClose={handleClose}
+                  handleOpenNotification={handleOpenNotification}
                 />
                 <Stack spacing={2}>
                   {(!workoutsNewStatus.loading || !loading) &&
@@ -267,6 +275,13 @@ export default function TrainingList({
       </DialogProvider>
       {programInfo.value && (
         <ProgramInfo open={programInfo.value} onClose={programInfo.onFalse} program={program} />
+      )}
+      {notification.value && (
+        <Notification
+          open={notification.value}
+          onClose={handleCloseNotification}
+          recipientId={customerId}
+        />
       )}
     </>
   );
