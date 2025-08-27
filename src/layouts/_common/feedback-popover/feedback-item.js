@@ -68,7 +68,10 @@ export default function FeedbackItem({ feedback, refreshList, handleWorkoutSelec
       if (intensities.value) {
         return intensities.value;
       }
-      return intensities.intensitie;
+      if (intensities.intensitie) {
+        return intensities.intensitie;
+      }
+      return intensities;
     });
     const noEmptyValues = intensitiesValues.filter((str) => str !== '');
     return (
@@ -207,6 +210,102 @@ export default function FeedbackItem({ feedback, refreshList, handleWorkoutSelec
               <ListItemText
                 primary="Tempo total"
                 secondary={convertSecondsToHourMinuteFormat(feedback.durationInSeconds)}
+                primaryTypographyProps={{
+                  typography: 'body2',
+                  color: 'text.primary',
+                  mb: 0.5,
+                }}
+                secondaryTypographyProps={{
+                  typography: 'subtitle2',
+                  color: 'text.secondary',
+                  component: 'span',
+                }}
+              />
+            </Stack>
+          </Grid>
+        )}
+
+        {feedback.warmUpDuration > 0 && (
+          <Grid xs={12} sm={12}>
+            <Stack direction="row" alignItems="center">
+              <ListItemText
+                primary="Tempo de aquec. (min)"
+                secondary={convertSecondsToHourMinuteFormat(feedback.warmUpDuration)}
+                primaryTypographyProps={{
+                  typography: 'body2',
+                  color: 'text.primary',
+                  mb: 0.5,
+                }}
+                secondaryTypographyProps={{
+                  typography: 'subtitle2',
+                  color: 'text.secondary',
+                  component: 'span',
+                }}
+              />
+            </Stack>
+          </Grid>
+        )}
+
+        {feedback.warmUpIntensities > 0 && (
+          <Grid xs={12} sm={12}>
+            <Stack direction="row" alignItems="center">
+              <ListItemText
+                primary={`Intensidade de aquecimento (${
+                  feedback.unitMeasurement === 'pace' ? 'min' : 'km/h'
+                })`}
+                secondary={
+                  feedback.unitMeasurement === 'pace'
+                    ? convertSecondsToHourMinuteFormat(feedback.warmUpIntensities)
+                    : convertMetersToKilometersFormat(feedback.warmUpIntensities)
+                }
+                primaryTypographyProps={{
+                  typography: 'body2',
+                  color: 'text.primary',
+                  mb: 0.5,
+                }}
+                secondaryTypographyProps={{
+                  typography: 'subtitle2',
+                  color: 'text.secondary',
+                  component: 'span',
+                }}
+              />
+            </Stack>
+          </Grid>
+        )}
+
+        {feedback.coolDownDuration > 0 && (
+          <Grid xs={12} sm={12}>
+            <Stack direction="row" alignItems="center">
+              <ListItemText
+                primary="Tempo de desaquecimento. (min)"
+                secondary={convertSecondsToHourMinuteFormat(feedback.coolDownDuration)}
+                primaryTypographyProps={{
+                  typography: 'body2',
+                  color: 'text.primary',
+                  mb: 0.5,
+                }}
+                secondaryTypographyProps={{
+                  typography: 'subtitle2',
+                  color: 'text.secondary',
+                  component: 'span',
+                }}
+              />
+            </Stack>
+          </Grid>
+        )}
+
+        {feedback.coolDownIntensities > 0 && (
+          <Grid xs={12} sm={12}>
+            <Stack direction="row" alignItems="center">
+              <ListItemText
+                primary={`Intensidade de desaquecimento (${
+                  feedback.unitMeasurement === 'pace' ? 'min' : 'km/h'
+                })`}
+                secondary={
+                  feedback.unitMeasurement === 'pace'
+                    ? convertSecondsToHourMinuteFormat(feedback.coolDownIntensities)
+                    : convertMetersToKilometersFormat(feedback.coolDownIntensities)
+                }
                 primaryTypographyProps={{
                   typography: 'body2',
                   color: 'text.primary',

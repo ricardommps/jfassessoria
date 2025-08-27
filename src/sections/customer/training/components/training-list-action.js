@@ -1,6 +1,7 @@
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import Grid from '@mui/material/Grid';
 import MenuItem from '@mui/material/MenuItem';
 import Stack from '@mui/material/Stack';
 import CustomPopover from 'src/components/custom-popover';
@@ -24,56 +25,59 @@ export default function TrainingListAction({
   programInfo,
   handleOpenCreateTraining,
   handleClose,
+  handleOpenNotification,
 }) {
   return (
     <>
-      <Stack
-        direction="row"
-        spacing={2}
-        sx={{
-          justifyContent: 'flex-end',
-          alignItems: 'flex-end',
-        }}
-      >
-        <Button variant="contained" sx={{ mb: 2 }} onClick={handleClose}>
-          Fechar
-        </Button>
+      <Grid container spacing={2} justifyContent="flex-end" sx={{ pb: 3 }}>
+        <Grid item xs={6} sm="auto">
+          <Button fullWidth variant="contained" onClick={handleClose}>
+            Fechar
+          </Button>
+        </Grid>
+
+        <Grid item xs={6} sm="auto">
+          <Button fullWidth variant="contained" onClick={handleOpenNotification}>
+            Notificação
+          </Button>
+        </Grid>
 
         {type === 1 && (
-          <Button variant="contained" sx={{ mb: 2 }} onClick={volume.onTrue}>
-            Volume
-          </Button>
+          <Grid item xs={6} sm="auto">
+            <Button fullWidth variant="contained" onClick={volume.onTrue}>
+              Volume
+            </Button>
+          </Grid>
         )}
-        <Button
-          size="medium"
-          color="inherit"
-          variant="contained"
-          endIcon={<Iconify icon="eva:arrow-ios-downward-fill" />}
-          sx={{ textTransform: 'capitalize', mb: 2 }}
-          onClick={popover.onOpen}
-        >
-          Novo treino
-        </Button>
-        <CustomPopover
-          open={popover.open}
-          onClose={popover.onClose}
-          arrow="top-right"
-          sx={{ width: 'auto' }}
-        >
-          {NEW_OPTIONS.map((option) => (
-            <MenuItem
-              key={option.value}
-              selected={option.value === 0}
-              onClick={() => {
-                popover.onClose();
-                handleOpenCreateTraining(option.value);
-              }}
-            >
-              {option.label}
-            </MenuItem>
-          ))}
-        </CustomPopover>
-      </Stack>
+
+        <Grid item xs={6} sm="auto">
+          <Button
+            fullWidth
+            size="medium"
+            color="inherit"
+            variant="contained"
+            endIcon={<Iconify icon="eva:arrow-ios-downward-fill" />}
+            onClick={popover.onOpen}
+          >
+            Novo treino
+          </Button>
+
+          <CustomPopover open={popover.open} onClose={popover.onClose} arrow="top-right">
+            {NEW_OPTIONS.map((option) => (
+              <MenuItem
+                key={option.value}
+                selected={option.value === 0}
+                onClick={() => {
+                  popover.onClose();
+                  handleOpenCreateTraining(option.value);
+                }}
+              >
+                {option.label}
+              </MenuItem>
+            ))}
+          </CustomPopover>
+        </Grid>
+      </Grid>
       <Box pb={2}>
         <Alert variant="outlined" severity="info" onClick={programInfo.onTrue}>
           Informações do programa

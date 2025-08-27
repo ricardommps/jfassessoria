@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { API_ENDPOINTS, jfAppApi } from 'src/utils/axios';
+import { API_ENDPOINTS, JF_APP_ENDPOINTS, jfApi, jfAppApi } from 'src/utils/axios';
 
 const initialState = {
   notifications: [],
@@ -161,6 +161,12 @@ const slice = createSlice({
       state.deleteNotificationStatus.error = null;
       state.deleteNotificationStatus.empty = false;
     },
+    clearCreateNotification(state) {
+      state.createAndEdit = null;
+      state.createAndEditStatus.loading = false;
+      state.createAndEditStatus.error = null;
+      state.createAndEditStatus.empty = false;
+    },
   },
 });
 
@@ -229,11 +235,18 @@ export function createAndEditReq(payload, notificationId) {
         );
         dispatch(slice.actions.createAndEditSuccess(response.data));
       } else {
-        const response = await jfAppApi.post(`${API_ENDPOINTS.notifications.root}`, payload);
+        const url = `${JF_APP_ENDPOINTS.notifications}/send`;
+        const response = await jfApi.post(url, payload);
         dispatch(slice.actions.createAndEditSuccess(response.data));
       }
     } catch (error) {
       dispatch(slice.actions.createAndEditFailure(error));
     }
+  };
+}
+
+export function clearCreateNotification() {
+  return async (dispatch) => {
+    dispatch(slice.actions.clearCreateNotification());
   };
 }

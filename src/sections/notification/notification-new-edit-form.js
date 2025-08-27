@@ -16,6 +16,7 @@ export default function NotificationNewEditForm({
   recipientId,
   onCancel,
   onSuccess,
+  type = 'alert',
 }) {
   const { onCreateAndEdit, createAndEdit, createAndEditStatus } = useNotifications();
   const { enqueueSnackbar } = useSnackbar();
@@ -30,6 +31,7 @@ export default function NotificationNewEditForm({
     () => ({
       title: notification?.title || '',
       content: notification?.content || '',
+      type: notification?.type || type,
     }),
     [notification],
   );
@@ -64,10 +66,13 @@ export default function NotificationNewEditForm({
   useEffect(() => {
     if (createAndEdit) {
       reset();
-      enqueueSnackbar(notification ? 'Editado com sucesso!' : 'Criado com  sucesso!', {
-        autoHideDuration: 8000,
-        variant: 'success',
-      });
+      enqueueSnackbar(
+        notification ? 'Notificação editada com sucesso!' : 'Notificação enviada com sucesso!',
+        {
+          autoHideDuration: 8000,
+          variant: 'success',
+        },
+      );
       if (onSuccess) {
         onSuccess();
       } else {
@@ -84,12 +89,14 @@ export default function NotificationNewEditForm({
           const payload = {
             title: data.title,
             content: data.content,
+            type: type,
           };
           await onCreateAndEdit(payload, notification.id);
         } else {
           const payload = {
             recipientId: recipientId,
             ...data,
+            type: type,
           };
           await onCreateAndEdit(payload);
         }

@@ -10,7 +10,7 @@ import TrainingListMobile from './training-list-mobile';
 
 export default function Training({ open, program, handleCloseTraining }) {
   const smDown = useResponsive('down', 'sm');
-  const { id, type, vs2 } = program;
+  const { id, type } = program;
 
   const { onListWorkouts, workouts, workoutsStatus } = useWorkout();
   const { onGetWorkouts, workoutsNew, workoutsNewStatus } = useWorkouts();

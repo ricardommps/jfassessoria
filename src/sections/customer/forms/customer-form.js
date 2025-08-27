@@ -3,6 +3,7 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
+import Divider from '@mui/material/Divider';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Stack from '@mui/material/Stack';
@@ -75,6 +76,7 @@ export default function CustomerForm({ customer, loading, setLoading }) {
       name: customer?.name || '',
       email: customer?.email || '',
       phone: customer?.phone || '',
+      cpf: customer?.cpf || '',
       isRunner: customer?.isRunner || false,
       isStrength: customer?.isStrength || false,
       gender: customer?.gender || 'Women',
@@ -97,14 +99,7 @@ export default function CustomerForm({ customer, loading, setLoading }) {
     resolver: yupResolver(NewCustomerSchema),
     defaultValues,
   });
-  const {
-    reset,
-    watch,
-    setValue,
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = methods;
+  const { reset, watch, setValue, control, handleSubmit } = methods;
 
   const values = watch();
 
@@ -226,6 +221,23 @@ export default function CustomerForm({ customer, loading, setLoading }) {
               />
             </Box>
           </Box>
+          <Divider sx={{ py: 1 }} />
+          <Stack sx={{ pt: 4 }}>
+            <Typography sx={{ fontSize: '1em', fontWeight: 'bold' }} pb={3}>
+              Acesso ao app
+            </Typography>
+            <Box
+              rowGap={3}
+              columnGap={2}
+              display="grid"
+              gridTemplateColumns={{
+                xs: 'repeat(1, 1fr)',
+                sm: 'repeat(2, 1fr)',
+              }}
+            >
+              <RHFTextField name="cpf" label="Cpf" />
+            </Box>
+          </Stack>
         </Card>
         <Card sx={{ p: 3, mt: 3 }}>
           <Typography sx={{ fontSize: '1.5em', fontWeight: 'bold' }} pb={3}>

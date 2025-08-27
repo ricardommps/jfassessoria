@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 import {
+  clearCreateNotification,
   createAndEditReq,
   deleteNoticifationReq,
   getNotificationReq,
@@ -57,6 +58,10 @@ export default function useNotifications() {
     [dispatch],
   );
 
+  const onClearCreateNotification = useCallback(() => {
+    dispatch(clearCreateNotification());
+  }, [dispatch]);
+
   return {
     onGetNotifications,
     onGetNotification,
@@ -73,5 +78,6 @@ export default function useNotifications() {
     onDeleteNoticifation,
     deleteNotification,
     deleteNotificationStatus,
+    onClearCreateNotification,
   };
 }
