@@ -1,36 +1,42 @@
-export function convertMetersToKilometersFormat(meters, hideKm) {
+const formatter = new Intl.NumberFormat('pt-BR', {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+});
+
+export function convertMetersToKilometersFormat(meters, hideKm = false) {
   const kilometers = meters / 100;
-
-  // Formatar quilômetros com duas casas decimais
-  const formattedKilometers = kilometers.toFixed(2).replace('.', ',');
-
-  return `${formattedKilometers} ${!hideKm ? 'km' : ''}`;
+  const formatted = formatter.format(kilometers);
+  return `${formatted}${!hideKm ? ' km/h' : ''}`;
 }
 
-export function convertSecondsToHourMinuteFormat(seconds) {
+export function convertSecondsToHourMinuteFormat(value) {
+  const seconds = Number(value);
   const hours = Math.floor(seconds / 3600);
   const remainingMinutes = Math.floor((seconds % 3600) / 60);
   const remainingSeconds = seconds % 60;
 
-  // Formatar horas, minutos e segundos com dois dígitos
-  const formattedHours = hours < 10 ? `0${hours}` : `${hours}`;
-  const formattedMinutes = remainingMinutes < 10 ? `0${remainingMinutes}` : `${remainingMinutes}`;
-  const formattedSeconds = remainingSeconds < 10 ? `0${remainingSeconds}` : `${remainingSeconds}`;
-
-  if (hours > 0) {
-    // Se houver horas, exibir no formato hh:mm:ss
-    return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
-  } else {
-    // Se não houver horas, exibir no formato mm:ss
-    return `${formattedMinutes}:${formattedSeconds}`;
-  }
+  const formattedHours = hours.toString().padStart(2, '0');
+  const formattedMinutes = remainingMinutes.toString().padStart(2, '0');
+  const formattedSeconds = remainingSeconds.toString().padStart(2, '0');
+  return hours > 0
+    ? `${formattedHours}:${formattedMinutes}:${formattedSeconds}`
+    : `${formattedMinutes}:${formattedSeconds}`;
 }
 
-export function convertPaceToSpeed(pace, hideKm) {
-  const kilometers = pace / 100;
+export function convertPaceToSpeed(meters, hideKm = false) {
+  const kilometers = meters / 100;
+  const formatted = formatter.format(kilometers);
+  return `${formatted}${!hideKm ? ' km/h' : ''}`;
+}
 
-  // Formatar quilômetros com duas casas decimais
-  const formattedKilometers = kilometers.toFixed(2).replace('.', ',');
+export function convertKilometersToMeters(kmString) {
+  if (!kmString) return 0;
+  const normalized = kmString.replace(',', '.');
+  const kmNumber = parseFloat(normalized);
 
-  return `${formattedKilometers} ${!hideKm ? '/km' : ''}`;
+  if (isNaN(kmNumber) || kmNumber < 0) {
+    return 0;
+  }
+
+  return Math.round(kmNumber * 1000);
 }
