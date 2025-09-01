@@ -116,335 +116,337 @@ export default function FeedbackItem({ feedback, refreshList, handleWorkoutSelec
     />
   );
 
-  const renderFinishedItem = (
-    <Stack
-      spacing={1}
-      sx={{
-        pl: 1,
-        p: 1.5,
-        mt: 1.5,
-        borderRadius: 1.5,
-        bgcolor: 'background.neutral',
-      }}
-    >
-      {feedback.unrealized && (
-        <Alert variant="outlined" severity="warning">
-          Treino não realizado
-        </Alert>
-      )}
-      <ListItemText
-        disableTypography
-        primary={
-          <Typography variant="subtitle2" component="div" sx={{ color: 'text.secondary' }}>
-            {feedback?.workout.running
-              ? reader(getModuleName(feedback?.workout?.name))
-              : reader(feedback?.customer?.name)}
-          </Typography>
-        }
-        secondary={
-          <>
-            <Stack
-              direction="row"
-              alignItems="center"
-              sx={{ typography: 'caption', color: 'text.secondary' }}
-              divider={
-                <Box
-                  sx={{
-                    mx: 0.5,
-                    width: 2,
-                    height: 2,
-                    borderRadius: '50%',
-                    bgcolor: 'currentColor',
-                  }}
-                />
-              }
-            >
-              <span>{feedback?.workout.subtitle}</span>
-            </Stack>
-            <Typography variant="subtitle2" color={theme.palette.info.main}>
-              {fDate(feedback.executionDay, 'EEEE, dd/MM/yyyy')}
+  const renderFinishedItem = (itemFeedback) => {
+    return (
+      <Stack
+        spacing={1}
+        sx={{
+          pl: 1,
+          p: 1.5,
+          mt: 1.5,
+          borderRadius: 1.5,
+          bgcolor: 'background.neutral',
+        }}
+      >
+        {itemFeedback.unrealized && (
+          <Alert variant="outlined" severity="warning">
+            Treino não realizado
+          </Alert>
+        )}
+        <ListItemText
+          disableTypography
+          primary={
+            <Typography variant="subtitle2" component="div" sx={{ color: 'text.secondary' }}>
+              {itemFeedback?.workout.running
+                ? reader(getModuleName(itemFeedback?.workout?.name))
+                : reader(itemFeedback?.customer?.name)}
             </Typography>
-            {feedback.comments.length === 0 ? (
-              <Typography variant="caption">O aluno não deixou comentário</Typography>
+          }
+          secondary={
+            <>
+              <Stack
+                direction="row"
+                alignItems="center"
+                sx={{ typography: 'caption', color: 'text.secondary' }}
+                divider={
+                  <Box
+                    sx={{
+                      mx: 0.5,
+                      width: 2,
+                      height: 2,
+                      borderRadius: '50%',
+                      bgcolor: 'currentColor',
+                    }}
+                  />
+                }
+              >
+                <span>{itemFeedback?.workout.subtitle}</span>
+              </Stack>
+              <Typography variant="subtitle2" color={theme.palette.info.main}>
+                {fDate(itemFeedback.executionDay, 'EEEE, dd/MM/yyyy')}
+              </Typography>
+              {itemFeedback.comments.length === 0 ? (
+                <Typography variant="caption">O aluno não deixou comentário</Typography>
+              ) : (
+                <Typography variant="caption">{`Comentário do Aluno: ${itemFeedback.comments}`}</Typography>
+              )}
+            </>
+          }
+        />
+        <Divider />
+        {itemFeedback?.workout.running && (
+          <>
+            {itemFeedback.outdoor ? (
+              <Typography variant="caption">Treino Outdoor</Typography>
             ) : (
-              <Typography variant="caption">{`Comentário do Aluno: ${feedback.comments}`}</Typography>
+              <Typography variant="caption">Treino Indoor</Typography>
             )}
           </>
-        }
-      />
-      <Divider />
-      {feedback?.workout.running && (
-        <>
-          {feedback.outdoor ? (
-            <Typography variant="caption">Treino Outdoor</Typography>
-          ) : (
-            <Typography variant="caption">Treino Indoor</Typography>
+        )}
+        <Grid container spacing={2}>
+          {itemFeedback.distanceInMeters && (
+            <Grid xs={12} sm={6}>
+              <Stack direction="row" alignItems="center">
+                <ListItemText
+                  primary="Distância em metros"
+                  secondary={convertMetersToKilometersFormat(itemFeedback.distanceInMeters, true)}
+                  primaryTypographyProps={{
+                    typography: 'body2',
+                    color: 'text.primary',
+                    mb: 0.5,
+                  }}
+                  secondaryTypographyProps={{
+                    typography: 'subtitle2',
+                    color: 'text.secondary',
+                    component: 'span',
+                  }}
+                />
+              </Stack>
+            </Grid>
           )}
-        </>
-      )}
-      <Grid container spacing={2}>
-        {feedback.distanceInMeters && (
-          <Grid xs={12} sm={6}>
-            <Stack direction="row" alignItems="center">
-              <ListItemText
-                primary="Distância em metros"
-                secondary={convertMetersToKilometersFormat(feedback.distanceInMeters, true)}
-                primaryTypographyProps={{
-                  typography: 'body2',
-                  color: 'text.primary',
-                  mb: 0.5,
-                }}
-                secondaryTypographyProps={{
-                  typography: 'subtitle2',
-                  color: 'text.secondary',
-                  component: 'span',
-                }}
-              />
-            </Stack>
-          </Grid>
-        )}
 
-        {feedback.durationInSeconds && (
-          <Grid xs={12} sm={6}>
-            <Stack direction="row" alignItems="center">
-              <ListItemText
-                primary="Tempo total"
-                secondary={convertSecondsToHourMinuteFormat(feedback.durationInSeconds)}
-                primaryTypographyProps={{
-                  typography: 'body2',
-                  color: 'text.primary',
-                  mb: 0.5,
-                }}
-                secondaryTypographyProps={{
-                  typography: 'subtitle2',
-                  color: 'text.secondary',
-                  component: 'span',
-                }}
-              />
-            </Stack>
-          </Grid>
-        )}
-
-        {feedback.warmUpDuration > 0 && (
-          <Grid xs={12} sm={12}>
-            <Stack direction="row" alignItems="center">
-              <ListItemText
-                primary="Tempo de aquec. (min)"
-                secondary={convertSecondsToHourMinuteFormat(feedback.warmUpDuration)}
-                primaryTypographyProps={{
-                  typography: 'body2',
-                  color: 'text.primary',
-                  mb: 0.5,
-                }}
-                secondaryTypographyProps={{
-                  typography: 'subtitle2',
-                  color: 'text.secondary',
-                  component: 'span',
-                }}
-              />
-            </Stack>
-          </Grid>
-        )}
-
-        {feedback.warmUpIntensities > 0 && (
-          <Grid xs={12} sm={12}>
-            <Stack direction="row" alignItems="center">
-              <ListItemText
-                primary={`Intensidade de aquecimento (${
-                  feedback.unitMeasurement === 'pace' ? 'min' : 'km/h'
-                })`}
-                secondary={
-                  feedback.unitMeasurement === 'pace'
-                    ? convertSecondsToHourMinuteFormat(feedback.warmUpIntensities)
-                    : convertMetersToKilometersFormat(feedback.warmUpIntensities)
-                }
-                primaryTypographyProps={{
-                  typography: 'body2',
-                  color: 'text.primary',
-                  mb: 0.5,
-                }}
-                secondaryTypographyProps={{
-                  typography: 'subtitle2',
-                  color: 'text.secondary',
-                  component: 'span',
-                }}
-              />
-            </Stack>
-          </Grid>
-        )}
-
-        {feedback.coolDownDuration > 0 && (
-          <Grid xs={12} sm={12}>
-            <Stack direction="row" alignItems="center">
-              <ListItemText
-                primary="Tempo de desaquecimento. (min)"
-                secondary={convertSecondsToHourMinuteFormat(feedback.coolDownDuration)}
-                primaryTypographyProps={{
-                  typography: 'body2',
-                  color: 'text.primary',
-                  mb: 0.5,
-                }}
-                secondaryTypographyProps={{
-                  typography: 'subtitle2',
-                  color: 'text.secondary',
-                  component: 'span',
-                }}
-              />
-            </Stack>
-          </Grid>
-        )}
-
-        {feedback.coolDownIntensities > 0 && (
-          <Grid xs={12} sm={12}>
-            <Stack direction="row" alignItems="center">
-              <ListItemText
-                primary={`Intensidade de desaquecimento (${
-                  feedback.unitMeasurement === 'pace' ? 'min' : 'km/h'
-                })`}
-                secondary={
-                  feedback.unitMeasurement === 'pace'
-                    ? convertSecondsToHourMinuteFormat(feedback.coolDownIntensities)
-                    : convertMetersToKilometersFormat(feedback.coolDownIntensities)
-                }
-                primaryTypographyProps={{
-                  typography: 'body2',
-                  color: 'text.primary',
-                  mb: 0.5,
-                }}
-                secondaryTypographyProps={{
-                  typography: 'subtitle2',
-                  color: 'text.secondary',
-                  component: 'span',
-                }}
-              />
-            </Stack>
-          </Grid>
-        )}
-
-        {feedback.paceInSeconds && Number(feedback.paceInSeconds) > 0 && (
-          <Grid xs={12} sm={6}>
-            <Stack direction="row" alignItems="center">
-              <ListItemText
-                primary="Pace médio da sessão"
-                secondary={convertPaceToSpeed(feedback.paceInSeconds, true)}
-                primaryTypographyProps={{
-                  typography: 'body2',
-                  color: 'text.primary',
-                  mb: 0.5,
-                }}
-                secondaryTypographyProps={{
-                  typography: 'subtitle2',
-                  color: 'text.secondary',
-                  component: 'span',
-                }}
-              />
-            </Stack>
-          </Grid>
-        )}
-
-        {feedback.rpe > 0 && (
-          <Grid xs={12} sm={6}>
-            <Stack direction="row" alignItems="center">
-              <ListItemText
-                primary="RPE"
-                secondary={feedback?.rpe}
-                primaryTypographyProps={{
-                  typography: 'body2',
-                  color: 'text.primary',
-                  mb: 0.5,
-                }}
-                secondaryTypographyProps={{
-                  typography: 'subtitle2',
-                  color: 'text.secondary',
-                  component: 'span',
-                }}
-              />
-            </Stack>
-          </Grid>
-        )}
-      </Grid>
-
-      {feedback?.link && (
-        <>
-          {feedback?.link.startsWith('http') ? (
-            <TextMaxLine
-              asLink
-              target="_blank"
-              href={feedback?.link}
-              color="primary"
-              sx={{ maxWidth: 200 }}
-            >
-              Link do treino
-            </TextMaxLine>
-          ) : (
-            <Typography
-              color="primary"
-              dangerouslySetInnerHTML={{ __html: feedback?.link }}
-              sx={{
-                maxWidth: 200,
-                wordWrap: 'break-word',
-                overflowWrap: 'break-word',
-              }}
-            />
+          {itemFeedback.durationInSeconds && (
+            <Grid xs={12} sm={6}>
+              <Stack direction="row" alignItems="center">
+                <ListItemText
+                  primary="Tempo total"
+                  secondary={convertSecondsToHourMinuteFormat(itemFeedback.durationInSeconds)}
+                  primaryTypographyProps={{
+                    typography: 'body2',
+                    color: 'text.primary',
+                    mb: 0.5,
+                  }}
+                  secondaryTypographyProps={{
+                    typography: 'subtitle2',
+                    color: 'text.secondary',
+                    component: 'span',
+                  }}
+                />
+              </Stack>
+            </Grid>
           )}
-        </>
-      )}
 
-      {feedback?.intensities?.length > 0 && (
-        <Stack pt={2}>
-          <Typography variant="body2" sx={{ flexGrow: 1 }} color="text.primary">
-            Intensidade dos esforços
-          </Typography>
-          {renderIntensities()}
-        </Stack>
-      )}
-      <Box pt={2}>
-        {feedBackForm.value ? (
-          <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
-            <Box rowGap={3} columnGap={2} display="grid" pt={2}>
-              <RHFTextField
-                name="feedback"
-                label="Comentários"
-                multiline
-                rows={6}
-                inputRef={(input) => {
-                  if (input != null) {
-                    input.focus();
+          {itemFeedback.warmUpDuration > 0 && (
+            <Grid xs={12} sm={12}>
+              <Stack direction="row" alignItems="center">
+                <ListItemText
+                  primary="Tempo de aquec. (min)"
+                  secondary={convertSecondsToHourMinuteFormat(itemFeedback.warmUpDuration)}
+                  primaryTypographyProps={{
+                    typography: 'body2',
+                    color: 'text.primary',
+                    mb: 0.5,
+                  }}
+                  secondaryTypographyProps={{
+                    typography: 'subtitle2',
+                    color: 'text.secondary',
+                    component: 'span',
+                  }}
+                />
+              </Stack>
+            </Grid>
+          )}
+
+          {itemFeedback?.warmUpIntensities > 0 && (
+            <Grid xs={12} sm={12}>
+              <Stack direction="row" alignItems="center">
+                <ListItemText
+                  primary={`Intensidade de aquecimento (${
+                    itemFeedback.unitmeasurement === 'pace' ? 'min' : 'km/h'
+                  })`}
+                  secondary={
+                    itemFeedback.unitmeasurement === 'pace'
+                      ? convertSecondsToHourMinuteFormat(itemFeedback.warmUpIntensities)
+                      : convertMetersToKilometersFormat(itemFeedback.warmUpIntensities)
                   }
+                  primaryTypographyProps={{
+                    typography: 'body2',
+                    color: 'text.primary',
+                    mb: 0.5,
+                  }}
+                  secondaryTypographyProps={{
+                    typography: 'subtitle2',
+                    color: 'text.secondary',
+                    component: 'span',
+                  }}
+                />
+              </Stack>
+            </Grid>
+          )}
+
+          {itemFeedback?.coolDownDuration > 0 && (
+            <Grid xs={12} sm={12}>
+              <Stack direction="row" alignItems="center">
+                <ListItemText
+                  primary="Tempo de desaquecimento. (min)"
+                  secondary={convertSecondsToHourMinuteFormat(itemFeedback.coolDownDuration)}
+                  primaryTypographyProps={{
+                    typography: 'body2',
+                    color: 'text.primary',
+                    mb: 0.5,
+                  }}
+                  secondaryTypographyProps={{
+                    typography: 'subtitle2',
+                    color: 'text.secondary',
+                    component: 'span',
+                  }}
+                />
+              </Stack>
+            </Grid>
+          )}
+
+          {itemFeedback?.coolDownIntensities > 0 && (
+            <Grid xs={12} sm={12}>
+              <Stack direction="row" alignItems="center">
+                <ListItemText
+                  primary={`Intensidade de desaquecimento (${
+                    itemFeedback.unitmeasurement === 'pace' ? 'min' : 'km/h'
+                  })`}
+                  secondary={
+                    itemFeedback.unitmeasurement === 'pace'
+                      ? convertSecondsToHourMinuteFormat(itemFeedback.coolDownIntensities)
+                      : convertMetersToKilometersFormat(itemFeedback.coolDownIntensities)
+                  }
+                  primaryTypographyProps={{
+                    typography: 'body2',
+                    color: 'text.primary',
+                    mb: 0.5,
+                  }}
+                  secondaryTypographyProps={{
+                    typography: 'subtitle2',
+                    color: 'text.secondary',
+                    component: 'span',
+                  }}
+                />
+              </Stack>
+            </Grid>
+          )}
+
+          {itemFeedback.paceInSeconds && Number(itemFeedback.paceInSeconds) > 0 && (
+            <Grid xs={12} sm={6}>
+              <Stack direction="row" alignItems="center">
+                <ListItemText
+                  primary="Pace médio da sessão"
+                  secondary={convertPaceToSpeed(itemFeedback.paceInSeconds, true)}
+                  primaryTypographyProps={{
+                    typography: 'body2',
+                    color: 'text.primary',
+                    mb: 0.5,
+                  }}
+                  secondaryTypographyProps={{
+                    typography: 'subtitle2',
+                    color: 'text.secondary',
+                    component: 'span',
+                  }}
+                />
+              </Stack>
+            </Grid>
+          )}
+
+          {itemFeedback.rpe > 0 && (
+            <Grid xs={12} sm={6}>
+              <Stack direction="row" alignItems="center">
+                <ListItemText
+                  primary="RPE"
+                  secondary={itemFeedback?.rpe}
+                  primaryTypographyProps={{
+                    typography: 'body2',
+                    color: 'text.primary',
+                    mb: 0.5,
+                  }}
+                  secondaryTypographyProps={{
+                    typography: 'subtitle2',
+                    color: 'text.secondary',
+                    component: 'span',
+                  }}
+                />
+              </Stack>
+            </Grid>
+          )}
+        </Grid>
+
+        {itemFeedback?.link && (
+          <>
+            {itemFeedback?.link.startsWith('http') ? (
+              <TextMaxLine
+                asLink
+                target="_blank"
+                href={itemFeedback?.link}
+                color="primary"
+                sx={{ maxWidth: 200 }}
+              >
+                Link do treino
+              </TextMaxLine>
+            ) : (
+              <Typography
+                color="primary"
+                dangerouslySetInnerHTML={{ __html: itemFeedback?.link }}
+                sx={{
+                  maxWidth: 200,
+                  wordWrap: 'break-word',
+                  overflowWrap: 'break-word',
                 }}
               />
-            </Box>
-            <Stack alignItems="flex-end" sx={{ mt: 3 }} spacing={2}>
-              <LoadingButton type="submit" variant="contained" fullWidth loading={loading}>
-                Salvar
-              </LoadingButton>
-              <Button
-                fullWidth
-                variant="outlined"
-                color="warning"
-                onClick={feedBackForm.onFalse}
-                disabled={loading}
-              >
-                Cancelar
-              </Button>
-            </Stack>
-          </FormProvider>
-        ) : (
-          <Button variant="outlined" onClick={feedBackForm.onTrue} fullWidth>
-            Dar FeedBack
-          </Button>
+            )}
+          </>
         )}
-        <Button
-          variant="outlined"
-          onClick={() => handleWorkoutSelected(feedback)}
-          fullWidth
-          sx={{ mt: 2 }}
-        >
-          Ver treino
-        </Button>
-      </Box>
-    </Stack>
-  );
+
+        {itemFeedback?.intensities?.length > 0 && (
+          <Stack pt={2}>
+            <Typography variant="body2" sx={{ flexGrow: 1 }} color="text.primary">
+              Intensidade dos esforços
+            </Typography>
+            {renderIntensities()}
+          </Stack>
+        )}
+        <Box pt={2}>
+          {feedBackForm.value ? (
+            <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
+              <Box rowGap={3} columnGap={2} display="grid" pt={2}>
+                <RHFTextField
+                  name="feedback"
+                  label="Comentários"
+                  multiline
+                  rows={6}
+                  inputRef={(input) => {
+                    if (input != null) {
+                      input.focus();
+                    }
+                  }}
+                />
+              </Box>
+              <Stack alignItems="flex-end" sx={{ mt: 3 }} spacing={2}>
+                <LoadingButton type="submit" variant="contained" fullWidth loading={loading}>
+                  Salvar
+                </LoadingButton>
+                <Button
+                  fullWidth
+                  variant="outlined"
+                  color="warning"
+                  onClick={feedBackForm.onFalse}
+                  disabled={loading}
+                >
+                  Cancelar
+                </Button>
+              </Stack>
+            </FormProvider>
+          ) : (
+            <Button variant="outlined" onClick={feedBackForm.onTrue} fullWidth>
+              Dar FeedBack
+            </Button>
+          )}
+          <Button
+            variant="outlined"
+            onClick={() => handleWorkoutSelected(feedback)}
+            fullWidth
+            sx={{ mt: 2 }}
+          >
+            Ver treino
+          </Button>
+        </Box>
+      </Stack>
+    );
+  };
 
   return (
     <Stack
@@ -459,7 +461,7 @@ export default function FeedbackItem({ feedback, refreshList, handleWorkoutSelec
       {renderAvatar}
       <Stack sx={{ flexGrow: 1 }}>
         {renderName}
-        {renderFinishedItem}
+        {renderFinishedItem(feedback)}
       </Stack>
     </Stack>
   );
