@@ -124,7 +124,7 @@ export default function TrainingListMobile({
         workoutId: openSend.training.id,
         programsId: [...programsIdSelected],
       };
-      await onSendTraining(payload);
+      await onSendTraining(payload, openSend.v2);
 
       enqueueSnackbar('Treino enviado com sucesso!', {
         autoHideDuration: 8000,
