@@ -128,8 +128,14 @@ export default function TrainingFormApp({
 
   const handleRemove = (index) => {
     remove(index);
-  };
 
+    // Atualiza os _id dos itens restantes
+    const updatedItems = values.workoutItems
+      .filter((_, i) => i !== index) // remove o item
+      .map((item, i) => ({ ...item, _id: i + 1 })); // reatribui _id sequencial
+
+    setValue('workoutItems', updatedItems);
+  };
   // Funções para controlar a abertura/fechamento do drawer específico
   const handleOpenDrawer = (index) => {
     setOpenDrawerIndex(index);
