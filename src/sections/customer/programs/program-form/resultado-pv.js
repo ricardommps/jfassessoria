@@ -87,7 +87,7 @@ export function ResultadoPv({ open, onClose, vla, paceVla, vlan, paceVlan, pace,
                 sx={{ flex: 'none' }}
               />
               <Typography variant="subtitle2" sx={{ ml: 1 }}>
-                {paceFormater(paceVla)}
+                {paceVla}
               </Typography>
             </Stack>
           </Stack>
@@ -124,7 +124,7 @@ export function ResultadoPv({ open, onClose, vla, paceVla, vlan, paceVlan, pace,
                 sx={{ flex: 'none' }}
               />
               <Typography variant="subtitle2" sx={{ ml: 1 }}>
-                {paceFormater(paceVlan)}
+                {paceVlan}
               </Typography>
             </Stack>
           </Stack>
