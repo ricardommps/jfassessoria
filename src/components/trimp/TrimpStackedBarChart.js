@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react';
 import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, XAxis, YAxis } from 'recharts';
 
 import TrainingMetrics from './TrainingMetrics';
-// Funções auxiliares para formatação de data
+
 const formatDate = (date, format) => {
   const d = new Date(date);
   if (format === 'DD/MM') {
@@ -24,8 +24,12 @@ const addDays = (date, days) => {
 const startOfWeek = (date) => {
   const d = new Date(date);
   const day = d.getDay();
-  const diff = d.getDate() - day;
-  return new Date(d.setDate(diff));
+  // Ajusta para domingo ser dia 0, segunda dia 1, etc
+  // Volta para o domingo mais próximo
+  const diff = day === 0 ? -6 : 1 - day;
+  const result = new Date(d);
+  result.setDate(d.getDate() + diff);
+  return result;
 };
 
 const endOfWeek = (date) => {
