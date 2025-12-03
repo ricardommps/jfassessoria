@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { API_ENDPOINTS, JF_APP_ENDPOINTS, jfApi, jfAppApi } from 'src/utils/axios';
+import { JF_APP_ENDPOINTS, jfApi } from 'src/utils/axios';
 
 const initialState = {
   volume: [],

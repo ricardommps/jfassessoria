@@ -1,5 +1,6 @@
 // @mui
 import AssignmentIcon from '@mui/icons-material/Assignment';
+import BarChartIcon from '@mui/icons-material/BarChart';
 import Avatar from '@mui/material/Avatar';
 import Chip from '@mui/material/Chip';
 import IconButton from '@mui/material/IconButton';
@@ -15,7 +16,7 @@ import SvgColor from 'src/components/svg-color/svg-color';
 import { useRouter } from 'src/routes/hook';
 import { paths } from 'src/routes/paths';
 
-export default function CustomerTableRow({ row, selected }) {
+export default function CustomerTableRow({ row, selected, setCustomerSelected }) {
   const popover = usePopover();
   const router = useRouter();
   const formatDate = (dateLike) => {
@@ -129,15 +130,28 @@ export default function CustomerTableRow({ row, selected }) {
         </MenuItem>
 
         {row.active && (
-          <MenuItem
-            onClick={() => {
-              popover.onClose();
-              router.push(paths.dashboard.customer.program(row.id));
-            }}
-          >
-            <AssignmentIcon sx={{ mr: 1 }} />
-            Programas
-          </MenuItem>
+          <>
+            <MenuItem
+              onClick={() => {
+                popover.onClose();
+                router.push(paths.dashboard.customer.program(row.id));
+              }}
+            >
+              <AssignmentIcon sx={{ mr: 1 }} />
+              Programas
+            </MenuItem>
+            {setCustomerSelected && (
+              <MenuItem
+                onClick={() => {
+                  popover.onClose();
+                  setCustomerSelected(row);
+                }}
+              >
+                <BarChartIcon sx={{ mr: 1 }} />
+                Trimp
+              </MenuItem>
+            )}
+          </>
         )}
       </CustomPopover>
     </>
