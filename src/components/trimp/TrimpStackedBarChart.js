@@ -5,59 +5,72 @@ import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, XAxis, YAxis
 
 import TrainingMetrics from './TrainingMetrics';
 
-const formatDate = (date, format) => {
-  const d = new Date(date);
-  if (format === 'DD/MM') {
-    const day = String(d.getDate()).padStart(2, '0');
-    const month = String(d.getMonth() + 1).padStart(2, '0');
-    return `${day}/${month}`;
-  }
-  return date;
-};
-
-const addDays = (date, days) => {
-  const result = new Date(date);
-  result.setDate(result.getDate() + days);
-  return result;
-};
-
-const startOfWeek = (date) => {
-  const d = new Date(date);
-  const day = d.getDay();
-  // Ajusta para domingo ser dia 0, segunda dia 1, etc
-  // Volta para o domingo mais próximo
-  const diff = day === 0 ? -6 : 1 - day;
-  const result = new Date(d);
-  result.setDate(d.getDate() + diff);
-  return result;
-};
-
-const endOfWeek = (date) => {
-  const start = startOfWeek(date);
-  return addDays(start, 6);
-};
-
-const isBetween = (date, start, end) => {
-  const d = new Date(date);
-  return d >= start && d <= end;
-};
-
 export default function TrimpStackedBarChart({ data }) {
   const [weekOffset, setWeekOffset] = useState(0);
 
+  // ==========================================
+  // Helpers
+  // ==========================================
+
+  const toYMD = (date) => {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  };
+
+  const addDays = (date, days) => {
+    const d = new Date(date);
+    d.setDate(d.getDate() + days);
+    return d;
+  };
+
+  // --- Semana inicia no DOMINGO ---
+  const startOfWeekSunday = (date) => {
+    const d = new Date(date);
+    const day = d.getDay(); // 0 = domingo
+    return addDays(d, -day);
+  };
+
+  const endOfWeekSunday = (date) => addDays(startOfWeekSunday(date), 6);
+
+  const isBetween = (date, start, end) => date >= start && date <= end;
+
+  const formatDate = (value) => {
+    const [y, m, d] = value.split('-');
+    return `${d}/${m}`;
+  };
+
+  // ==========================================
+  // Semana atual com offset
+  // ==========================================
+
   const today = new Date();
-  const weekStart = startOfWeek(addDays(today, weekOffset * 7));
-  const weekEnd = endOfWeek(weekStart);
+  const baseDate = addDays(today, weekOffset * 7);
+
+  const weekStart = startOfWeekSunday(baseDate);
+  const weekEnd = endOfWeekSunday(baseDate);
+
+  // ==========================================
+  // Filtrar dados da semana
+  // ==========================================
 
   const filteredData = data.filter((item) =>
     isBetween(new Date(item.executionDay), weekStart, weekEnd),
   );
 
+  // ==========================================
+  // Criar os 7 dias da semana (DOM → SÁB)
+  // ==========================================
+
   const weekDays = [];
   for (let i = 0; i < 7; i++) {
-    const day = addDays(weekStart, i);
-    weekDays.push(day.toISOString().split('T')[0]);
+    weekDays.push(toYMD(addDays(weekStart, i)));
   }
+
+  // ==========================================
+  // Agrupamento
+  // ==========================================
 
   const grouped = {};
   weekDays.forEach((day) => {
@@ -65,36 +78,46 @@ export default function TrimpStackedBarChart({ data }) {
   });
 
   filteredData.forEach((item) => {
-    const day = new Date(item.executionDay).toISOString().split('T')[0];
+    const day = item.executionDay.split(' ')[0];
     if (grouped[day]) {
-      if (item.running) {
-        grouped[day].running += item.trimp;
-      } else {
-        grouped[day].nonRunning += item.trimp;
-      }
+      if (item.running) grouped[day].running += item.trimp;
+      else grouped[day].nonRunning += item.trimp;
     }
   });
 
+  // ==========================================
+  // Dados para Recharts
+  // ==========================================
+
   const chartData = weekDays.map((day) => ({
     day,
-    label: formatDate(day, 'DD/MM'),
+    label: formatDate(day),
     Corrida: grouped[day].running,
     Força: grouped[day].nonRunning,
   }));
 
   const dailyTrimpValues = chartData.map((d) => d.Corrida + d.Força);
 
+  // ==========================================
+  // Navegação
+  // ==========================================
+
   const hasPrevWeek = useMemo(() => {
-    const prevStart = startOfWeek(addDays(weekStart, -7));
-    const prevEnd = endOfWeek(prevStart);
+    const prevStart = addDays(weekStart, -7);
+    const prevEnd = addDays(weekEnd, -7);
     return data.some((d) => isBetween(new Date(d.executionDay), prevStart, prevEnd));
-  }, [data, weekOffset]);
+  }, [weekOffset]);
 
   const hasNextWeek = useMemo(() => {
-    const nextWeekStart = startOfWeek(addDays(weekStart, 7));
-    const currentWeekStart = startOfWeek(today);
+    const nextWeekStart = addDays(weekStart, 7);
+    const currentWeekStart = startOfWeekSunday(today);
+
     return nextWeekStart <= currentWeekStart;
   }, [weekOffset]);
+
+  // ==========================================
+  // Render
+  // ==========================================
 
   return (
     <Box sx={{ p: 2 }}>
@@ -105,6 +128,7 @@ export default function TrimpStackedBarChart({ data }) {
           borderRadius: 2,
         }}
       >
+        {/* Navegação */}
         <Box
           sx={{
             display: 'flex',
@@ -116,10 +140,7 @@ export default function TrimpStackedBarChart({ data }) {
           <IconButton
             disabled={!hasPrevWeek}
             onClick={() => setWeekOffset((prev) => prev - 1)}
-            sx={{
-              color: 'white',
-              opacity: hasPrevWeek ? 1 : 0.2,
-            }}
+            sx={{ color: 'white', opacity: hasPrevWeek ? 1 : 0.2 }}
           >
             <ChevronLeft />
           </IconButton>
@@ -131,15 +152,13 @@ export default function TrimpStackedBarChart({ data }) {
           <IconButton
             disabled={!hasNextWeek}
             onClick={() => setWeekOffset((prev) => prev + 1)}
-            sx={{
-              color: 'white',
-              opacity: hasNextWeek ? 1 : 0.2,
-            }}
+            sx={{ color: 'white', opacity: hasNextWeek ? 1 : 0.2 }}
           >
             <ChevronRight />
           </IconButton>
         </Box>
 
+        {/* Gráfico */}
         <ResponsiveContainer width="100%" height={350}>
           <BarChart
             data={chartData}
@@ -147,9 +166,9 @@ export default function TrimpStackedBarChart({ data }) {
             barSize={45}
           >
             <CartesianGrid strokeDasharray="3 3" stroke="#333" />
-            <XAxis dataKey="label" stroke="#999" style={{ fontSize: '12px' }} />
-            <YAxis stroke="#999" style={{ fontSize: '12px' }} />
-            <Legend wrapperStyle={{ paddingTop: '20px' }} iconType="square" />
+            <XAxis dataKey="label" stroke="#999" style={{ fontSize: 12 }} />
+            <YAxis stroke="#999" style={{ fontSize: 12 }} />
+            <Legend wrapperStyle={{ paddingTop: 20 }} iconType="square" />
             <Bar dataKey="Força" stackId="a" fill="#f55858" />
             <Bar dataKey="Corrida" stackId="a" fill="#fc1c1c" />
           </BarChart>
