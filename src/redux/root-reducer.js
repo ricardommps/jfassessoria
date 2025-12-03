@@ -15,6 +15,7 @@ import paymentReducer from './slices/payment';
 import programReducer from './slices/program';
 import ratingReducer from './slices/rating';
 import trainingReducer from './slices/training';
+import trimpReducer from './slices/trimp';
 import userReducer from './slices/user';
 import workoutReducer from './slices/workout';
 import workoutsReducer from './slices/workouts';
@@ -61,4 +62,5 @@ export const rootReducer = combineReducers({
   invoice: invoicesReducer,
   workouts: workoutsReducer,
   finished: finishedReducer,
+  trimp: trimpReducer,
 });

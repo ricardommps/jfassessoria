@@ -21,6 +21,8 @@ import {
 import useCustomer from 'src/hooks/use-customer';
 import CustomerTableRow from './customer-table-row';
 import CustomerTableToolbar from './customer-table-toolbar';
+import { useBoolean } from 'src/hooks/use-boolean';
+import Trimp from 'src/components/trimp/Trimp';
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name' },
@@ -38,7 +40,9 @@ export default function CustomerList() {
   const table = useTable();
   const [tableData, setTableData] = useState([]);
   const [filters, setFilters] = useState(defaultFilters);
+  const [customerSelected, setCustomerSelected] = useState(null);
   const { customers } = useCustomer();
+  const trimp = useBoolean();
 
   const dataFiltered = applyFilter({
     inputData: tableData,
@@ -58,11 +62,22 @@ export default function CustomerList() {
     },
     [table],
   );
+
+  const handleCloseTrimp = () => {
+    trimp.onFalse();
+    setCustomerSelected(null);
+  };
   useEffect(() => {
     if (customers?.length) {
       setTableData(customers);
     }
   }, [customers]);
+
+  useEffect(() => {
+    if (customerSelected?.id) {
+      trimp.onTrue();
+    }
+  }, [customerSelected]);
 
   return (
     <>
@@ -100,6 +115,7 @@ export default function CustomerList() {
                   key={`customers-list-review-${row.id}`}
                   row={row}
                   selected={table.selected.includes(row.id)}
+                  setCustomerSelected={setCustomerSelected}
                 />
               ))}
 
@@ -113,6 +129,9 @@ export default function CustomerList() {
           </Table>
         </Scrollbar>
       </TableContainer>
+      {trimp.value && (
+        <Trimp open={trimp.value} onClose={handleCloseTrimp} customerId={customerSelected.id} />
+      )}
     </>
   );
 }
