@@ -332,7 +332,7 @@ export default function TrainingItem({
           history={training.history}
           title={'Histórico'}
           refreshList={refreshList}
-          workoutView={workoutView}
+          customerId={program.customerId}
         />
       )}
       {workoutView.value && (

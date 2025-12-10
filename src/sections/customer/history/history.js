@@ -15,7 +15,7 @@ const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function History({ open, onClose, history, title, refreshList, workoutView }) {
+export default function History({ open, onClose, history, title, refreshList, customerId }) {
   const smDown = useResponsive('down', 'sm');
   const sortedItems = [...history].sort((a, b) => {
     // Converter strings de data em objetos Date de forma explícita
@@ -52,6 +52,7 @@ export default function History({ open, onClose, history, title, refreshList, wo
                 smDown={smDown}
                 workoutInfo={true}
                 refreshList={refreshList}
+                customerId={customerId}
               />
             ))}
           </>
