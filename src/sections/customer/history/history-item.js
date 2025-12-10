@@ -27,7 +27,7 @@ import {
 import { fDate } from 'src/utils/format-time';
 import { getModuleName } from 'src/utils/training-modules';
 
-export default function HistoryItem({ historyItem, workoutInfo, refreshList }) {
+export default function HistoryItem({ historyItem, workoutInfo, refreshList, customerId }) {
   const { onReviewWorkout } = useWorkout();
   const smDown = useResponsive('down', 'sm');
   const theme = useTheme();
@@ -55,7 +55,7 @@ export default function HistoryItem({ historyItem, workoutInfo, refreshList }) {
     try {
       setLoading(true);
       const payload = Object.assign({}, data);
-      await onReviewWorkout(historyItem.id, payload);
+      await onReviewWorkout(customerId, historyItem.id, payload);
       feedBackForm.onFalse();
       refreshList();
     } catch (err) {
