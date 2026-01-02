@@ -12,7 +12,6 @@ export default function Training({ open, program, handleCloseTraining }) {
   const smDown = useResponsive('down', 'sm');
   const { id, type } = program;
 
-  const { onListWorkouts, workouts, workoutsStatus } = useWorkout();
   const { onGetWorkouts, workoutsNew, workoutsNewStatus } = useWorkouts();
 
   const [loading, setLoading] = useState(false);
@@ -20,7 +19,6 @@ export default function Training({ open, program, handleCloseTraining }) {
   const initialize = useCallback(async () => {
     try {
       setLoading(true);
-      await onListWorkouts(id, type);
       await onGetWorkouts(id, type);
     } catch (error) {
       console.error(error);
@@ -51,8 +49,6 @@ export default function Training({ open, program, handleCloseTraining }) {
                 open={open}
                 handleClose={handleCloseTraining}
                 loading={loading}
-                trainings={workouts}
-                trainingsStatus={workoutsStatus}
                 refreshList={refreshList}
                 program={program}
                 workouts={workoutsNew}
@@ -63,8 +59,6 @@ export default function Training({ open, program, handleCloseTraining }) {
             <Box>
               {loading && <LoadingProgress />}
               <TrainingList
-                trainings={workouts}
-                trainingsStatus={workoutsStatus}
                 workouts={workoutsNew}
                 workoutsNewStatus={workoutsNewStatus}
                 handleClose={handleCloseTraining}

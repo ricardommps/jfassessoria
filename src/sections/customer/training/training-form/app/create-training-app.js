@@ -54,7 +54,7 @@ export default function CreateTrainingApp({
             <CloseIcon />
           </IconButton>
           <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-            Criar treino novo modelo
+            Treino
           </Typography>
         </Toolbar>
       </AppBar>
