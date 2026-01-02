@@ -1,6 +1,6 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import LoadingButton from '@mui/lab/LoadingButton';
-import { Divider, IconButton, InputAdornment } from '@mui/material';
+import { Divider, IconButton, InputAdornment, TextField } from '@mui/material';
 import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
@@ -18,7 +18,7 @@ import dayjs from 'dayjs';
 import { enqueueSnackbar } from 'notistack';
 import PropTypes from 'prop-types';
 import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
-import { Controller, useFieldArray, useForm, useFormContext } from 'react-hook-form';
+import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import { useTablePvContext } from 'src/components/drawer-table-pv';
 import ExertionZone from 'src/components/exertion-zone/exertion-zone';
 import { RHFSelect, RHFTextField } from 'src/components/hook-form';
@@ -76,6 +76,8 @@ export default function TrainingFormApp({
       programId: workout?.programId || id,
       title: workout?.title || '',
       subtitle: workout?.subtitle || '',
+      distance: workout?.distance || '',
+      link: workout?.link || '',
       heating: workout?.heating || '',
       recovery: workout?.recovery || '',
       description: workout?.description || '',
@@ -467,6 +469,38 @@ export default function TrainingFormApp({
                     <Stack>
                       <RHFTextField name="subtitle" label="Subtítulo" />
                     </Stack>
+
+                    {type === 1 && (
+                      <>
+                        <Controller
+                          name="distance"
+                          control={control}
+                          render={({ field, fieldState: { error } }) => (
+                            <TextField
+                              label="Distância (km)"
+                              type="number"
+                              fullWidth
+                              inputProps={{
+                                step: 0.01,
+                                min: 0,
+                              }}
+                              value={field.value ? field.value / 1000 : ''}
+                              onChange={(e) => {
+                                const km = Number(e.target.value);
+                                field.onChange(isNaN(km) ? null : Math.round(km * 1000));
+                              }}
+                              error={!!error}
+                              helperText={error?.message}
+                              InputProps={{
+                                endAdornment: <InputAdornment position="end">km</InputAdornment>,
+                              }}
+                            />
+                          )}
+                        />
+                        <RHFTextField name="link" label="Link" />
+                      </>
+                    )}
+
                     <Stack
                       spacing={3}
                       direction={{ xs: 'column', md: 'row' }}

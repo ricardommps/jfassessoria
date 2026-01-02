@@ -38,8 +38,6 @@ import History from '../history/history';
 import FeedBack from './feedback';
 import CreateTrainingApp from './training-form/app/create-training-app';
 import CreateTraining from './training-form/create-training';
-// components
-// utils
 
 export default function TrainingItem({
   training,

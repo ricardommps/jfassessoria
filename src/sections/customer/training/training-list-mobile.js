@@ -3,6 +3,7 @@ import Alert from '@mui/material/Alert';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import Collapse from '@mui/material/Collapse';
 import Dialog from '@mui/material/Dialog';
 import IconButton from '@mui/material/IconButton';
 import Slide from '@mui/material/Slide';
@@ -13,6 +14,7 @@ import { enqueueSnackbar } from 'notistack';
 import { forwardRef, useCallback, useEffect, useState } from 'react';
 import { ConfirmDialog } from 'src/components/confirm-dialog';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
+import Iconify from 'src/components/iconify';
 import LoadingProgress from 'src/components/loading-progress';
 import ProgramInfo from 'src/components/program-info/program-info';
 import TrainingVolume from 'src/components/training-volume/trainingVolume';
@@ -35,8 +37,6 @@ export default function TrainingListMobile({
   open,
   handleClose,
   loading,
-  trainings,
-  trainingsStatus,
   refreshList,
   program,
   workouts,
@@ -65,8 +65,11 @@ export default function TrainingListMobile({
   });
 
   const [sendLoading, setSendLoading] = useState(false);
-
   const [programsIdSelected, setProgramsIdSelected] = useState([]);
+
+  // Estado para controlar os collapses
+  const [provasOpen, setProvasOpen] = useState(false);
+  const [treinosOpen, setTreinosOpen] = useState(true);
 
   const handleOpenNotification = () => {
     notification.onTrue();
@@ -154,7 +157,7 @@ export default function TrainingListMobile({
       message: 'Tem certeza que deseja enviar esse treino para outros programas?',
       training: openSend.training,
     });
-  }, []);
+  }, [openSend.training]);
 
   const handleOpenCreateTraining = (value) => {
     if (value === 1) {
@@ -179,6 +182,11 @@ export default function TrainingListMobile({
       initialize();
     }
   }, [program.id, initialize]);
+
+  // Separar provas e treinos
+  const provas = workouts?.filter((workout) => workout.title === 'COMPETICAO') || [];
+  const treinos = workouts?.filter((workout) => workout.title !== 'COMPETICAO') || [];
+
   return (
     <>
       <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
@@ -205,12 +213,47 @@ export default function TrainingListMobile({
                 handleClose={handleClose}
                 handleOpenNotification={handleOpenNotification}
               />
-              <Stack spacing={2}>
-                {(!workoutsNewStatus.loading || !loading) &&
-                  !workoutsNewStatus.empty &&
-                  workouts && (
-                    <>
-                      {workouts?.map((training) => (
+
+              {/* Seção de Provas */}
+              {provas.length > 0 && (
+                <Box
+                  sx={{
+                    mb: 3,
+                    border: '2px solid',
+                    borderColor: 'primary.main',
+                    borderRadius: 2,
+                    p: 2,
+                    backgroundColor: 'background.paper',
+                  }}
+                >
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      cursor: 'pointer',
+                      py: 1,
+                      px: 1,
+                      '&:hover': {
+                        backgroundColor: 'action.hover',
+                      },
+                      borderRadius: 1,
+                    }}
+                    onClick={() => setProvasOpen(!provasOpen)}
+                  >
+                    <IconButton size="small">
+                      <Iconify
+                        icon={
+                          provasOpen ? 'eva:arrow-ios-downward-fill' : 'eva:arrow-ios-forward-fill'
+                        }
+                      />
+                    </IconButton>
+                    <Typography variant="h6" sx={{ ml: 1, color: 'primary.main', fontWeight: 600 }}>
+                      Provas ({provas.length})
+                    </Typography>
+                  </Box>
+                  <Collapse in={provasOpen}>
+                    <Stack spacing={2} sx={{ mt: 2 }}>
+                      {provas.map((training) => (
                         <TrainingItem
                           key={training.id}
                           training={training}
@@ -221,25 +264,67 @@ export default function TrainingListMobile({
                           v2={true}
                         />
                       ))}
-                    </>
-                  )}
+                    </Stack>
+                  </Collapse>
+                </Box>
+              )}
 
-                {(!trainingsStatus.loading || !loading) && !trainingsStatus.empty && trainings && (
-                  <>
-                    {trainings?.map((training) => (
-                      <TrainingItem
-                        key={training.id}
-                        training={training}
-                        program={program}
-                        refreshList={refreshList}
-                        handleSuccessCreate={handleSuccessCreate}
-                        handleOpenSend={handleOpenSend}
+              {/* Seção de Treinos */}
+              {treinos.length > 0 && (
+                <Box
+                  sx={{
+                    mb: 2,
+                    border: '2px solid',
+                    borderColor: 'divider',
+                    borderRadius: 2,
+                    p: 2,
+                    backgroundColor: 'background.paper',
+                  }}
+                >
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      cursor: 'pointer',
+                      py: 1,
+                      px: 1,
+                      '&:hover': {
+                        backgroundColor: 'action.hover',
+                      },
+                      borderRadius: 1,
+                    }}
+                    onClick={() => setTreinosOpen(!treinosOpen)}
+                  >
+                    <IconButton size="small">
+                      <Iconify
+                        icon={
+                          treinosOpen ? 'eva:arrow-ios-downward-fill' : 'eva:arrow-ios-forward-fill'
+                        }
                       />
-                    ))}
-                  </>
-                )}
-              </Stack>
+                    </IconButton>
+                    <Typography variant="h6" sx={{ ml: 1, fontWeight: 600 }}>
+                      Treinos ({treinos.length})
+                    </Typography>
+                  </Box>
+                  <Collapse in={treinosOpen}>
+                    <Stack spacing={2} sx={{ mt: 2 }}>
+                      {treinos.map((training) => (
+                        <TrainingItem
+                          key={training.id}
+                          training={training}
+                          program={program}
+                          refreshList={refreshList}
+                          handleSuccessCreate={handleSuccessCreate}
+                          handleOpenSend={handleOpenSend}
+                          v2={true}
+                        />
+                      ))}
+                    </Stack>
+                  </Collapse>
+                </Box>
+              )}
             </Box>
+
             {create.value && (
               <CreateTraining
                 open={create.value}

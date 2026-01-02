@@ -212,7 +212,7 @@ export function getWorkouts(programId, type) {
     try {
       dispatch(slice.actions.getWorkoutsStart());
       const response = await jfApi.get(
-        `${JF_APP_ENDPOINTS.workouts}/list?programId=${programId}${
+        `${JF_APP_ENDPOINTS.workouts}/list/admin?programId=${programId}${
           type === 1 ? '&running=true' : '&running=false'
         }`,
       );
