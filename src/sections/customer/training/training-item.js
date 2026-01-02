@@ -73,14 +73,14 @@ export default function TrainingItem({
     if (training.published) {
       if (isRunning && !training.finished) {
         return (
-          <Label variant="soft" color={'primary'}>
-            Treino agendado
+          <Label variant="soft" color={'info'}>
+            {training.title === 'COMPETICAO' ? 'Prova agendada' : 'Treino agendado'}
           </Label>
         );
       }
       return (
         <Label variant="soft" color={'primary'}>
-          Treino liberado
+          {training.title === 'COMPETICAO' ? 'Prova finalizada' : 'Treino finalizado'}
         </Label>
       );
     }
@@ -195,15 +195,6 @@ export default function TrainingItem({
             spacing={3}
           >
             <Stack>
-              {v2 && (
-                <Label
-                  color="warning"
-                  sx={{ textTransform: 'unset', height: 22, mb: 1, width: 30, fontSize: 15 }}
-                >
-                  V2
-                </Label>
-              )}
-
               {isRunning && (
                 <Stack>
                   <TextMaxLine variant="subtitle1" line={1}>
