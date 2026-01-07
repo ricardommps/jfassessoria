@@ -26,6 +26,7 @@ import {
   convertPaceToSpeed,
   convertSecondsToHourMinuteFormat,
 } from 'src/utils/convertValues';
+import { extractUrl } from 'src/utils/extract-url';
 import { fDate } from 'src/utils/format-time';
 import { getModuleName } from 'src/utils/training-modules';
 
@@ -365,31 +366,31 @@ export default function FeedbackItem({ feedback, refreshList, handleWorkoutSelec
           )}
         </Grid>
 
-        {itemFeedback?.link && (
-          <>
-            {itemFeedback?.link.startsWith('http') ? (
+        {itemFeedback?.link &&
+          (() => {
+            const url = extractUrl(itemFeedback.link);
+
+            if (!url) {
+              return (
+                <Typography variant="caption" color="text.secondary">
+                  Link inválido
+                </Typography>
+              );
+            }
+
+            return (
               <TextMaxLine
                 asLink
                 target="_blank"
-                href={itemFeedback?.link}
+                rel="noopener noreferrer"
+                href={url}
                 color="primary"
                 sx={{ maxWidth: 200 }}
               >
                 Link do treino
               </TextMaxLine>
-            ) : (
-              <Typography
-                color="primary"
-                dangerouslySetInnerHTML={{ __html: itemFeedback?.link }}
-                sx={{
-                  maxWidth: 200,
-                  wordWrap: 'break-word',
-                  overflowWrap: 'break-word',
-                }}
-              />
-            )}
-          </>
-        )}
+            );
+          })()}
 
         {itemFeedback?.intensities?.length > 0 && (
           <Stack pt={2}>

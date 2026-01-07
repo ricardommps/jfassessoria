@@ -24,6 +24,7 @@ import {
   convertPaceToSpeed,
   convertSecondsToHourMinuteFormat,
 } from 'src/utils/convertValues';
+import { extractUrl } from 'src/utils/extract-url';
 import { fDate } from 'src/utils/format-time';
 import { getModuleName } from 'src/utils/training-modules';
 
@@ -222,17 +223,31 @@ export default function HistoryItem({ historyItem, workoutInfo, refreshList, cus
                 </Stack>
               )}
 
-              {historyItem?.link && (
-                <TextMaxLine
-                  asLink
-                  target="_blank"
-                  href={historyItem?.link}
-                  color="primary"
-                  sx={{ maxWidth: 200 }}
-                >
-                  Link do treino
-                </TextMaxLine>
-              )}
+              {historyItem?.link &&
+                (() => {
+                  const url = extractUrl(historyItem.link);
+
+                  if (!url) {
+                    return (
+                      <Typography variant="caption" color="text.secondary">
+                        Link inválido
+                      </Typography>
+                    );
+                  }
+
+                  return (
+                    <TextMaxLine
+                      asLink
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      href={url}
+                      color="primary"
+                      sx={{ maxWidth: 200 }}
+                    >
+                      Link do treino
+                    </TextMaxLine>
+                  );
+                })()}
 
               {historyItem?.intensities?.length > 0 && (
                 <Stack pt={2}>
