@@ -70,6 +70,21 @@ export default function TrainingItem({
   };
 
   const statusTraining = () => {
+    if (training.published === false) {
+      return (
+        <Label variant="soft" color={'error'}>
+          Treino não publicado
+        </Label>
+      );
+    }
+
+    if (!training.running) {
+      return (
+        <Label variant="soft" color={'info'}>
+          Treino Programado
+        </Label>
+      );
+    }
     if (training.published) {
       if (isRunning && !training.finished) {
         return (
@@ -81,14 +96,6 @@ export default function TrainingItem({
       return (
         <Label variant="soft" color={'primary'}>
           {training.title === 'COMPETICAO' ? 'Prova finalizada' : 'Treino finalizado'}
-        </Label>
-      );
-    }
-
-    if (training.published === false) {
-      return (
-        <Label variant="soft" color={'error'}>
-          Treino não publicado
         </Label>
       );
     }
