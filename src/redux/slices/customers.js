@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { API_ENDPOINTS, jfAppApi } from 'src/utils/axios';
+import { API_ENDPOINTS, JF_APP_ENDPOINTS, jfApi, jfAppApi } from 'src/utils/axios';
 const initialState = {
   customers: [],
   customersStatus: {
@@ -31,6 +31,12 @@ const initialState = {
   changePasswordStatus: {
     loading: false,
     error: false,
+  },
+  birthdays: [],
+  birthdaysStatus: {
+    loading: false,
+    empty: false,
+    error: null,
   },
 };
 
@@ -178,6 +184,28 @@ const slice = createSlice({
       state.customerCreate = null;
       state.updateCustomer = null;
     },
+    birthdaysStart(state) {
+      state.birthdays = [];
+      state.birthdaysStatus.loading = true;
+      state.birthdaysStatus.empty = false;
+      state.birthdaysStatus.error = null;
+    },
+    birthdaysSuccess(state, action) {
+      const birthdays = action.payload;
+      state.birthdays = birthdays;
+
+      state.birthdaysStatus.loading = false;
+      state.birthdaysStatus.empty = !birthdays.length;
+      state.birthdaysStatus.error = null;
+    },
+
+    birthdaysFailure(state, action) {
+      state.birthdays = [];
+
+      state.birthdaysStatus.loading = false;
+      state.birthdaysStatus.empty = false;
+      state.birthdaysStatus.error = action.payload;
+    },
   },
 });
 
@@ -289,6 +317,19 @@ export function changePassword(updatePassword, customerId) {
     } catch (error) {
       dispatch(slice.actions.changePasswordFailure(error));
       console.error(error);
+    }
+  };
+}
+
+export function getBirthdays() {
+  return async (dispatch) => {
+    dispatch(slice.actions.birthdaysStart());
+    try {
+      const response = await jfApi.get(JF_APP_ENDPOINTS.birthdays);
+      dispatch(slice.actions.birthdaysSuccess(response.data));
+    } catch (error) {
+      console.error(error);
+      dispatch(slice.actions.birthdaysFailure(error));
     }
   };
 }

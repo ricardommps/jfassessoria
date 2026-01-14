@@ -11,6 +11,7 @@ import { useEffect } from 'react';
 import { useSettingsContext } from 'src/components/settings';
 import useCustomer from 'src/hooks/use-customer';
 
+import Birthday from '../birthday';
 import ListUsers from '../list-users/list-users';
 import RegisteredPrograms from '../registeredPrograms/registered-programs';
 import UsersActive from '../users-active';
@@ -45,7 +46,10 @@ export default function DashboardView() {
   return (
     <Container maxWidth={settings.themeStretch ? false : 'xl'}>
       <Grid container spacing={3}>
-        <Grid xs={12} md={6}>
+        <Grid xs={12} md={4}>
+          <Birthday />
+        </Grid>
+        <Grid xs={12} md={4}>
           {customersStatus.loading ? (
             <Stack spacing={2} sx={{ px: 2, py: 2.5, position: 'relative' }}>
               <Box
@@ -75,7 +79,8 @@ export default function DashboardView() {
             />
           )}
         </Grid>
-        <Grid xs={12} md={6}>
+
+        <Grid xs={12} md={4}>
           <RegisteredPrograms />
         </Grid>
         <Grid xs={12} md={12}>

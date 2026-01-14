@@ -93,7 +93,7 @@ export default function RegisteredPrograms({ ...other }) {
           )}
         </Stack>
 
-        <Stack
+        {/* <Stack
           direction="column"
           alignItems="center"
           justifyContent="center"
@@ -138,7 +138,7 @@ export default function RegisteredPrograms({ ...other }) {
               }}
             />
           )}
-        </Stack>
+        </Stack> */}
       </Stack>
     </Card>
   );
