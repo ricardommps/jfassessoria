@@ -28,7 +28,6 @@ export default function WorkoutViewApp({
   // State to ensure component is mounted before rendering DnD
   const [isMounted, setIsMounted] = useState(false);
   const [mediasSelected, setMediasSelected] = useState([]);
-  const [mediaGroupSelected, setMediaGroupSelected] = useState([]);
 
   const handleGroupWorkout = () => {
     groupWorkout(mediasSelected, index);
@@ -64,7 +63,6 @@ export default function WorkoutViewApp({
 
     return map;
   }, [medias]);
-
   const organizedMedia = useMemo(() => {
     if (!mediaOrder || mediaOrder.length === 0 || !mediaMap.size) {
       return medias;
@@ -222,7 +220,6 @@ export default function WorkoutViewApp({
 
     return mediaOrder;
   };
-
   return (
     <Box sx={{ overflow: 'hidden' }}>
       {mediasSelected.length > 1 && (
@@ -307,7 +304,6 @@ export default function WorkoutViewApp({
                                 providedItem={providedItemDrag}
                                 setMediasSelected={setMediasSelected}
                                 mediasSelected={mediasSelected}
-                                mediaGroupSelected={mediaGroupSelected}
                                 handleSaveMediaInfo={handleSaveMediaInfo}
                                 mediaInfo={mediaInfo}
                                 handleRemoveMedia={handleRemoveMedia}

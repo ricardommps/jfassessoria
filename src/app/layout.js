@@ -18,6 +18,7 @@ import { SettingsDrawer, SettingsProvider } from 'src/components/settings';
 import SnackbarProvider from 'src/components/snackbar/snackbar-provider';
 // locales
 import { LocalizationProvider } from 'src/locales';
+import AppQueryClientProvider from 'src/providers/QueryClientProvider';
 import ReduxProvider from 'src/redux/redux-provider';
 // ----------------------------------------------------------------------
 // theme
@@ -62,35 +63,37 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={primaryFont.className}>
       <body>
-        <AuthProvider>
-          <ReduxProvider>
-            <LocalizationProvider>
-              <SettingsProvider
-                defaultSettings={{
-                  themeMode: 'dark', // 'light' | 'dark'
-                  themeDirection: 'ltr', //  'rtl' | 'ltr'
-                  themeContrast: 'default', // 'default' | 'bold'
-                  themeLayout: 'mini', // 'vertical' | 'horizontal' | 'mini'
-                  themeColorPresets: 'default', // 'default' | 'cyan' | 'purple' | 'blue' | 'orange' | 'red'
-                  themeStretch: false,
-                }}
-              >
-                <TablePvProvider>
-                  <ThemeProvider>
-                    <MotionLazy>
-                      <SnackbarProvider>
-                        <SettingsDrawer />
-                        <DrawerTablePv />
-                        <ProgressBar />
-                        <AuthConsumer>{children}</AuthConsumer>
-                      </SnackbarProvider>
-                    </MotionLazy>
-                  </ThemeProvider>
-                </TablePvProvider>
-              </SettingsProvider>
-            </LocalizationProvider>
-          </ReduxProvider>
-        </AuthProvider>
+        <AppQueryClientProvider>
+          <AuthProvider>
+            <ReduxProvider>
+              <LocalizationProvider>
+                <SettingsProvider
+                  defaultSettings={{
+                    themeMode: 'dark', // 'light' | 'dark'
+                    themeDirection: 'ltr', //  'rtl' | 'ltr'
+                    themeContrast: 'default', // 'default' | 'bold'
+                    themeLayout: 'mini', // 'vertical' | 'horizontal' | 'mini'
+                    themeColorPresets: 'default', // 'default' | 'cyan' | 'purple' | 'blue' | 'orange' | 'red'
+                    themeStretch: false,
+                  }}
+                >
+                  <TablePvProvider>
+                    <ThemeProvider>
+                      <MotionLazy>
+                        <SnackbarProvider>
+                          <SettingsDrawer />
+                          <DrawerTablePv />
+                          <ProgressBar />
+                          <AuthConsumer>{children}</AuthConsumer>
+                        </SnackbarProvider>
+                      </MotionLazy>
+                    </ThemeProvider>
+                  </TablePvProvider>
+                </SettingsProvider>
+              </LocalizationProvider>
+            </ReduxProvider>
+          </AuthProvider>
+        </AppQueryClientProvider>
       </body>
     </html>
   );

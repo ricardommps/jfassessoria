@@ -90,6 +90,7 @@ export default function TrainingFormApp({
       displayOrder: workout?.displayOrder ? Number(workout.displayOrder) : null,
       running: workout?.running || (type === 1 ? true : false),
       workoutItems: workout?.workoutItems || [],
+      musclesWorked: workout?.musclesWorked || false,
     }),
     [workout, id, type], // Adicione as dependências
   );
@@ -229,6 +230,13 @@ export default function TrainingFormApp({
   const handleChangePublished = useCallback(
     (event) => {
       setValue('published', event.target.checked);
+    },
+    [setValue],
+  );
+
+  const handleChangeMusclesWorked = useCallback(
+    (event) => {
+      setValue('musclesWorked', event.target.checked);
     },
     [setValue],
   );
@@ -468,6 +476,20 @@ export default function TrainingFormApp({
 
                     <Stack>
                       <RHFTextField name="subtitle" label="Subtítulo" />
+                    </Stack>
+
+                    <Stack alignItems="flex-start" sx={{ mb: 1 }}>
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            checked={Boolean(values.musclesWorked)}
+                            color="primary"
+                            onChange={handleChangeMusclesWorked}
+                          />
+                        }
+                        label="Exibir musculaturas trabalhada"
+                        labelPlacement="end"
+                      />
                     </Stack>
 
                     {type === 1 && (
