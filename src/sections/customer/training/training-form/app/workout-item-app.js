@@ -11,6 +11,7 @@ import TextMaxLine from 'src/components/text-max-line';
 import { useBoolean } from 'src/hooks/use-boolean';
 
 import ExerciseInfo from '../exercise-info';
+import MusclesWorked from '../muscles-worked';
 import { Accordion, AccordionDetails, AccordionSummary, ListItem, TextColum } from '../styles';
 
 export default function WorkoutItemApp({
@@ -18,7 +19,6 @@ export default function WorkoutItemApp({
   providedItem,
   setMediasSelected,
   mediasSelected,
-  mediaGroupSelected,
   handleSaveMediaInfo,
   mediaInfo,
   handleRemoveMedia,
@@ -65,11 +65,7 @@ export default function WorkoutItemApp({
           </IconButton>
         </Stack>
         <ListItem>
-          <Checkbox
-            checked={mediasSelected?.includes(media?.id)}
-            onChange={handleCheckboxChange}
-            disabled={mediaGroupSelected?.length > 0}
-          />
+          <Checkbox checked={mediasSelected?.includes(media?.id)} onChange={handleCheckboxChange} />
           <TextColum>
             <Stack direction="row" alignItems={'center'}>
               <TextMaxLine variant="subtitle1" line={3} sx={{ flex: 1 }}>
@@ -185,6 +181,9 @@ export default function WorkoutItemApp({
             </Stack>
           </AccordionDetails>
         </Accordion>
+        <Box p={2}>
+          <MusclesWorked mediaId={media.id} musclesWorked={media?.musclesWorked} />
+        </Box>
       </Box>
       {info.value && (
         <ExerciseInfo
