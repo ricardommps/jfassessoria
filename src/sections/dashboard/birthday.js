@@ -45,7 +45,6 @@ export default function Birthday({ ...other }) {
       notification.onTrue();
     }
   }, [customerSelected]);
-
   return (
     <>
       <Card
