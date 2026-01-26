@@ -10,8 +10,10 @@ import ListItemText from '@mui/material/ListItemText';
 import Stack from '@mui/material/Stack';
 import { useTheme } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
+import Grid from '@mui/material/Unstable_Grid2';
 import { useCallback, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { IntensityBadges } from 'src/components/feedback/IntensityBadges';
 import { RHFTextField } from 'src/components/hook-form';
 import FormProvider from 'src/components/hook-form/form-provider';
 import Label from 'src/components/label';
@@ -65,26 +67,11 @@ export default function HistoryItem({ historyItem, workoutInfo, refreshList, cus
   }, []);
 
   const renderIntensities = () => {
-    const intensities = historyItem.intensities.map((intensities) => JSON.parse(intensities));
-    const intensitiesValues = intensities.map((intensities) => {
-      if (intensities.value) {
-        return intensities.value;
-      }
-      return intensities.intensitie;
-    });
-    const noEmptyValues = intensitiesValues.filter((str) => str !== '');
     return (
-      <Box display="grid" gap={2} gridTemplateColumns="repeat(2, 1fr)" width={'50px'} pt={3}>
-        {noEmptyValues.map((item, index) => (
-          <Badge badgeContent={index + 1} color="info" key={`intensities-badge-key-${index}`}>
-            <Chip
-              label={`${item} ${historyItem.unitmeasurement === 'pace' ? 'min' : 'km/h'}`}
-              key={`intensities-key-${index}`}
-              sx={{ width: '100px' }}
-            />
-          </Badge>
-        ))}
-      </Box>
+      <IntensityBadges
+        intensities={historyItem.intensities}
+        unitMeasurement={historyItem.unitmeasurement}
+      />
     );
   };
 
@@ -147,108 +134,207 @@ export default function HistoryItem({ historyItem, workoutInfo, refreshList, cus
                 )}
               </>
             )}
-            <Stack direction={smDown ? 'column' : 'row'} spacing={smDown ? 1 : 5}>
+            <Grid container spacing={2}>
               {historyItem.distanceInMeters && (
-                <Stack direction="row" alignItems="center">
-                  <ListItemText
-                    primary={`Distância em metros`}
-                    secondary={convertMetersToKilometersFormat(historyItem.distanceInMeters, true)}
-                    primaryTypographyProps={{
-                      typography: 'body2',
-                      color: 'text.primary',
-                      mb: 0.5,
-                    }}
-                    secondaryTypographyProps={{
-                      typography: 'subtitle2',
-                      color: 'text.secondary',
-                      component: 'span',
-                    }}
-                  />
-                </Stack>
+                <Grid xs={12} sm={6}>
+                  <Stack direction="row" alignItems="center">
+                    <ListItemText
+                      primary="Distância em metros"
+                      secondary={convertMetersToKilometersFormat(
+                        historyItem.distanceInMeters,
+                        true,
+                      )}
+                      primaryTypographyProps={{
+                        typography: 'body2',
+                        color: 'text.primary',
+                        mb: 0.5,
+                      }}
+                      secondaryTypographyProps={{
+                        typography: 'subtitle2',
+                        color: 'text.secondary',
+                        component: 'span',
+                      }}
+                    />
+                  </Stack>
+                </Grid>
               )}
               {historyItem.durationInSeconds && (
-                <Stack direction="row" alignItems="center">
-                  <ListItemText
-                    primary={`Tempo total`}
-                    secondary={convertSecondsToHourMinuteFormat(historyItem.durationInSeconds)}
-                    primaryTypographyProps={{
-                      typography: 'body2',
-                      color: 'text.primary',
-                      mb: 0.5,
-                    }}
-                    secondaryTypographyProps={{
-                      typography: 'subtitle2',
-                      color: 'text.secondary',
-                      component: 'span',
-                    }}
-                  />
-                </Stack>
+                <Grid xs={12} sm={6}>
+                  <Stack direction="row" alignItems="center">
+                    <ListItemText
+                      primary="Tempo total"
+                      secondary={convertSecondsToHourMinuteFormat(historyItem.durationInSeconds)}
+                      primaryTypographyProps={{
+                        typography: 'body2',
+                        color: 'text.primary',
+                        mb: 0.5,
+                      }}
+                      secondaryTypographyProps={{
+                        typography: 'subtitle2',
+                        color: 'text.secondary',
+                        component: 'span',
+                      }}
+                    />
+                  </Stack>
+                </Grid>
+              )}
+              {historyItem.warmUpDuration > 0 && (
+                <Grid xs={12} sm={6}>
+                  <Stack direction="row" alignItems="center">
+                    <ListItemText
+                      primary="Tempo de aquec. (min)"
+                      secondary={convertSecondsToHourMinuteFormat(historyItem.warmUpDuration)}
+                      primaryTypographyProps={{
+                        typography: 'body2',
+                        color: 'text.primary',
+                        mb: 0.5,
+                      }}
+                      secondaryTypographyProps={{
+                        typography: 'subtitle2',
+                        color: 'text.secondary',
+                        component: 'span',
+                      }}
+                    />
+                  </Stack>
+                </Grid>
+              )}
+              {historyItem?.warmUpIntensities > 0 && (
+                <Grid xs={12} sm={6}>
+                  <Stack direction="row" alignItems="center">
+                    <ListItemText
+                      primary={`Intensidade de aquecimento (${
+                        historyItem.unitmeasurement === 'pace' ? 'min' : 'km/h'
+                      })`}
+                      secondary={
+                        historyItem.unitmeasurement === 'pace'
+                          ? convertSecondsToHourMinuteFormat(historyItem.warmUpIntensities)
+                          : convertMetersToKilometersFormat(historyItem.warmUpIntensities)
+                      }
+                      primaryTypographyProps={{
+                        typography: 'body2',
+                        color: 'text.primary',
+                        mb: 0.5,
+                      }}
+                      secondaryTypographyProps={{
+                        typography: 'subtitle2',
+                        color: 'text.secondary',
+                        component: 'span',
+                      }}
+                    />
+                  </Stack>
+                </Grid>
+              )}
+              {historyItem?.coolDownDuration > 0 && (
+                <Grid xs={12} sm={6}>
+                  <Stack direction="row" alignItems="center">
+                    <ListItemText
+                      primary="Tempo de desaquecimento. (min)"
+                      secondary={convertSecondsToHourMinuteFormat(historyItem.coolDownDuration)}
+                      primaryTypographyProps={{
+                        typography: 'body2',
+                        color: 'text.primary',
+                        mb: 0.5,
+                      }}
+                      secondaryTypographyProps={{
+                        typography: 'subtitle2',
+                        color: 'text.secondary',
+                        component: 'span',
+                      }}
+                    />
+                  </Stack>
+                </Grid>
+              )}
+              {historyItem?.coolDownDuration > 0 && (
+                <Grid xs={12} sm={6}>
+                  <Stack direction="row" alignItems="center">
+                    <ListItemText
+                      primary="Tempo de desaquecimento. (min)"
+                      secondary={convertSecondsToHourMinuteFormat(historyItem.coolDownDuration)}
+                      primaryTypographyProps={{
+                        typography: 'body2',
+                        color: 'text.primary',
+                        mb: 0.5,
+                      }}
+                      secondaryTypographyProps={{
+                        typography: 'subtitle2',
+                        color: 'text.secondary',
+                        component: 'span',
+                      }}
+                    />
+                  </Stack>
+                </Grid>
+              )}
+
+              {historyItem?.coolDownIntensities > 0 && (
+                <Grid xs={12} sm={6}>
+                  <Stack direction="row" alignItems="center">
+                    <ListItemText
+                      primary={`Intensidade de desaquecimento (${
+                        historyItem.unitmeasurement === 'pace' ? 'min' : 'km/h'
+                      })`}
+                      secondary={
+                        historyItem.unitmeasurement === 'pace'
+                          ? convertSecondsToHourMinuteFormat(historyItem.coolDownIntensities)
+                          : convertMetersToKilometersFormat(historyItem.coolDownIntensities)
+                      }
+                      primaryTypographyProps={{
+                        typography: 'body2',
+                        color: 'text.primary',
+                        mb: 0.5,
+                      }}
+                      secondaryTypographyProps={{
+                        typography: 'subtitle2',
+                        color: 'text.secondary',
+                        component: 'span',
+                      }}
+                    />
+                  </Stack>
+                </Grid>
               )}
 
               {historyItem.paceInSeconds && Number(historyItem.paceInSeconds) > 0 && (
-                <Stack direction="row" alignItems="center">
-                  <ListItemText
-                    primary={`Pace médio da sessão`}
-                    secondary={convertPaceToSpeed(historyItem.paceInSeconds, true)}
-                    primaryTypographyProps={{
-                      typography: 'body2',
-                      color: 'text.primary',
-                      mb: 0.5,
-                    }}
-                    secondaryTypographyProps={{
-                      typography: 'subtitle2',
-                      color: 'text.secondary',
-                      component: 'span',
-                    }}
-                  />
-                </Stack>
+                <Grid xs={12} sm={6}>
+                  <Stack direction="row" alignItems="center">
+                    <ListItemText
+                      primary="Pace médio da sessão"
+                      secondary={convertPaceToSpeed(historyItem.paceInSeconds, true)}
+                      primaryTypographyProps={{
+                        typography: 'body2',
+                        color: 'text.primary',
+                        mb: 0.5,
+                      }}
+                      secondaryTypographyProps={{
+                        typography: 'subtitle2',
+                        color: 'text.secondary',
+                        component: 'span',
+                      }}
+                    />
+                  </Stack>
+                </Grid>
               )}
 
               {historyItem.rpe > 0 && (
-                <Stack direction="row" alignItems="center">
-                  <ListItemText
-                    primary={`RPE`}
-                    secondary={historyItem?.rpe}
-                    primaryTypographyProps={{
-                      typography: 'body2',
-                      color: 'text.primary',
-                      mb: 0.5,
-                    }}
-                    secondaryTypographyProps={{
-                      typography: 'subtitle2',
-                      color: 'text.secondary',
-                      component: 'span',
-                    }}
-                  />
-                </Stack>
+                <Grid xs={12} sm={6}>
+                  <Stack direction="row" alignItems="center">
+                    <ListItemText
+                      primary="RPE"
+                      secondary={historyItem?.rpe}
+                      primaryTypographyProps={{
+                        typography: 'body2',
+                        color: 'text.primary',
+                        mb: 0.5,
+                      }}
+                      secondaryTypographyProps={{
+                        typography: 'subtitle2',
+                        color: 'text.secondary',
+                        component: 'span',
+                      }}
+                    />
+                  </Stack>
+                </Grid>
               )}
-
-              {historyItem?.link &&
-                (() => {
-                  const url = extractUrl(historyItem.link);
-
-                  if (!url) {
-                    return (
-                      <Typography variant="caption" color="text.secondary">
-                        Link inválido
-                      </Typography>
-                    );
-                  }
-
-                  return (
-                    <TextMaxLine
-                      asLink
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      href={url}
-                      color="primary"
-                      sx={{ maxWidth: 200 }}
-                    >
-                      Link do treino
-                    </TextMaxLine>
-                  );
-                })()}
-
+            </Grid>
+            <Stack direction={'column'} spacing={smDown ? 1 : 5}>
               {historyItem?.intensities?.length > 0 && (
                 <Stack pt={2}>
                   <Typography variant="body2" sx={{ flexGrow: 1 }} color={'text.primary'}>

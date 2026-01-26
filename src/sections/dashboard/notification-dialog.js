@@ -2,6 +2,7 @@ import { Box, Typography } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import Slide from '@mui/material/Slide';
 import { forwardRef } from 'react';
+import useNotifications from 'src/hooks/use-notifications';
 import { useResponsive } from 'src/hooks/use-responsive';
 
 import NotificationForm from '../customer/forms/notification-form';
@@ -12,8 +13,10 @@ const Transition = forwardRef(function Transition(props, ref) {
 
 export default function NotificationDialog({ open, onClose, customerId }) {
   const smDown = useResponsive('down', 'sm');
+  const { onClearCreateNotification } = useNotifications();
 
   const handleSuccess = () => {
+    onClearCreateNotification();
     onClose();
   };
 
