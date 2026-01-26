@@ -334,6 +334,31 @@ export default function HistoryItem({ historyItem, workoutInfo, refreshList, cus
                 </Grid>
               )}
             </Grid>
+            {historyItem?.link &&
+              (() => {
+                const url = extractUrl(historyItem.link);
+
+                if (!url) {
+                  return (
+                    <Typography variant="caption" color="text.secondary">
+                      Link inválido
+                    </Typography>
+                  );
+                }
+
+                return (
+                  <TextMaxLine
+                    asLink
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href={url}
+                    color="primary"
+                    sx={{ maxWidth: 200 }}
+                  >
+                    Link do treino
+                  </TextMaxLine>
+                );
+              })()}
             <Stack direction={'column'} spacing={smDown ? 1 : 5}>
               {historyItem?.intensities?.length > 0 && (
                 <Stack pt={2}>
