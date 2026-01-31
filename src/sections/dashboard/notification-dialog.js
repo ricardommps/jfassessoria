@@ -23,7 +23,7 @@ export default function NotificationDialog({ open, onClose, customerId }) {
   const NotificationContent = () => (
     <Box p={3}>
       <Typography variant="h4" sx={{ flex: 1 }}>
-        Enviar Parabéns
+        Enviar mensagem
       </Typography>
       <NotificationForm id={customerId} onCancel={onClose} onSuccess={handleSuccess} />
     </Box>

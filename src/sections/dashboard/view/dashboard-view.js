@@ -13,6 +13,7 @@ import useCustomer from 'src/hooks/use-customer';
 
 import Birthday from '../birthday';
 import ListUsers from '../list-users/list-users';
+import OverdueInvoices from '../OverdueInvoices';
 import RegisteredPrograms from '../registeredPrograms/registered-programs';
 import UsersActive from '../users-active';
 
@@ -81,7 +82,7 @@ export default function DashboardView() {
         </Grid>
 
         <Grid xs={12} md={4}>
-          <RegisteredPrograms />
+          <OverdueInvoices />
         </Grid>
         <Grid xs={12} md={12}>
           <ListUsers title="Alunos" tableData={customers} tableLabels={CUSTOMER_TABLE_HEAD} />
