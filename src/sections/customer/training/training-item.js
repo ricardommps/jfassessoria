@@ -7,6 +7,7 @@ import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import EventIcon from '@mui/icons-material/Event';
 import NearMeIcon from '@mui/icons-material/NearMe';
 import LoadingButton from '@mui/lab/LoadingButton';
 import Alert from '@mui/material/Alert';
@@ -14,6 +15,7 @@ import Badge from '@mui/material/Badge';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
+import Chip from '@mui/material/Chip';
 import IconButton from '@mui/material/IconButton';
 import MenuItem from '@mui/material/MenuItem';
 import Stack from '@mui/material/Stack';
@@ -46,6 +48,7 @@ export default function TrainingItem({
   handleOpenSend,
   program,
   v2 = false,
+  isCompetition = false,
 }) {
   const { type } = program;
   const popover = usePopover();
@@ -215,9 +218,30 @@ export default function TrainingItem({
             </Stack>
 
             {training.datePublished && (
-              <Box component="span" sx={{ typography: 'caption' }}>
-                {fDate(training.datePublished, 'dd/MM/yyyy')}
-              </Box>
+              <>
+                {isCompetition ? (
+                  <Chip
+                    icon={<EventIcon />}
+                    label={fDate(training.datePublished, 'dd/MM/yyyy')}
+                    color="primary"
+                    variant="filled"
+                    size="small"
+                    sx={{
+                      fontWeight: 600,
+                      fontSize: '0.875rem',
+                      height: 32,
+                      boxShadow: (theme) => `0 0 0 3px ${theme.palette.primary.main}1A`,
+                      '& .MuiChip-icon': {
+                        fontSize: '1.25rem',
+                      },
+                    }}
+                  />
+                ) : (
+                  <Box component="span" sx={{ typography: 'caption' }}>
+                    {fDate(training.datePublished, 'dd/MM/yyyy')}
+                  </Box>
+                )}
+              </>
             )}
           </Stack>
 
