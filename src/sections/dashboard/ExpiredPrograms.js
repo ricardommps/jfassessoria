@@ -1,7 +1,8 @@
 import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
+import DirectionsRunOutlinedIcon from '@mui/icons-material/DirectionsRunOutlined';
 import ErrorOutlineOutlinedIcon from '@mui/icons-material/ErrorOutlineOutlined';
+import FitnessCenterOutlinedIcon from '@mui/icons-material/FitnessCenterOutlined';
 import MessageOutlinedIcon from '@mui/icons-material/MessageOutlined';
-import ReceiptLongOutlinedIcon from '@mui/icons-material/ReceiptLongOutlined';
 import {
   Avatar,
   Box,
@@ -16,20 +17,20 @@ import {
 } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useBoolean } from 'src/hooks/use-boolean';
-import { useCustomerOverdue } from 'src/hooks/use-customers-overdue';
+import { useExpiredPrograms } from 'src/hooks/useExpiredPrograms';
 import { fDate } from 'src/utils/format-time';
 
 import NotificationDialog from './notification-dialog';
 
-export default function OverdueInvoices({ ...other }) {
-  const { data, isLoading, isError } = useCustomerOverdue();
-  const customers = data?.customers ?? [];
-  const totalCustomers = data?.totalCustomers ?? 0;
+export default function ExpiringPrograms({ ...other }) {
+  const { data, isLoading, isError } = useExpiredPrograms();
+  const customers = data ?? [];
+  const totalCustomers = customers.length;
 
   const [customerSelected, setCustomerSelected] = useState(null);
   const notification = useBoolean();
 
-  const hasOverdueCustomers = customers.length > 0;
+  const hasExpiringPrograms = customers.length > 0;
 
   const handleCloseNotification = () => {
     setCustomerSelected(null);
@@ -38,14 +39,26 @@ export default function OverdueInvoices({ ...other }) {
 
   const getDaysLabel = (days) => {
     if (days === 0) return 'Vence hoje';
-    if (days === 1) return '1 dia';
-    return `${days} dias`;
+    if (days === 1) return '1 dia restante';
+    return `${days} dias restantes`;
   };
 
   const getSeverityColor = (days) => {
-    if (days <= 7) return 'warning';
-    if (days <= 15) return 'error';
-    return 'error';
+    if (days <= 2) return 'error';
+    if (days <= 4) return 'warning';
+    return 'info';
+  };
+
+  const getProgramIcon = (type) => {
+    return type === 'corrida' ? (
+      <DirectionsRunOutlinedIcon fontSize="small" />
+    ) : (
+      <FitnessCenterOutlinedIcon fontSize="small" />
+    );
+  };
+
+  const getProgramLabel = (type) => {
+    return type === 'corrida' ? 'Corrida' : 'Força';
   };
 
   useEffect(() => {
@@ -65,11 +78,11 @@ export default function OverdueInvoices({ ...other }) {
         }}
       >
         <CardHeader
-          title="FATURAS EM ATRASO"
+          title="PROGRAMAS A VENCER"
           subheader={
             totalCustomers > 0
-              ? `${totalCustomers} ${totalCustomers === 1 ? 'aluno' : 'alunos'}`
-              : ''
+              ? `${totalCustomers} ${totalCustomers === 1 ? 'aluno' : 'alunos'} • Próximos 7 dias`
+              : 'Próximos 7 dias'
           }
           sx={{ mb: 1 }}
         />
@@ -100,7 +113,7 @@ export default function OverdueInvoices({ ...other }) {
             >
               <ErrorOutlineOutlinedIcon color="error" fontSize="large" />
               <Typography variant="subtitle2" color="error">
-                Erro ao carregar faturas atrasadas
+                Erro ao carregar programas
               </Typography>
               <Typography variant="caption" color="text.secondary">
                 Tente novamente mais tarde
@@ -109,7 +122,7 @@ export default function OverdueInvoices({ ...other }) {
           )}
 
           {/* EMPTY STATE */}
-          {!isLoading && !isError && !hasOverdueCustomers && (
+          {!isLoading && !isError && !hasExpiringPrograms && (
             <Stack
               spacing={1}
               alignItems="center"
@@ -120,72 +133,87 @@ export default function OverdueInvoices({ ...other }) {
                 color: 'text.secondary',
               }}
             >
-              <ReceiptLongOutlinedIcon fontSize="large" />
-              <Typography variant="subtitle2">Nenhuma fatura em atraso</Typography>
+              <DirectionsRunOutlinedIcon fontSize="large" />
+              <Typography variant="subtitle2">Nenhum programa próximo ao vencimento</Typography>
               <Typography variant="caption">
-                Todos os alunos estão em dia com suas mensalidades.
+                Não há programas que vencerão nos próximos 7 dias.
               </Typography>
             </Stack>
           )}
 
           {/* CONTENT */}
-          {!isLoading && !isError && hasOverdueCustomers && (
+          {!isLoading && !isError && hasExpiringPrograms && (
             <Stack spacing={1.5}>
               {customers.map((customer) => (
                 <Stack
                   key={customer.customerId}
                   direction="row"
-                  alignItems="center"
+                  alignItems="flex-start"
                   spacing={2}
                   sx={{
                     p: 1.5,
                     borderRadius: 1,
-                    bgcolor: (theme) =>
-                      customer.daysOverdue > 15
+                    bgcolor: (theme) => {
+                      const minDays = Math.min(
+                        ...customer.programs.map((p) => p.daysUntilExpiration),
+                      );
+                      return minDays <= 2
                         ? `${theme.palette.error.main}14`
-                        : customer.daysOverdue > 7
-                        ? `${theme.palette.error.main}0A`
-                        : `${theme.palette.warning.main}14`,
-                    border: (theme) =>
-                      `1px solid ${
-                        customer.daysOverdue > 15
+                        : minDays <= 4
+                        ? `${theme.palette.warning.main}14`
+                        : `${theme.palette.info.main}14`;
+                    },
+                    border: (theme) => {
+                      const minDays = Math.min(
+                        ...customer.programs.map((p) => p.daysUntilExpiration),
+                      );
+                      return `1px solid ${
+                        minDays <= 2
                           ? theme.palette.error.main
-                          : customer.daysOverdue > 7
-                          ? theme.palette.error.light
-                          : theme.palette.warning.main
-                      }33`,
+                          : minDays <= 4
+                          ? theme.palette.warning.main
+                          : theme.palette.info.main
+                      }33`;
+                    },
                   }}
                 >
                   <Avatar src={customer.avatar || undefined} />
 
                   <Box flexGrow={1}>
-                    <Typography variant="subtitle2" sx={{ color: 'text.primary', mb: 0.5 }}>
-                      {customer.name}
+                    <Typography variant="subtitle2" sx={{ color: 'text.primary', mb: 1 }}>
+                      {customer.customerName}
                     </Typography>
 
-                    <Stack direction="row" alignItems="center" spacing={1} flexWrap="wrap">
-                      <Chip
-                        icon={<AccessTimeOutlinedIcon />}
-                        label={getDaysLabel(customer.daysOverdue)}
-                        color={getSeverityColor(customer.daysOverdue)}
-                        size="small"
-                        sx={{ fontSize: '0.75rem', height: 22 }}
-                      />
+                    <Stack spacing={1}>
+                      {customer.programs.map((program, index) => (
+                        <Stack
+                          key={index}
+                          direction="row"
+                          alignItems="center"
+                          spacing={1}
+                          flexWrap="wrap"
+                        >
+                          <Chip
+                            icon={getProgramIcon(program.programType)}
+                            label={getProgramLabel(program.programType)}
+                            size="small"
+                            variant="outlined"
+                            sx={{ fontSize: '0.75rem', height: 22 }}
+                          />
 
-                      <Typography variant="caption" color="text.secondary">
-                        Venc: {fDate(customer.dueDate)}
-                      </Typography>
+                          <Chip
+                            icon={<AccessTimeOutlinedIcon />}
+                            label={getDaysLabel(program.daysUntilExpiration)}
+                            color={getSeverityColor(program.daysUntilExpiration)}
+                            size="small"
+                            sx={{ fontSize: '0.75rem', height: 22 }}
+                          />
 
-                      <Typography variant="caption" color="text.secondary">
-                        •
-                      </Typography>
-
-                      <Typography variant="caption" color="text.primary" sx={{ fontWeight: 600 }}>
-                        {new Intl.NumberFormat('pt-BR', {
-                          style: 'currency',
-                          currency: 'BRL',
-                        }).format(customer.totalAmount)}
-                      </Typography>
+                          <Typography variant="caption" color="text.secondary">
+                            Venc: {fDate(program.endDate)}
+                          </Typography>
+                        </Stack>
+                      ))}
                     </Stack>
                   </Box>
 

@@ -12,6 +12,7 @@ import { useSettingsContext } from 'src/components/settings';
 import useCustomer from 'src/hooks/use-customer';
 
 import Birthday from '../birthday';
+import ExpiredPrograms from '../ExpiredPrograms';
 import ListUsers from '../list-users/list-users';
 import OverdueInvoices from '../OverdueInvoices';
 import RegisteredPrograms from '../registeredPrograms/registered-programs';
@@ -47,10 +48,10 @@ export default function DashboardView() {
   return (
     <Container maxWidth={settings.themeStretch ? false : 'xl'}>
       <Grid container spacing={3}>
-        <Grid xs={12} md={4}>
+        <Grid xs={12} md={6}>
           <Birthday />
         </Grid>
-        <Grid xs={12} md={4}>
+        <Grid xs={12} md={6}>
           {customersStatus.loading ? (
             <Stack spacing={2} sx={{ px: 2, py: 2.5, position: 'relative' }}>
               <Box
@@ -81,8 +82,11 @@ export default function DashboardView() {
           )}
         </Grid>
 
-        <Grid xs={12} md={4}>
+        <Grid xs={12} md={6}>
           <OverdueInvoices />
+        </Grid>
+        <Grid xs={12} md={6}>
+          <ExpiredPrograms />
         </Grid>
         <Grid xs={12} md={12}>
           <ListUsers title="Alunos" tableData={customers} tableLabels={CUSTOMER_TABLE_HEAD} />
