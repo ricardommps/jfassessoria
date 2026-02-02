@@ -90,7 +90,7 @@ export default function TrainingFormApp({
       displayOrder: workout?.displayOrder ? Number(workout.displayOrder) : null,
       running: workout?.running || (type === 1 ? true : false),
       workoutItems: workout?.workoutItems || [],
-      musclesWorked: workout?.musclesWorked || false,
+      musclesWorked: workout?.musclesWorked || true,
     }),
     [workout, id, type], // Adicione as dependências
   );
