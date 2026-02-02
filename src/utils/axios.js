@@ -43,6 +43,7 @@ export const JF_APP_ENDPOINTS = {
   birthdays: '/api/v2/customer/birthdays/month',
   musclesWorked: '/api/v2/muscles-worked',
   invoice: '/api/v2/invoice',
+  program: '/api/v2/program',
 };
 
 export const API_ENDPOINTS = {
