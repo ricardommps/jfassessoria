@@ -5,7 +5,7 @@ import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Iconify from 'src/components/iconify/iconify';
 import TextMaxLine from 'src/components/text-max-line';
 import { useBoolean } from 'src/hooks/use-boolean';
@@ -14,72 +14,95 @@ import ExerciseInfo from '../exercise-info';
 import MusclesWorked from '../muscles-worked';
 import { Accordion, AccordionDetails, AccordionSummary, ListItem, TextColum } from '../styles';
 
+/**
+ * WorkoutItemApp - Updated to pass workoutIndex to MusclesWorked
+ */
+
 export default function WorkoutItemApp({
   media,
   providedItem,
-  setMediasSelected,
-  mediasSelected,
+  isSelected = false,
+  isMediaGroup = false,
   handleSaveMediaInfo,
   mediaInfo,
   handleRemoveMedia,
+  onToggleSelection,
+  workoutIndex, // NEW: Índice do workoutItem no array
 }) {
   const info = useBoolean();
+  const [exerciseInfoById, setExerciseInfoById] = useState(null);
 
-  const [exerciseInfoById, setexErciseInfoById] = useState(null);
-
-  const handleCheckboxChange = (event) => {
-    const selected = event.target.checked;
-    setMediasSelected((prevSelected) =>
-      selected ? [...prevSelected, media.id] : prevSelected.filter((id) => id !== media?.id),
-    );
-  };
-
+  // Sync exercise info from mediaInfo prop
   useEffect(() => {
-    if (mediaInfo?.length > 0) {
-      const mediaInfoFind = mediaInfo.find((m) => m.mediaId === media.id);
-      if (mediaInfoFind) {
-        setexErciseInfoById(mediaInfoFind);
-      }
-    }
-  }, [media, mediaInfo]);
+    if (!mediaInfo?.length || !media?.id) return;
 
-  // Ensure media object exists to prevent errors
+    const foundMediaInfo = mediaInfo.find((m) => m.mediaId === media.id);
+    setExerciseInfoById(foundMediaInfo || null);
+  }, [media?.id, mediaInfo]);
+
+  // Handle checkbox selection
+  const handleCheckboxChange = useCallback(
+    (event) => {
+      if (!onToggleSelection || !media?.id) return;
+      onToggleSelection(media.id, event.target.checked);
+    },
+    [onToggleSelection, media?.id],
+  );
+
+  // Handle remove
+  const handleRemove = useCallback(() => {
+    if (!handleRemoveMedia || !media?.id) return;
+    handleRemoveMedia(media.id);
+  }, [handleRemoveMedia, media?.id]);
+
+  // Early return if no media
   if (!media) {
     return null;
   }
+
   return (
     <>
       <Box component={Card} mb={2} sx={{ backgroundColor: 'background.neutral', pr: 1, pl: 1 }}>
-        <Stack direction="row" justifyContent={'flex-start'} mr={1}>
+        {/* Top Action Bar */}
+        <Stack direction="row" justifyContent="flex-start" mr={1}>
           <Box sx={{ flex: 1 }}>
-            {/* No longer need to attach dragHandleProps here - they're on the parent div now */}
             <IconButton {...providedItem.dragHandleProps}>
               <DragIndicatorIcon />
             </IconButton>
           </Box>
+
+          {/* Video Icon */}
           <IconButton>
             <Iconify icon="mdi:youtube" width={20} />
           </IconButton>
-          <IconButton edge="end" onClick={() => handleRemoveMedia(media.id)}>
+
+          {/* Remove Icon */}
+          <IconButton edge="end" onClick={handleRemove}>
             <Iconify icon="mdi:bin-circle" width={24} height={24} />
           </IconButton>
         </Stack>
+
+        {/* Exercise Title with Checkbox */}
         <ListItem>
-          <Checkbox checked={mediasSelected?.includes(media?.id)} onChange={handleCheckboxChange} />
+          {!isMediaGroup && onToggleSelection && (
+            <Checkbox checked={isSelected} onChange={handleCheckboxChange} />
+          )}
           <TextColum>
-            <Stack direction="row" alignItems={'center'}>
+            <Stack direction="row" alignItems="center">
               <TextMaxLine variant="subtitle1" line={3} sx={{ flex: 1 }}>
-                {media?.title || 'Untitled Exercise'}
+                {media?.title || 'Exercício sem nome'}
               </TextMaxLine>
             </Stack>
           </TextColum>
         </ListItem>
+
+        {/* Exercise Info Accordion */}
         <Accordion
           sx={{
             marginLeft: 1,
             marginRight: 1,
             '&.MuiAccordion-root:last-of-type': {
-              marginBottom: 2, // 16px
+              marginBottom: 2,
             },
           }}
         >
@@ -91,73 +114,17 @@ export default function WorkoutItemApp({
             Informações do exercício
           </AccordionSummary>
           <AccordionDetails>
-            <Stack flexDirection={'row'}>
+            <Stack flexDirection="row">
               <Stack gap={1}>
-                <Stack flexDirection="row" spacing={1}>
-                  <Typography sx={{ fontSize: '0.75rem', textTransform: 'uppercase' }}>
-                    MÉTODO:
-                  </Typography>
-                  <Typography
-                    sx={{
-                      fontSize: '0.75rem',
-                      color: 'text.primary',
-                    }}
-                  >
-                    {exerciseInfoById?.method || '—'}
-                  </Typography>
-                </Stack>
-                <Stack flexDirection="row" spacing={1}>
-                  <Typography sx={{ fontSize: '0.75rem', textTransform: 'uppercase' }}>
-                    RANGE DE REPETIÇÕES:
-                  </Typography>
-                  <Typography
-                    sx={{
-                      fontSize: '0.75rem',
-                      color: 'text.primary',
-                    }}
-                  >
-                    {exerciseInfoById?.reps || '—'}
-                  </Typography>
-                </Stack>
-                <Stack flexDirection="row" spacing={1}>
-                  <Typography sx={{ fontSize: '0.75rem', textTransform: 'uppercase' }}>
-                    INTERVALO DE RECUPERAÇÃO:
-                  </Typography>
-                  <Typography
-                    sx={{
-                      fontSize: '0.75rem',
-                      color: 'text.primary',
-                    }}
-                  >
-                    {exerciseInfoById?.reset || '—'}
-                  </Typography>
-                </Stack>
-                <Stack flexDirection="row" spacing={1}>
-                  <Typography sx={{ fontSize: '0.75rem', textTransform: 'uppercase' }}>
-                    repetições de reserva:
-                  </Typography>
-                  <Typography
-                    sx={{
-                      fontSize: '0.75rem',
-                      color: 'text.primary',
-                    }}
-                  >
-                    {exerciseInfoById?.rir || '—'}
-                  </Typography>
-                </Stack>
-                <Stack flexDirection="row" spacing={1}>
-                  <Typography sx={{ fontSize: '0.75rem', textTransform: 'uppercase' }}>
-                    Cadência / velocidade de movimento:
-                  </Typography>
-                  <Typography
-                    sx={{
-                      fontSize: '0.75rem',
-                      color: 'text.primary',
-                    }}
-                  >
-                    {exerciseInfoById?.cadence || '—'}
-                  </Typography>
-                </Stack>
+                <InfoRow label="MÉTODO" value={exerciseInfoById?.method} />
+                <InfoRow label="RANGE DE REPETIÇÕES" value={exerciseInfoById?.reps} />
+                <InfoRow label="INTERVALO DE RECUPERAÇÃO" value={exerciseInfoById?.reset} />
+                <InfoRow label="REPETIÇÕES DE RESERVA" value={exerciseInfoById?.rir} />
+                <InfoRow
+                  label="CADÊNCIA / VELOCIDADE DE MOVIMENTO"
+                  value={exerciseInfoById?.cadence}
+                />
+
                 <Stack flexDirection="column">
                   <Typography sx={{ fontSize: '0.75rem', textTransform: 'uppercase' }}>
                     Observações:
@@ -172,8 +139,11 @@ export default function WorkoutItemApp({
                   </Typography>
                 </Stack>
               </Stack>
+
               <Box sx={{ flexGrow: 1 }} />
-              <Stack justifyContent={'center'}>
+
+              {/* Edit Button */}
+              <Stack justifyContent="center">
                 <IconButton size="small" disableRipple onClick={info.onTrue}>
                   <Iconify icon="material-symbols:edit" />
                 </IconButton>
@@ -181,10 +151,18 @@ export default function WorkoutItemApp({
             </Stack>
           </AccordionDetails>
         </Accordion>
+
+        {/* Muscles Worked Section */}
         <Box p={2}>
-          <MusclesWorked mediaId={media.id} musclesWorked={media?.musclesWorked} />
+          <MusclesWorked
+            mediaId={media.id}
+            musclesWorked={media?.musclesWorked}
+            workoutIndex={workoutIndex}
+          />
         </Box>
       </Box>
+
+      {/* Exercise Info Dialog */}
       {info.value && (
         <ExerciseInfo
           open={info.value}
@@ -197,5 +175,24 @@ export default function WorkoutItemApp({
         />
       )}
     </>
+  );
+}
+
+/**
+ * Helper component for displaying exercise info rows
+ */
+function InfoRow({ label, value }) {
+  return (
+    <Stack flexDirection="row" spacing={1}>
+      <Typography sx={{ fontSize: '0.75rem', textTransform: 'uppercase' }}>{label}:</Typography>
+      <Typography
+        sx={{
+          fontSize: '0.75rem',
+          color: 'text.primary',
+        }}
+      >
+        {value || '—'}
+      </Typography>
+    </Stack>
   );
 }

@@ -49,6 +49,7 @@ export default function MediaNewEditForm({ currentMedia }) {
       instrucctions: currentMedia?.instrucctions || null,
       blocked: currentMedia?.blocked || false,
       tags: currentMedia?.tags || [],
+      musclesWorked: currentMedia?.musclesWorked || null,
     }),
     [],
   );

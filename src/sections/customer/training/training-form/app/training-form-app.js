@@ -110,7 +110,6 @@ export default function TrainingFormApp({
   } = methods;
 
   const values = watch();
-
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'workoutItems',
@@ -151,7 +150,6 @@ export default function TrainingFormApp({
   const groupWorkout = (itens, index) => {
     const itensAsString = itens.map(String);
     const currentMediaOrder = values.workoutItems?.[index]?.mediaOrder || [];
-
     // Filtra elementos, convertendo tudo para string
     const filteredOrder = currentMediaOrder.filter((element) => {
       if (Array.isArray(element)) {
@@ -159,7 +157,6 @@ export default function TrainingFormApp({
       }
       return !itensAsString.includes(String(element));
     });
-
     // Encontra índice de inserção: primeiro item encontrado
     const insertIndex = currentMediaOrder.findIndex((element) => {
       if (Array.isArray(element)) {
@@ -320,7 +317,6 @@ export default function TrainingFormApp({
 
     const newMediaIds = newMediasToAdd.map((media) => String(media.id));
     const mediaOrder = [...filteredMediaOrder, ...newMediaIds];
-
     setValue(`workoutItems[${index}].medias`, newMedias);
     setValue(`workoutItems[${index}].mediaOrder`, mediaOrder);
   };

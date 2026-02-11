@@ -44,6 +44,8 @@ export const JF_APP_ENDPOINTS = {
   musclesWorked: '/api/v2/muscles-worked',
   invoice: '/api/v2/invoice',
   program: '/api/v2/program',
+  comments: '/api/v2/comments',
+  media: '/api/v2/media',
 };
 
 export const API_ENDPOINTS = {
