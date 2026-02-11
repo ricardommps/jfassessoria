@@ -7,6 +7,10 @@ import { alpha } from '@mui/material/styles';
 
 import WorkoutItemApp from './workout-item-app';
 
+/**
+ * WorkoutViewGroupApp - Passes workoutIndex to child items
+ */
+
 export default function WorkoutViewGroupApp({
   medias,
   index,
@@ -14,19 +18,10 @@ export default function WorkoutViewGroupApp({
   handleSaveMediasInfo,
   mediaInfo,
   handleRemoveMedia,
+  onToggleSelection,
+  workoutIndex, // Passa para os filhos
 }) {
-  const handleType = () => {
-    if (medias.length === 2) {
-      return 'BISET';
-    }
-
-    if (medias.length === 3) {
-      return 'TRISET';
-    }
-
-    return 'CIRCUITO';
-  };
-
+  const groupType = getGroupType(medias.length);
   const droppableId = `nested-group-${index}`;
 
   return (
@@ -46,18 +41,20 @@ export default function WorkoutViewGroupApp({
       <IconButton {...providedGroupDrag.dragHandleProps}>
         <DragIndicatorIcon />
       </IconButton>
+
       <CardHeader
-        title={handleType()}
+        title={groupType}
         sx={{
           p: 1,
         }}
       />
+
       <Droppable droppableId={droppableId} type="ITEM">
         {(provided) => (
           <div ref={provided.innerRef} {...provided.droppableProps} style={{ minHeight: '50px' }}>
             {medias.map((media, itemIndex) => {
-              const mediaId = media.id ? media.id.toString() : `${index}-${itemIndex}`;
-              const draggableId = `group-${index}-item-${mediaId}`;
+              const draggableId = `group-${index}-item-${media.id || itemIndex}`;
+
               return (
                 <Draggable key={draggableId} draggableId={draggableId} index={itemIndex}>
                   {(providedDrag) => (
@@ -69,6 +66,8 @@ export default function WorkoutViewGroupApp({
                         handleSaveMediaInfo={handleSaveMediasInfo}
                         mediaInfo={mediaInfo}
                         handleRemoveMedia={handleRemoveMedia}
+                        onToggleSelection={onToggleSelection}
+                        workoutIndex={workoutIndex}
                       />
                     </div>
                   )}
@@ -81,4 +80,15 @@ export default function WorkoutViewGroupApp({
       </Droppable>
     </Paper>
   );
+}
+
+function getGroupType(count) {
+  switch (count) {
+    case 2:
+      return 'BISET';
+    case 3:
+      return 'TRISET';
+    default:
+      return 'CIRCUITO';
+  }
 }

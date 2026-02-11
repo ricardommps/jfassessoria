@@ -20,16 +20,15 @@ import { Fragment, useCallback, useEffect, useState } from 'react';
 import Iconify from 'src/components/iconify';
 import LoadingProgress from 'src/components/loading-progress';
 import Scrollbar from 'src/components/scrollbar';
-import useMedia from 'src/hooks/use-media';
+import { useGetMedias } from 'src/hooks/use-medias';
 
 export default function SelectMedia({ open, handleSave, mediasSelected, onClose, index }) {
   const [currentMediasSelected, setCurrentMediasSelected] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [options, setOptions] = useState([]);
   const [searchOptions, setSearchOptions] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
 
-  const { onGetListMedias, medias } = useMedia();
+  const { data: mediasData, isLoading } = useGetMedias();
 
   // Função para achatar o array de arrays e filtrar duplicatas
   const flattenAndDeduplicateMedias = useCallback((mediasArray) => {
@@ -68,24 +67,9 @@ export default function SelectMedia({ open, handleSave, mediasSelected, onClose,
     [searchOptions], // Corrigida dependência
   );
 
-  const initialize = useCallback(async () => {
-    setLoading(true);
-    try {
-      await onGetListMedias();
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  }, [onGetListMedias]);
-
   useEffect(() => {
-    initialize();
-  }, [initialize]);
-
-  useEffect(() => {
-    if (medias) {
-      const sortedMedias = [...(medias || [])]
+    if (mediasData) {
+      const sortedMedias = [...(mediasData || [])]
         .filter((item) => item && item.title) // Filtra itens válidos
         .sort((a, b) => a.title.localeCompare(b.title))
         .reduce((acc, current) => {
@@ -98,7 +82,7 @@ export default function SelectMedia({ open, handleSave, mediasSelected, onClose,
       setOptions(sortedMedias);
       setSearchOptions(sortedMedias);
     }
-  }, [medias]);
+  }, [mediasData]);
 
   useEffect(() => {
     if (mediasSelected) {
@@ -180,8 +164,8 @@ export default function SelectMedia({ open, handleSave, mediasSelected, onClose,
               />
             </Box>
             <Box>
-              {loading && <LoadingProgress />}
-              {!loading && options.length > 0 && (
+              {isLoading && <LoadingProgress />}
+              {!isLoading && options.length > 0 && (
                 <Box>
                   <List>
                     {options.map((item) => (

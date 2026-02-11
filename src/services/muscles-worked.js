@@ -16,3 +16,7 @@ export function updateMuscleWorked(mediaId, musclesId) {
 export function deleteMuscleWorked(mediaId) {
   return jfApi.delete(`${JF_APP_ENDPOINTS.musclesWorked}/${mediaId}`);
 }
+
+export function getRawAndEntities(mediaId) {
+  return jfApi.get(`${JF_APP_ENDPOINTS.musclesWorked}/getMedia/${mediaId}`).then((res) => res.data);
+}
