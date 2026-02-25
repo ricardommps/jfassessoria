@@ -1,5 +1,6 @@
 'use client';
 
+import { Box } from '@mui/material';
 import Badge from '@mui/material/Badge';
 import Divider from '@mui/material/Divider';
 import Drawer from '@mui/material/Drawer';
@@ -16,9 +17,11 @@ import Scrollbar from 'src/components/scrollbar';
 import WorkoutView from 'src/components/workout-view';
 import { useBoolean } from 'src/hooks/use-boolean';
 import useFeedback from 'src/hooks/use-feedback';
+import { useNewComments } from 'src/hooks/use-finished';
 import { useResponsive } from 'src/hooks/use-responsive';
 
 import FeedbackItem from './feedback-item';
+import NewComments from './new-comments';
 export default function FeedbackPopover() {
   const pathname = usePathname();
   const smUp = useResponsive('up', 'sm');
@@ -26,9 +29,8 @@ export default function FeedbackPopover() {
   const [workoutSelected, setWorkoutSelected] = useState(null);
 
   const { onGetUnreviewedFinished, unreviewedFinished } = useFeedback();
-
+  const { data: newComments, refetch: refetchNewComments } = useNewComments();
   const [sortedUnreviewedFinished, setSortedUnreviewedFinished] = useState([]);
-
   const handleWorkoutSelected = (item) => {
     setWorkoutSelected(item);
   };
@@ -37,10 +39,11 @@ export default function FeedbackPopover() {
     setWorkoutSelected(null);
   };
 
+  const totalNotifications = (unreviewedFinished?.length ?? 0) + (newComments?.length ?? 0);
   const renderHead = (
     <Stack direction="row" alignItems="center" sx={{ py: 2, pl: 2.5, pr: 1, minHeight: 68 }}>
       <Typography variant="h6" sx={{ flexGrow: 1 }}>
-        Feedbacks
+        Notificações
       </Typography>
 
       {!smUp && (
@@ -56,17 +59,33 @@ export default function FeedbackPopover() {
 
   const renderList = (
     <Scrollbar>
-      <List disablePadding>
-        {sortedUnreviewedFinished.map((feedback) => (
-          <FeedbackItem
-            key={feedback.id}
-            feedback={feedback}
-            smUp={smUp}
-            refreshList={refreshList}
-            handleWorkoutSelected={handleWorkoutSelected}
-          />
-        ))}
-      </List>
+      <Box>
+        <Typography p={2}>Novos comentários</Typography>
+        <List disablePadding>
+          {newComments?.map((itemComments) => (
+            <NewComments
+              key={itemComments.id}
+              comments={itemComments.comments}
+              finishedId={itemComments.id}
+              refetchNewComments={refetchNewComments}
+            />
+          ))}
+        </List>
+      </Box>
+      <Box>
+        <Typography p={2}>Feedbacks pendentes</Typography>
+        <List disablePadding>
+          {sortedUnreviewedFinished.map((feedback) => (
+            <FeedbackItem
+              key={feedback.id}
+              feedback={feedback}
+              smUp={smUp}
+              refreshList={refreshList}
+              handleWorkoutSelected={handleWorkoutSelected}
+            />
+          ))}
+        </List>
+      </Box>
     </Scrollbar>
   );
 
@@ -104,7 +123,7 @@ export default function FeedbackPopover() {
         color={drawer.value ? 'primary' : 'default'}
         onClick={drawer.onTrue}
       >
-        <Badge badgeContent={unreviewedFinished.length} color="error" showZero>
+        <Badge badgeContent={totalNotifications} color="error" showZero>
           <Iconify icon="solar:bell-bing-bold-duotone" width={24} />
         </Badge>
       </IconButton>
@@ -123,6 +142,7 @@ export default function FeedbackPopover() {
         {renderHead}
 
         <Divider />
+
         {renderList}
       </Drawer>
       {workoutSelected && (

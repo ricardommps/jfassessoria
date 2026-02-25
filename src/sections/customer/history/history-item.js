@@ -1,6 +1,8 @@
 'use client';
 
+import CommentIcon from '@mui/icons-material/Comment';
 import LoadingButton from '@mui/lab/LoadingButton';
+import { IconButton } from '@mui/material';
 import Badge from '@mui/material/Badge';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -13,12 +15,16 @@ import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Unstable_Grid2';
 import { useCallback, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { CommentsDialog } from 'src/components/comments';
 import { IntensityBadges } from 'src/components/feedback/IntensityBadges';
 import { RHFTextField } from 'src/components/hook-form';
 import FormProvider from 'src/components/hook-form/form-provider';
 import Label from 'src/components/label';
 import TextMaxLine from 'src/components/text-max-line';
 import { useBoolean } from 'src/hooks/use-boolean';
+import { useComments, useGetComments } from 'src/hooks/use-commnts';
+import useFeedback from 'src/hooks/use-feedback';
+import { useCreateFeedback } from 'src/hooks/use-finished';
 import { useResponsive } from 'src/hooks/use-responsive';
 import useWorkout from 'src/hooks/use-workout';
 import {
@@ -32,9 +38,25 @@ import { getModuleName } from 'src/utils/training-modules';
 
 export default function HistoryItem({ historyItem, workoutInfo, refreshList, customerId }) {
   const { onReviewWorkout } = useWorkout();
+  const { onGetUnreviewedFinished } = useFeedback();
   const smDown = useResponsive('down', 'sm');
   const theme = useTheme();
   const feedBackForm = useBoolean();
+  const openComments = useBoolean();
+
+  const { data: comments, refetch: refetchNewComments } = useGetComments(historyItem.id);
+
+  const { mutate: sendComment, isLoading } = useComments({
+    invalidateQueries: ['history'], // ou qualquer query que precise atualizar
+    onSuccess: () => openComments.onFalse(), // fecha o modal
+  });
+
+  const lastComment = comments && comments[comments.length - 1];
+
+  const { createFeedback } = useCreateFeedback();
+  const hasUnreadComments = comments?.some(
+    (comment) => !comment.isAdmin === true && comment.read === false,
+  );
 
   const [loading, setLoading] = useState(false);
   const opacityCard = () => {
@@ -52,19 +74,42 @@ export default function HistoryItem({ historyItem, workoutInfo, refreshList, cus
     defaultValues,
   });
 
+  const handleSendComment = (message) => {
+    if (!message.trim()) return;
+
+    const payload = {
+      finishedId: historyItem.id,
+      content: message.trim(),
+      parentId: lastComment ? lastComment.id : null,
+      authorUserId: lastComment?.author?.id ?? null, // 👈 AQUI
+    };
+    sendComment(payload);
+  };
+
   const { handleSubmit } = methods;
 
-  const onSubmit = useCallback(async (data) => {
-    try {
-      setLoading(true);
-      const payload = Object.assign({}, data);
-      await onReviewWorkout(customerId, historyItem.id, payload);
-      feedBackForm.onFalse();
-      refreshList();
-    } catch (err) {
-      console.log(err);
-    }
-  }, []);
+  const handleSubmitFeedback = useCallback(
+    async (data, commentId) => {
+      try {
+        const payload = {
+          ...data,
+          ...(commentId && { commentId }),
+        };
+        await createFeedback({
+          customerId: customerId,
+          finishedId: historyItem?.id,
+          payload: payload,
+        });
+
+        feedBackForm.onFalse();
+        onGetUnreviewedFinished();
+        refreshList();
+      } catch (error) {
+        console.error('Erro ao criar feedback:', error);
+      }
+    },
+    [createFeedback, historyItem, feedBackForm, refreshList],
+  );
 
   const renderIntensities = () => {
     return (
@@ -107,10 +152,10 @@ export default function HistoryItem({ historyItem, workoutInfo, refreshList, cus
                 Treino não realizado
               </Label>
             )}
-            {historyItem.comments.length === 0 ? (
+            {!comments || comments?.length === 0 ? (
               <Typography variant="caption">O aluno não deixou comentário</Typography>
             ) : (
-              <Typography variant="caption">{`Comentário do Aluno: ${historyItem.comments}`}</Typography>
+              <Typography variant="caption">{`Comentário do Aluno: ${comments[0]?.content}`}</Typography>
             )}
             {historyItem.typetraining ? (
               <>
@@ -372,7 +417,13 @@ export default function HistoryItem({ historyItem, workoutInfo, refreshList, cus
             {!historyItem.review ? (
               <>
                 {feedBackForm.value ? (
-                  <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
+                  <FormProvider
+                    methods={methods}
+                    onSubmit={handleSubmit((data) => {
+                      const commentId = comments?.length > 0 ? comments[0].id : undefined;
+                      handleSubmitFeedback(data, commentId);
+                    })}
+                  >
                     <Box rowGap={3} columnGap={2} display="grid" pt={2}>
                       <RHFTextField
                         name="feedback"
@@ -408,13 +459,37 @@ export default function HistoryItem({ historyItem, workoutInfo, refreshList, cus
                 )}
               </>
             ) : (
-              <Typography variant="caption" color={theme.palette.success.main}>{`Feedback : ${
-                historyItem.feedback ? historyItem.feedback : ''
-              }`}</Typography>
+              <Box>
+                <IconButton
+                  aria-label="comments"
+                  sx={{ p: 0 }}
+                  color="inherit"
+                  onClick={openComments.onTrue}
+                >
+                  <Badge
+                    badgeContent={comments?.length || 0}
+                    color={hasUnreadComments ? 'error' : 'primary'}
+                  >
+                    <CommentIcon fontSize="small" />
+                  </Badge>
+                </IconButton>
+              </Box>
             )}
           </Stack>
         </Stack>
       </Stack>
+      {openComments.value && (
+        <CommentsDialog
+          open={openComments.value}
+          onClose={() => {
+            openComments.onFalse(); // fecha o modal
+            refetchNewComments(); // 🔄 recarrega newComments
+          }}
+          comments={comments}
+          onSend={handleSendComment}
+          isLoading={isLoading} // opcional para desabilitar botão durante envio
+        />
+      )}
     </>
   );
 }
