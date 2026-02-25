@@ -6,34 +6,38 @@ import ListItemAvatar from '@mui/material/ListItemAvatar';
 import ListItemText from '@mui/material/ListItemText';
 import Stack from '@mui/material/Stack';
 import { useTheme } from '@mui/material/styles';
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import { WorkoutDetails } from 'src/components/feedback/WorkoutDetails';
 import { useBoolean } from 'src/hooks/use-boolean';
-import useWorkout from 'src/hooks/use-workout';
+import { useCreateFeedback } from 'src/hooks/use-finished';
 
 export default function FeedbackItem({ feedback, refreshList, handleWorkoutSelected }) {
   const theme = useTheme();
-  const { onReviewWorkout } = useWorkout();
+  const { createFeedback, isCreatingFeedback } = useCreateFeedback();
 
   const feedbackForm = useBoolean();
-  const [loading, setLoading] = useState(false);
 
   const handleSubmitFeedback = useCallback(
-    async (data) => {
+    async (data, commentId) => {
       try {
-        setLoading(true);
-        await onReviewWorkout(feedback.customer.id, feedback.id, data);
+        const payload = {
+          ...data,
+          ...(commentId && { commentId }),
+        };
+        await createFeedback({
+          customerId: feedback?.customer?.id,
+          finishedId: feedback?.id,
+          payload: payload,
+        });
+
         feedbackForm.onFalse();
         refreshList();
       } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
+        console.error('Erro ao criar feedback:', error);
       }
     },
-    [feedback, refreshList],
+    [createFeedback, feedback, feedbackForm, refreshList],
   );
-
   const renderAvatar = (
     <ListItemAvatar>
       <Avatar src={feedback?.customer?.avatar} sx={{ bgcolor: 'background.neutral' }} />
@@ -84,7 +88,7 @@ export default function FeedbackItem({ feedback, refreshList, handleWorkoutSelec
         <WorkoutDetails
           itemFeedback={feedback}
           feedBackFormValue={feedbackForm.value}
-          loading={loading}
+          loading={isCreatingFeedback}
           onSubmit={handleSubmitFeedback}
           onCancelFeedback={feedbackForm.onFalse}
           onOpenFeedback={feedbackForm.onTrue}
