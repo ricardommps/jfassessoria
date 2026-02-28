@@ -10,3 +10,7 @@ export function createFeedback(customerId, id, payload) {
     .put(`${JF_APP_ENDPOINTS.finished}/reviewComment/${customerId}/${id}`, payload)
     .then((res) => res.data);
 }
+
+export function feedBackHistory(id) {
+  return jfApi.get(`${JF_APP_ENDPOINTS.finished}/history/${id}`).then((res) => res.data);
+}

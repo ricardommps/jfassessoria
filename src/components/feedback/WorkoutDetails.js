@@ -1,3 +1,4 @@
+import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
 import LoadingButton from '@mui/lab/LoadingButton';
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
@@ -8,6 +9,7 @@ import Stack from '@mui/material/Stack';
 import { useTheme } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Unstable_Grid2';
+import dynamic from 'next/dynamic';
 import { useForm } from 'react-hook-form';
 import { RHFTextField } from 'src/components/hook-form';
 import FormProvider from 'src/components/hook-form/form-provider';
@@ -25,6 +27,11 @@ import { getModuleName } from 'src/utils/training-modules';
 
 import { CommentsDialog } from '../comments';
 import { IntensityBadges } from './IntensityBadges';
+
+const ActivityMap = dynamic(
+  () => import('../activity-map/activity-map').then((mod) => mod.ActivityMap),
+  { ssr: false },
+);
 
 export function WorkoutDetails({
   itemFeedback,
@@ -142,6 +149,35 @@ export function WorkoutDetails({
               <Typography variant="caption">Treino Indoor</Typography>
             )}
           </>
+        )}
+        {itemFeedback.summaryPolyline && (
+          <ActivityMap encodedPolyline={itemFeedback.summaryPolyline} />
+        )}
+
+        {itemFeedback.linkstrava && (
+          <Box>
+            <Button
+              variant="contained"
+              startIcon={<DirectionsRunIcon />}
+              href={itemFeedback.linkstrava}
+              target="_blank"
+              rel="noopener noreferrer"
+              sx={{
+                backgroundColor: '#FC4C02', // Laranja oficial Strava
+                color: '#ffffff',
+                fontWeight: 700,
+                borderRadius: '14px',
+                textTransform: 'none',
+                boxShadow: '0 4px 12px rgba(252, 76, 2, 0.35)',
+                '&:hover': {
+                  backgroundColor: '#E34402', // tom mais escuro no hover
+                  boxShadow: '0 6px 16px rgba(252, 76, 2, 0.45)',
+                },
+              }}
+            >
+              Ver atividade no Strava
+            </Button>
+          </Box>
         )}
 
         <Grid container spacing={2}>

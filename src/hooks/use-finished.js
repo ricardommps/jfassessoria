@@ -2,7 +2,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { useCallback } from 'react';
 import { clearVolume, getVolume } from 'src/redux/slices/finished';
 import { useDispatch, useSelector } from 'src/redux/store';
-import { createFeedback, getNewComments } from 'src/services/finished.service';
+import { createFeedback, feedBackHistory, getNewComments } from 'src/services/finished.service';
 export default function useFinished() {
   const dispatch = useDispatch();
   const { volume } = useSelector((state) => state.finished);
@@ -48,4 +48,12 @@ export function useCreateFeedback() {
     error,
     data,
   };
+}
+
+export function useFeedBackHistory(id) {
+  return useQuery({
+    queryKey: ['feedback-history', id],
+    queryFn: () => feedBackHistory(id),
+    enabled: !!id,
+  });
 }
