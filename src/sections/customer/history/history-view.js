@@ -6,8 +6,10 @@ import IconButton from '@mui/material/IconButton';
 import Slide from '@mui/material/Slide';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import { forwardRef } from 'react';
+import { forwardRef, useMemo } from 'react';
+import { useFeedBackHistory } from 'src/hooks/use-finished';
 import { useResponsive } from 'src/hooks/use-responsive';
+import { getModuleName } from 'src/utils/training-modules';
 
 import HistoryItem from './history-item';
 
@@ -15,14 +17,22 @@ const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function History({ open, onClose, history, title, refreshList, customerId }) {
+export default function HistoryView({ open, onClose, id, customerId }) {
   const smDown = useResponsive('down', 'sm');
-  const sortedItems = [...history].sort((a, b) => {
-    // Converter strings de data em objetos Date de forma explícita
-    const dateA = new Date(a.executionDay).getTime();
-    const dateB = new Date(b.executionDay).getTime();
-    return dateB - dateA; // Ordenar em ordem decrescente
-  });
+  const { data, refetch } = useFeedBackHistory(id);
+
+  // Garante que sempre será array SEM recriar referência desnecessária
+  const history = useMemo(() => {
+    return Array.isArray(data) ? data : [];
+  }, [data]);
+
+  const sortedItems = useMemo(() => {
+    if (!history.length) return [];
+
+    return [...history].sort((a, b) => {
+      return new Date(b.executionDay).getTime() - new Date(a.executionDay).getTime();
+    });
+  }, [history]);
 
   const HistoryContent = () => (
     <>
@@ -36,14 +46,10 @@ export default function History({ open, onClose, history, title, refreshList, cu
           </Typography>
         </Toolbar>
       </AppBar>
-
       <Box p={2} sx={{ overflowX: 'hidden' }}>
         <Box pb={2}>
-          <Typography variant="body1">{title}</Typography>
+          <Typography variant="body1">{getModuleName(history[0]?.workout?.title)}</Typography>
         </Box>
-        {/* <Button variant="outlined" sx={{ mt: 2 }} onClick={workoutView.onTrue}>
-          Ver treino
-        </Button> */}
         {sortedItems.length > 0 && (
           <>
             {sortedItems.map((item) => (
@@ -52,7 +58,7 @@ export default function History({ open, onClose, history, title, refreshList, cu
                 key={item.id}
                 smDown={smDown}
                 workoutInfo={true}
-                refreshList={refreshList}
+                refreshList={refetch}
                 customerId={customerId}
               />
             ))}

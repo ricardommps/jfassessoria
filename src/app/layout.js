@@ -5,6 +5,7 @@ import 'moment/min/locales';
 import 'react-lazy-load-image-component/src/effects/blur.css';
 import 'slick-carousel/slick/slick-theme.css';
 import 'slick-carousel/slick/slick.css';
+import 'leaflet/dist/leaflet.css';
 
 import * as moment from 'moment';
 import PropTypes from 'prop-types';

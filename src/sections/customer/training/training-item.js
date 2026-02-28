@@ -36,7 +36,7 @@ import useWorkouts from 'src/hooks/use-workouts';
 import { fDate } from 'src/utils/format-time';
 import { getModuleName } from 'src/utils/training-modules';
 
-import History from '../history/history';
+import HistoryView from '../history/history-view';
 import FeedBack from './feedback';
 import CreateTrainingApp from './training-form/app/create-training-app';
 import CreateTraining from './training-form/create-training';
@@ -188,6 +188,7 @@ export default function TrainingItem({
   const countReview = training?.history?.filter(
     (item) => item.review === false || !item.review,
   ).length;
+
   return (
     <>
       <Stack component={Card} direction="row" sx={{ opacity: opacityCard() }}>
@@ -248,7 +249,7 @@ export default function TrainingItem({
           <Stack alignItems="flex-start" justifyContent="space-between">
             {statusTraining()}
           </Stack>
-          {training?.history && (
+          {training?.history.length > 0 && (
             <Stack alignItems="flex-start" justifyContent="space-between" pt={3}>
               <Badge
                 badgeContent={countReview > 0 ? countReview : training?.history.length}
@@ -346,15 +347,14 @@ export default function TrainingItem({
         />
       )}
       {history.value && (
-        <History
+        <HistoryView
           open={history.value}
           onClose={history.onFalse}
-          history={training.history}
-          title={'Histórico'}
-          refreshList={refreshList}
+          id={training.id}
           customerId={program.customerId}
         />
       )}
+
       {workoutView.value && (
         <WorkoutView
           open={workoutView.value}

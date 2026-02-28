@@ -1,6 +1,7 @@
 'use client';
 
 import CommentIcon from '@mui/icons-material/Comment';
+import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { IconButton } from '@mui/material';
 import Badge from '@mui/material/Badge';
@@ -13,6 +14,7 @@ import Stack from '@mui/material/Stack';
 import { useTheme } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Unstable_Grid2';
+import dynamic from 'next/dynamic';
 import { useCallback, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { CommentsDialog } from 'src/components/comments';
@@ -36,8 +38,12 @@ import { extractUrl } from 'src/utils/extract-url';
 import { fDate } from 'src/utils/format-time';
 import { getModuleName } from 'src/utils/training-modules';
 
+const ActivityMap = dynamic(
+  () => import('../../../components/activity-map/activity-map').then((mod) => mod.ActivityMap),
+  { ssr: false },
+);
+
 export default function HistoryItem({ historyItem, workoutInfo, refreshList, customerId }) {
-  const { onReviewWorkout } = useWorkout();
   const { onGetUnreviewedFinished } = useFeedback();
   const smDown = useResponsive('down', 'sm');
   const theme = useTheme();
@@ -179,6 +185,38 @@ export default function HistoryItem({ historyItem, workoutInfo, refreshList, cus
                 )}
               </>
             )}
+            <Box>
+              {historyItem.summaryPolyline && (
+                <ActivityMap encodedPolyline={historyItem.summaryPolyline} />
+              )}
+            </Box>
+            <Box>
+              {historyItem.linkstrava && (
+                <Box>
+                  <Button
+                    variant="contained"
+                    startIcon={<DirectionsRunIcon />}
+                    href={historyItem.linkstrava}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    sx={{
+                      backgroundColor: '#FC4C02', // Laranja oficial Strava
+                      color: '#ffffff',
+                      fontWeight: 700,
+                      borderRadius: '14px',
+                      textTransform: 'none',
+                      boxShadow: '0 4px 12px rgba(252, 76, 2, 0.35)',
+                      '&:hover': {
+                        backgroundColor: '#E34402', // tom mais escuro no hover
+                        boxShadow: '0 6px 16px rgba(252, 76, 2, 0.45)',
+                      },
+                    }}
+                  >
+                    Ver atividade no Strava
+                  </Button>
+                </Box>
+              )}
+            </Box>
             <Grid container spacing={2}>
               {historyItem.distanceInMeters && (
                 <Grid xs={12} sm={6}>
@@ -484,6 +522,7 @@ export default function HistoryItem({ historyItem, workoutInfo, refreshList, cus
           onClose={() => {
             openComments.onFalse(); // fecha o modal
             refetchNewComments(); // 🔄 recarrega newComments
+            refreshList();
           }}
           comments={comments}
           onSend={handleSendComment}
