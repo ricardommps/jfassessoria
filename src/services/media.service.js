@@ -4,3 +4,7 @@ import { JF_APP_ENDPOINTS, jfApi } from 'src/utils/axios';
 export function getMedias() {
   return jfApi.get(`${JF_APP_ENDPOINTS.media}/getMediasMusclesWorked`).then((res) => res.data);
 }
+
+export function create(payload) {
+  return jfApi.post(`${JF_APP_ENDPOINTS.media}`, payload).then((res) => res.data);
+}

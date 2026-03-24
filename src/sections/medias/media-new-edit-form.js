@@ -14,6 +14,7 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Unstable_Grid2';
 import { m } from 'framer-motion';
+import { enqueueSnackbar } from 'notistack';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { varFade } from 'src/components/animate';
@@ -22,20 +23,23 @@ import Iconify from 'src/components/iconify';
 import Image from 'src/components/image';
 import { useBoolean } from 'src/hooks/use-boolean';
 import useMedia from 'src/hooks/use-media';
+import { useCreateMedia } from 'src/hooks/use-medias';
 import { useResponsive } from 'src/hooks/use-responsive';
 import { RouterLink } from 'src/routes/components';
+import { useRouter } from 'src/routes/hook';
 import { paths } from 'src/routes/paths';
 import { _tags } from 'src/utils/tags';
 import * as Yup from 'yup';
-
 function getId(url) {
   let regex = /(youtu.*be.*)\/(watch\?v=|embed\/|v|shorts|)(.*?((?=[&#?])|$))/gm;
   return regex.exec(url)[3];
 }
 export default function MediaNewEditForm({ currentMedia }) {
   const mdUp = useResponsive('up', 'md');
+  const { mutate: createMedia, isPending } = useCreateMedia();
   const { onCreateMedia } = useMedia();
   const toggleTags = useBoolean(true);
+  const router = useRouter();
 
   const NewMediaSchema = Yup.object().shape({
     title: Yup.string().required('Title obrigatório'),
@@ -84,7 +88,21 @@ export default function MediaNewEditForm({ currentMedia }) {
         delete payload.id;
         onCreateMedia(payload, currentMedia.id);
       } else {
-        onCreateMedia(payload);
+        createMedia(payload, {
+          onSuccess: () => {
+            enqueueSnackbar('Mídia criada com sucesso!', {
+              autoHideDuration: 8000,
+              variant: 'success',
+            });
+            router.back();
+          },
+          onError: (error) => {
+            enqueueSnackbar(error?.message || 'Erro ao criar mídia', {
+              autoHideDuration: 8000,
+              variant: 'error',
+            });
+          },
+        });
       }
     } catch (error) {
       console.error(error);
@@ -170,7 +188,7 @@ export default function MediaNewEditForm({ currentMedia }) {
           type="submit"
           variant="contained"
           size="large"
-          loading={isSubmitting}
+          loading={isSubmitting || isPending}
           sx={{ ml: 2 }}
         >
           Salvar
