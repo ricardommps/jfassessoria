@@ -62,8 +62,8 @@ export const setSession = (accessToken) => {
   if (accessToken && isValidToken(accessToken)) {
     localStorage.setItem('accessToken', accessToken);
 
-    jfAppApi.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
-    jfApi.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
+    jfAppApi.defaults.headers.common.Authorization = accessToken;
+    jfApi.defaults.headers.common.Authorization = accessToken;
 
     const { exp } = jwtDecode(accessToken);
     tokenExpired(exp);
