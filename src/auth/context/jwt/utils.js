@@ -59,14 +59,13 @@ export const tokenExpired = (exp) => {
 // ----------------------------------------------------------------------
 
 export const setSession = (accessToken) => {
-  if (accessToken) {
+  if (accessToken && isValidToken(accessToken)) {
     localStorage.setItem('accessToken', accessToken);
 
-    jfAppApi.defaults.headers.common.Authorization = accessToken;
-    jfApi.defaults.headers.common.Authorization = accessToken;
+    jfAppApi.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
+    jfApi.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
 
-    // This function below will handle when token is expired
-    const { exp } = jwtDecode(accessToken); // ~3 days by minimals server
+    const { exp } = jwtDecode(accessToken);
     tokenExpired(exp);
   } else {
     localStorage.removeItem('accessToken');
