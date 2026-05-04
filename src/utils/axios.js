@@ -23,12 +23,14 @@ const createResponseInterceptor = () => ({
 export const jfAppApi = axios.create({
   baseURL: HOST_API_JF,
   timeout: 120000, // timeout opcional
+  withCredentials: false,
 });
 
 // Instância para JF
 export const jfApi = axios.create({
   baseURL: HOST_API_JF_APP,
   timeout: 120000, // timeout opcional
+  withCredentials: false,
 });
 
 // Aplicar interceptors
