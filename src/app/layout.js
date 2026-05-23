@@ -7,6 +7,7 @@ import 'slick-carousel/slick/slick-theme.css';
 import 'slick-carousel/slick/slick.css';
 import 'leaflet/dist/leaflet.css';
 
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import * as moment from 'moment';
 import PropTypes from 'prop-types';
 // auth
@@ -25,8 +26,6 @@ import ReduxProvider from 'src/redux/redux-provider';
 // theme
 import ThemeProvider from 'src/theme';
 import { primaryFont } from 'src/theme/typography';
-
-import Insights from './insights';
 
 // ----------------------------------------------------------------------
 
@@ -97,7 +96,7 @@ export default function RootLayout({ children }) {
             </ReduxProvider>
           </AuthProvider>
         </AppQueryClientProvider>
-        <Insights />
+        <SpeedInsights />
       </body>
     </html>
   );
