@@ -33,6 +33,7 @@
     "@react-pdf/renderer": "^3.1.11",
     "@reduxjs/toolkit": "^1.9.5",
     "@tanstack/react-query": "^5.83.0",
+    "@vercel/speed-insights": "^2.0.0",
     "apexcharts": "^3.41.0",
     "autosuggest-highlight": "^3.3.4",
     "axios": "^1.4.0",

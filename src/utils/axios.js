@@ -7,16 +7,27 @@ import { HOST_API_JF, HOST_API_JF_APP } from 'src/config-global';
 // Interceptor comum para ambas as instâncias
 const createResponseInterceptor = () => ({
   onFulfilled: (response) => response,
+
   onRejected: (error) => {
+    console.error('FULL AXIOS ERROR:', {
+      message: error.message,
+      code: error.code,
+      status: error.response?.status,
+      data: error.response?.data,
+      config: {
+        url: error.config?.url,
+        baseURL: error.config?.baseURL,
+        method: error.config?.method,
+        headers: error.config?.headers,
+      },
+    });
+
     if (axios.isCancel(error)) {
       console.error('Request cancelled:', error.message);
       return Promise.reject(error);
     }
 
-    const errorMessage = error.response?.data || 'Something went wrong';
-    console.error('API Error:', errorMessage);
-
-    return Promise.reject(errorMessage);
+    return Promise.reject(error);
   },
 });
 
