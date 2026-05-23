@@ -26,6 +26,8 @@ import ReduxProvider from 'src/redux/redux-provider';
 import ThemeProvider from 'src/theme';
 import { primaryFont } from 'src/theme/typography';
 
+import Insights from './insights';
+
 // ----------------------------------------------------------------------
 
 export const metadata = {
@@ -95,6 +97,7 @@ export default function RootLayout({ children }) {
             </ReduxProvider>
           </AuthProvider>
         </AppQueryClientProvider>
+        <Insights />
       </body>
     </html>
   );
