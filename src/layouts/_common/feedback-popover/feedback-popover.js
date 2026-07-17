@@ -18,10 +18,15 @@ import WorkoutView from 'src/components/workout-view';
 import { useBoolean } from 'src/hooks/use-boolean';
 import useFeedback from 'src/hooks/use-feedback';
 import { useNewComments } from 'src/hooks/use-finished';
+import {
+  useReadNotification,
+  useRunningFinishedAllNotifications,
+} from 'src/hooks/use-notifications';
 import { useResponsive } from 'src/hooks/use-responsive';
 
 import FeedbackItem from './feedback-item';
 import NewComments from './new-comments';
+import RunningFinishedAllItem from './running-finished-all-item';
 export default function FeedbackPopover() {
   const pathname = usePathname();
   const smUp = useResponsive('up', 'sm');
@@ -30,6 +35,9 @@ export default function FeedbackPopover() {
 
   const { onGetUnreviewedFinished, unreviewedFinished } = useFeedback();
   const { data: newComments, refetch: refetchNewComments } = useNewComments();
+  const { data: runningFinishedAllNotifications, refetch: refetchRunningFinishedAllNotifications } =
+    useRunningFinishedAllNotifications();
+  const { mutateAsync: markNotificationAsRead } = useReadNotification();
   const [sortedUnreviewedFinished, setSortedUnreviewedFinished] = useState([]);
   const handleWorkoutSelected = (item) => {
     setWorkoutSelected(item);
@@ -39,7 +47,13 @@ export default function FeedbackPopover() {
     setWorkoutSelected(null);
   };
 
-  const totalNotifications = (unreviewedFinished?.length ?? 0) + (newComments?.length ?? 0);
+  const totalNotifications =
+    (unreviewedFinished?.length ?? 0) +
+    (newComments?.length ?? 0) +
+    (runningFinishedAllNotifications?.length ?? 0);
+  const hasNewComments = (newComments?.length ?? 0) > 0;
+  const hasRunningFinishedAllNotifications = (runningFinishedAllNotifications?.length ?? 0) > 0;
+  const hasPendingFeedbacks = sortedUnreviewedFinished.length > 0;
   const renderHead = (
     <Stack direction="row" alignItems="center" sx={{ py: 2, pl: 2.5, pr: 1, minHeight: 68 }}>
       <Typography variant="h6" sx={{ flexGrow: 1 }}>
@@ -55,37 +69,61 @@ export default function FeedbackPopover() {
   );
   const refreshList = () => {
     initialize();
+    refetchRunningFinishedAllNotifications();
+  };
+
+  const handleMarkRunningNotificationAsRead = async (notificationId) => {
+    await markNotificationAsRead(notificationId);
+    refetchRunningFinishedAllNotifications();
   };
 
   const renderList = (
     <Scrollbar>
-      <Box>
-        <Typography p={2}>Novos comentários</Typography>
-        <List disablePadding>
-          {newComments?.map((itemComments) => (
-            <NewComments
-              key={itemComments.id}
-              comments={itemComments.comments}
-              finishedId={itemComments.id}
-              refetchNewComments={refetchNewComments}
-            />
-          ))}
-        </List>
-      </Box>
-      <Box>
-        <Typography p={2}>Feedbacks pendentes</Typography>
-        <List disablePadding>
-          {sortedUnreviewedFinished.map((feedback) => (
-            <FeedbackItem
-              key={feedback.id}
-              feedback={feedback}
-              smUp={smUp}
-              refreshList={refreshList}
-              handleWorkoutSelected={handleWorkoutSelected}
-            />
-          ))}
-        </List>
-      </Box>
+      {hasNewComments && (
+        <Box>
+          <Typography p={2}>Novos comentários</Typography>
+          <List disablePadding>
+            {newComments?.map((itemComments) => (
+              <NewComments
+                key={itemComments.id}
+                comments={itemComments.comments}
+                finishedId={itemComments.id}
+                refetchNewComments={refetchNewComments}
+              />
+            ))}
+          </List>
+        </Box>
+      )}
+      {hasRunningFinishedAllNotifications && (
+        <Box>
+          <Typography p={2}>Corridas concluídas</Typography>
+          <List disablePadding>
+            {runningFinishedAllNotifications?.map((notification) => (
+              <RunningFinishedAllItem
+                key={notification.id}
+                notification={notification}
+                onMarkAsRead={handleMarkRunningNotificationAsRead}
+              />
+            ))}
+          </List>
+        </Box>
+      )}
+      {hasPendingFeedbacks && (
+        <Box>
+          <Typography p={2}>Feedbacks pendentes</Typography>
+          <List disablePadding>
+            {sortedUnreviewedFinished.map((feedback) => (
+              <FeedbackItem
+                key={feedback.id}
+                feedback={feedback}
+                smUp={smUp}
+                refreshList={refreshList}
+                handleWorkoutSelected={handleWorkoutSelected}
+              />
+            ))}
+          </List>
+        </Box>
+      )}
     </Scrollbar>
   );
 

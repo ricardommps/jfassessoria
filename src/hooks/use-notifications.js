@@ -1,3 +1,4 @@
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useCallback } from 'react';
 import {
   clearCreateNotification,
@@ -8,6 +9,11 @@ import {
   readAtReq,
 } from 'src/redux/slices/notification';
 import { useDispatch, useSelector } from 'src/redux/store';
+import {
+  getRunningFinishedAllNotifications,
+  readNotification,
+} from 'src/services/notification.service';
+
 export default function useNotifications() {
   const dispatch = useDispatch();
   const {
@@ -80,4 +86,29 @@ export default function useNotifications() {
     deleteNotificationStatus,
     onClearCreateNotification,
   };
+}
+
+export function useRunningFinishedAllNotifications() {
+  return useQuery({
+    queryKey: ['running-finished-all-notifications'],
+    queryFn: getRunningFinishedAllNotifications,
+    staleTime: 1000 * 60 * 5,
+  });
+}
+
+export function useReadNotification(options = {}) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (notificationId) => readNotification(notificationId),
+    onSuccess: (data, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ['running-finished-all-notifications'],
+      });
+      options.onSuccess?.(data, variables);
+    },
+    onError: (error, variables) => {
+      options.onError?.(error, variables);
+    },
+  });
 }
