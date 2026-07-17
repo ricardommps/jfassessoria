@@ -49,7 +49,7 @@ export default function Trimp({ open, onClose, customerId }) {
 
   const RenderContent = () => (
     <>
-      <DialogTitle sx={{ m: 0, p: 2 }}>TRIMP - carge de treino</DialogTitle>
+      <DialogTitle sx={{ m: 0, p: 2 }}>TRIMP - Carga de treino</DialogTitle>
       <IconButton
         aria-label="close"
         onClick={handleClose}
