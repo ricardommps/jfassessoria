@@ -14,7 +14,7 @@ export default function useInvoice() {
 
   const onCreateAndEditInvoice = useCallback(
     async (payload, invoiceId) => {
-      await dispatch(createAndEditReq(payload, invoiceId));
+      return dispatch(createAndEditReq(payload, invoiceId));
     },
     [dispatch],
   );

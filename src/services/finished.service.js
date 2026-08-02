@@ -7,7 +7,7 @@ export function getNewComments() {
 
 export function createFeedback(customerId, id, payload) {
   return jfApi
-    .put(`${JF_APP_ENDPOINTS.finished}/reviewComment/${customerId}/${id}`, payload)
+    .put(`${JF_APP_ENDPOINTS.finished}/v2/reviewComment/${customerId}/${id}`, payload)
     .then((res) => res.data);
 }
 
