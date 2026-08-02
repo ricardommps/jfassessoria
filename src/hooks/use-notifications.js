@@ -59,7 +59,7 @@ export default function useNotifications() {
 
   const onCreateAndEdit = useCallback(
     async (payload, notificationId) => {
-      await dispatch(createAndEditReq(payload, notificationId));
+      return dispatch(createAndEditReq(payload, notificationId));
     },
     [dispatch],
   );

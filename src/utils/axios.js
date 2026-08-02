@@ -52,7 +52,8 @@ jfApi.interceptors.response.use(interceptor.onFulfilled, interceptor.onRejected)
 export const JF_APP_ENDPOINTS = {
   workouts: '/api/v2/workouts',
   finished: '/api/v2/finished',
-  notifications: '/api/v2/notification',
+  notifications: '/api/v2/notification/v2',
+  notificationsV2: '/api/v2/notification/v2',
   birthdays: '/api/v2/customer/birthdays/month',
   musclesWorked: '/api/v2/muscles-worked',
   invoice: '/api/v2/invoice',
@@ -72,9 +73,9 @@ export const API_ENDPOINTS = {
     byCustomer: '/api/v2/anamnese',
   },
   notifications: {
-    root: '/api/v2/notification',
-    all: 'api/v2/notification/all',
-    readAt: 'api/v2/notification/readAt',
+    root: '/api/v2/notification/v2',
+    all: '/api/v2/notification/v2/all',
+    readAt: '/api/v2/notification/v2/readAt',
   },
   auth: {
     me: '/api/v2/user/me',

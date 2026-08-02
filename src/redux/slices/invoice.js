@@ -110,10 +110,12 @@ export function createAndEditReq(payload, invoiceId) {
           invoicePayload,
         );
         dispatch(slice.actions.createAndEditSuccess(response.data));
-      } else {
-        const response = await jfAppApi.post(`${API_ENDPOINTS.invoice.root}`, invoicePayload);
-        dispatch(slice.actions.createAndEditSuccess(response.data));
+        return response.data;
       }
+
+      const response = await jfAppApi.post(`${API_ENDPOINTS.invoice.root}`, invoicePayload);
+      dispatch(slice.actions.createAndEditSuccess(response.data));
+      return response.data;
     } catch (error) {
       dispatch(slice.actions.createAndEditFailure(error));
       const errorMessage = 'Erro ao salvar os dados';

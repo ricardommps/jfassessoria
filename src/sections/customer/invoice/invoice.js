@@ -12,7 +12,28 @@ import useNotifications from 'src/hooks/use-notifications';
 
 import InvoiceForm from '../forms/invoice-form';
 import InvoiceItem from './invoice-item';
+
+const PAYMENT_NOTIFICATION_MESSAGE = 'Seu comprovante de pagamento já está disponivel';
+
+function buildInvoiceNotificationPayload(
+  customerId,
+  invoice,
+  message = PAYMENT_NOTIFICATION_MESSAGE,
+) {
+  return {
+    recipientId: customerId,
+    title: 'Olá',
+    content: message,
+    type: 'invoice',
+    link: `/invoice/download/${invoice.id}`,
+    metadata: {
+      invoiceId: invoice.id,
+    },
+  };
+}
+
 export default function Invoice({ customer, loading, setLoading }) {
+  const customerId = customer?.id ?? null;
   const { invoices, onGetInvoices, onCreateAndEditInvoice, onDeleteInvoice } = useInvoice();
   const { onCreateAndEdit } = useNotifications();
   const openForm = useBoolean();
@@ -21,15 +42,19 @@ export default function Invoice({ customer, loading, setLoading }) {
   const [invoiceSelected, setInvoiceSelected] = useState();
 
   const initialize = useCallback(async () => {
+    if (!customerId) {
+      return;
+    }
+
     setLoading(true);
     try {
-      await onGetInvoices(customer.id);
+      await onGetInvoices(customerId);
     } catch (error) {
       console.error(error);
     } finally {
       setLoading(false);
     }
-  }, [customer.id]);
+  }, [customerId, onGetInvoices, setLoading]);
 
   const handleClose = () => {
     openForm.onFalse();
@@ -45,21 +70,59 @@ export default function Invoice({ customer, loading, setLoading }) {
 
   const handleSalve = useCallback(
     async (data) => {
+      if (!customerId) {
+        return;
+      }
+
       setLoading(true);
       try {
         const payload = Object.assign({}, data);
-        payload.customerId = customer.id;
-        if (payload.id) {
-          await onCreateAndEditInvoice(payload, payload.id);
-        } else {
-          await onCreateAndEditInvoice(payload);
-        }
-        await onGetInvoices(customer.id);
+        const previousStatus = invoiceSelected?.status ?? null;
+        payload.customerId = customerId;
 
-        enqueueSnackbar('Fatura salva com sucesso!', {
-          autoHideDuration: 8000,
-          variant: 'success',
-        });
+        const savedInvoice = payload.id
+          ? await onCreateAndEditInvoice(payload, payload.id)
+          : await onCreateAndEditInvoice(payload);
+
+        const shouldSendPaymentNotification =
+          payload.status === 'paid' && previousStatus !== 'paid';
+
+        if (shouldSendPaymentNotification) {
+          const notificationInvoice = savedInvoice?.id
+            ? savedInvoice
+            : { ...payload, id: payload.id };
+
+          if (notificationInvoice?.id) {
+            try {
+              await onCreateAndEdit(
+                buildInvoiceNotificationPayload(customerId, notificationInvoice),
+              );
+            } catch (notificationError) {
+              console.error(notificationError);
+              enqueueSnackbar(
+                'Fatura salva, mas não foi possível enviar a notificação de pagamento.',
+                {
+                  autoHideDuration: 8000,
+                  variant: 'warning',
+                },
+              );
+              await onGetInvoices(customerId);
+              return;
+            }
+          }
+        }
+
+        await onGetInvoices(customerId);
+
+        enqueueSnackbar(
+          shouldSendPaymentNotification
+            ? 'Fatura salva e notificação enviada com sucesso!'
+            : 'Fatura salva com sucesso!',
+          {
+            autoHideDuration: 8000,
+            variant: 'success',
+          },
+        );
       } catch (error) {
         enqueueSnackbar('Não foi possível executar esta operação. Tente novamente mais tarde.', {
           autoHideDuration: 8000,
@@ -70,21 +133,25 @@ export default function Invoice({ customer, loading, setLoading }) {
         handleClose();
       }
     },
-    [customer.id],
+    [
+      customerId,
+      invoiceSelected?.status,
+      onCreateAndEdit,
+      onCreateAndEditInvoice,
+      onGetInvoices,
+      setLoading,
+    ],
   );
 
   const handleSendNotification = useCallback(
     async (message, invoice) => {
+      if (!customerId) {
+        return;
+      }
+
       setLoading(true);
       try {
-        const payload = {
-          recipientId: customer.id,
-          title: 'Olá',
-          content: message,
-          type: 'invoice',
-          link: `/invoice/download/${invoice.id}`,
-        };
-        await onCreateAndEdit(payload);
+        await onCreateAndEdit(buildInvoiceNotificationPayload(customerId, invoice, message));
         enqueueSnackbar('Notificação enviada com sucesso!', {
           autoHideDuration: 8000,
           variant: 'success',
@@ -99,12 +166,12 @@ export default function Invoice({ customer, loading, setLoading }) {
         handleSuccess();
       }
     },
-    [customer.id],
+    [customerId, onCreateAndEdit, setLoading],
   );
 
   useEffect(() => {
     initialize();
-  }, [initialize, customer.id]);
+  }, [initialize]);
 
   useEffect(() => {
     if (invoiceSelected) {
@@ -167,7 +234,7 @@ export default function Invoice({ customer, loading, setLoading }) {
         <Box>
           <InvoiceForm
             invoice={invoiceSelected}
-            customerId={customer.id}
+            customerId={customerId}
             setLoading={setLoading}
             loading={loading}
             onCancel={handleClose}
