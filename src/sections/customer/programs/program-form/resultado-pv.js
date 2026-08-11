@@ -32,7 +32,7 @@ export function ResultadoPv({ open, onClose, vla, paceVla, vlan, paceVlan, pace,
           >
             <Stack direction="row" sx={{ textAlign: 'left', justifyContent: 'left', width: '50%' }}>
               <ListItemText
-                primary={'Pace: '}
+                primary={'Pace do PV: '}
                 primaryTypographyProps={{
                   typography: 'subtitle1',
                 }}
