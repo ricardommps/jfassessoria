@@ -12,6 +12,7 @@ import { paceFormater } from 'src/utils/format-number';
 import { StyledDialogActions } from './styles';
 
 export function ResultadoPv({ open, onClose, vla, paceVla, vlan, paceVlan, pace, VO2, fc }) {
+  console.log('---PACE---', pace);
   return (
     <Dialog fullWidth maxWidth="xs" open={open} onClose={onClose}>
       <DialogTitle sx={{ p: (theme) => theme.spacing(3, 3, 2, 3) }}> Resultado PV </DialogTitle>
@@ -38,7 +39,7 @@ export function ResultadoPv({ open, onClose, vla, paceVla, vlan, paceVlan, pace,
                 sx={{ flex: 'none' }}
               />
               <Typography variant="subtitle2" sx={{ ml: 1 }}>
-                {paceFormater(pace)}
+                {pace}
               </Typography>
             </Stack>
             <Stack direction="row" spacing={0}>
