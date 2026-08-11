@@ -51,18 +51,23 @@ export default function HistoryItem({ historyItem, workoutInfo, refreshList, cus
   const openComments = useBoolean();
 
   const { data: comments, refetch: refetchNewComments } = useGetComments(historyItem.id);
+  const historyComments = comments ?? historyItem?.comments ?? [];
+  const commentsCount = historyComments.length;
 
   const { mutate: sendComment, isLoading } = useComments({
     invalidateQueries: ['history'], // ou qualquer query que precise atualizar
     onSuccess: () => openComments.onFalse(), // fecha o modal
   });
 
-  const lastComment = comments && comments[comments.length - 1];
+  const lastComment = historyComments[historyComments.length - 1];
 
   const { createFeedback } = useCreateFeedback();
-  const hasUnreadComments = comments?.some(
+  const hasUnreadComments = historyComments.some(
     (comment) => !comment.isAdmin === true && comment.read === false,
   );
+  const workoutName =
+    historyItem.trainingname ?? historyItem?.workout?.name ?? historyItem?.workout?.title;
+  const workoutSubtitle = historyItem.trainingsubtitle ?? historyItem?.workout?.subtitle;
 
   const [loading, setLoading] = useState(false);
   const opacityCard = () => {
@@ -140,10 +145,10 @@ export default function HistoryItem({ historyItem, workoutInfo, refreshList, cus
               <ListItemText
                 primary={
                   <Stack spacing={1} direction="row" alignItems="center" sx={{ typography: 'h6' }}>
-                    {getModuleName(historyItem.trainingname)}
+                    {getModuleName(workoutName)}
                   </Stack>
                 }
-                secondary={historyItem.trainingsubtitle}
+                secondary={workoutSubtitle}
                 primaryTypographyProps={{ typography: 'subtitle1' }}
                 secondaryTypographyProps={{ typography: 'subtitle2' }}
               />
@@ -158,10 +163,10 @@ export default function HistoryItem({ historyItem, workoutInfo, refreshList, cus
                 Treino não realizado
               </Label>
             )}
-            {!comments || comments?.length === 0 ? (
+            {commentsCount === 0 ? (
               <Typography variant="caption">O aluno não deixou comentário</Typography>
             ) : (
-              <Typography variant="caption">{`Comentário do Aluno: ${comments[0]?.content}`}</Typography>
+              <Typography variant="caption">{`Comentário do Aluno: ${historyComments[0]?.content}`}</Typography>
             )}
             {historyItem.typetraining ? (
               <>
@@ -327,26 +332,6 @@ export default function HistoryItem({ historyItem, workoutInfo, refreshList, cus
                   </Stack>
                 </Grid>
               )}
-              {historyItem?.coolDownDuration > 0 && (
-                <Grid xs={12} sm={6}>
-                  <Stack direction="row" alignItems="center">
-                    <ListItemText
-                      primary="Tempo de desaquecimento. (min)"
-                      secondary={convertSecondsToHourMinuteFormat(historyItem.coolDownDuration)}
-                      primaryTypographyProps={{
-                        typography: 'body2',
-                        color: 'text.primary',
-                        mb: 0.5,
-                      }}
-                      secondaryTypographyProps={{
-                        typography: 'subtitle2',
-                        color: 'text.secondary',
-                        component: 'span',
-                      }}
-                    />
-                  </Stack>
-                </Grid>
-              )}
 
               {historyItem?.coolDownIntensities > 0 && (
                 <Grid xs={12} sm={6}>
@@ -458,7 +443,7 @@ export default function HistoryItem({ historyItem, workoutInfo, refreshList, cus
                   <FormProvider
                     methods={methods}
                     onSubmit={handleSubmit((data) => {
-                      const commentId = comments?.length > 0 ? comments[0].id : undefined;
+                      const commentId = commentsCount > 0 ? historyComments[0].id : undefined;
                       handleSubmitFeedback(data, commentId);
                     })}
                   >
@@ -505,7 +490,7 @@ export default function HistoryItem({ historyItem, workoutInfo, refreshList, cus
                   onClick={openComments.onTrue}
                 >
                   <Badge
-                    badgeContent={comments?.length || 0}
+                    badgeContent={commentsCount}
                     color={hasUnreadComments ? 'error' : 'primary'}
                   >
                     <CommentIcon fontSize="small" />
@@ -524,7 +509,7 @@ export default function HistoryItem({ historyItem, workoutInfo, refreshList, cus
             refetchNewComments(); // 🔄 recarrega newComments
             refreshList();
           }}
-          comments={comments}
+          comments={historyComments}
           onSend={handleSendComment}
           isLoading={isLoading} // opcional para desabilitar botão durante envio
         />
