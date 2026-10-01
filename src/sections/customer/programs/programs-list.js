@@ -25,6 +25,10 @@ export const NEW_OPTIONS = [
     value: 2,
     label: 'Programa de força',
   },
+  {
+    value: 3,
+    label: 'Complementares',
+  },
 ];
 
 export default function ProgramsList({ id }) {

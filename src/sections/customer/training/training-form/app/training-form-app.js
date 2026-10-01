@@ -29,6 +29,7 @@ import { useBoolean } from 'src/hooks/use-boolean';
 import { trainingModules } from 'src/utils/training-modules';
 import * as Yup from 'yup';
 
+import { isGymProgram, isRunningProgram } from '../../../programs/program-type';
 import SelectMedia from './select-media';
 import WorkoutViewApp from './workout-view-app';
 
@@ -43,6 +44,8 @@ export default function TrainingFormApp({
   loadingForm,
 }) {
   const { id, type } = program;
+  const isGym = isGymProgram(type);
+  const isRunning = isRunningProgram(type);
   const tablePv = useTablePvContext();
   const exertionZone = useBoolean();
 
@@ -88,15 +91,15 @@ export default function TrainingFormApp({
       finished: workout?.finished || false,
       // Corrigido: converter para number ou null
       displayOrder: workout?.displayOrder ? Number(workout.displayOrder) : null,
-      running: workout?.running || (type === 1 ? true : false),
+      running: workout?.running || isRunning,
       workoutItems: workout?.workoutItems || [],
       musclesWorked: workout?.musclesWorked || true,
     }),
-    [workout, id, type], // Adicione as dependências
+    [workout, id, isRunning], // Adicione as dependências
   );
 
   const methods = useForm({
-    resolver: yupResolver(type === 2 ? NewTraininGymSchema : NewTrainingRunnerSchema),
+    resolver: yupResolver(isGym ? NewTraininGymSchema : NewTrainingRunnerSchema),
     defaultValues,
   });
 
@@ -402,10 +405,10 @@ export default function TrainingFormApp({
   }, [values.datePublished, setValue]);
 
   useEffect(() => {
-    if (type === 2) {
-      setValue('title', 'FORCA');
+    if (isGym) {
+      setValue('title', type === 3 ? 'COMPLEMENTARES' : 'FORCA');
     }
-  }, [type, setValue]);
+  }, [isGym, setValue, type]);
 
   useEffect(() => {
     if (workout) {
@@ -430,7 +433,7 @@ export default function TrainingFormApp({
               .
             </Typography>
           </Stack>
-          {(!type || type === 1) && (
+          {isRunning && (
             <Stack>
               <Button variant="outlined" sx={{ width: 'fit-content' }} onClick={tablePv.onToggle}>
                 {!tablePv.open ? 'Exibir tabela Pv' : 'Ocultas tabela Pv'}
@@ -449,8 +452,8 @@ export default function TrainingFormApp({
               <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
                 <>
                   <Box rowGap={3} columnGap={2} display="grid" pt={2}>
-                    {type === 2 ? (
-                      <Typography>Força</Typography>
+                    {isGym ? (
+                      <Typography>{type === 3 ? 'Complementares' : 'Força'}</Typography>
                     ) : (
                       <RHFSelect name="title" label="Módulo *" variant="standard">
                         {trainingModules.map((option) => (
@@ -460,7 +463,7 @@ export default function TrainingFormApp({
                         ))}
                       </RHFSelect>
                     )}
-                    {type === 2 && (
+                    {isGym && (
                       <Stack>
                         <RHFTextField
                           name="displayOrder"
@@ -488,7 +491,7 @@ export default function TrainingFormApp({
                       />
                     </Stack>
 
-                    {type === 1 && (
+                    {isRunning && (
                       <>
                         <Controller
                           name="distance"
@@ -640,7 +643,7 @@ export default function TrainingFormApp({
                         ))}
                       </Stack>
                     </Box>
-                    {(!type || type === 1) && (
+                    {isRunning && (
                       <Stack mt={1}>
                         <Controller
                           name="datePublished"

@@ -26,6 +26,7 @@ const DIFFICULTYLEVELOPTIONS = [
 
 export default function GymProgramForm({
   program,
+  programType,
   onUpdateProgram,
   onCreateProgram,
   handleClose,
@@ -48,7 +49,7 @@ export default function GymProgramForm({
       customerId: program?.customerId || customer?.id,
       active: false,
       referenceMonth: program?.referenceMonth || null,
-      type: program?.type || 2,
+      type: program?.type || programType || 2,
       startDate: program?.startDate || null,
       endDate: program?.endDate || null,
       additionalInformation: program?.additionalInformation || '',
@@ -140,10 +141,20 @@ export default function GymProgramForm({
     <>
       <Stack>
         <Typography sx={{ fontSize: '1.5em', fontWeight: 'bold', color: '#f7951e' }}>
-          {program ? 'Editar Programa de Força' : 'Novo Programa de Força'}
+          {program?.type === 3 || programType === 3
+            ? program
+              ? 'Editar Programa Complementar'
+              : 'Novo Programa Complementar'
+            : program
+            ? 'Editar Programa de Força'
+            : 'Novo Programa de Força'}
         </Typography>
         <Typography sx={{ fontSize: 'smaller', color: '#777', marginBottom: 2 }}>
-          {program
+          {program?.type === 3 || programType === 3
+            ? program
+              ? 'Atualize os dados do programa complementar com este formulário'
+              : 'Cadastre um novo programa complementar para seu aluno com este formulário'
+            : program
             ? 'Atualize os dados do programa de força com este formulário'
             : 'Cadastre um novo programa de força para seu aluno com este formulário'}
           .

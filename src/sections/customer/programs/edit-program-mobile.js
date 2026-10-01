@@ -11,6 +11,7 @@ import LoadingProgress from 'src/components/loading-progress';
 
 import GymProgramForm from './program-form/gym-program-form';
 import RunningProgramForm from './program-form/running-program-form';
+import { isGymProgram, isRunningProgram } from './program-type';
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -44,10 +45,11 @@ export default function EditProgramMobile({
       {loading && <LoadingProgress />}
       {!loading && (
         <>
-          {type === 2 && (
+          {isGymProgram(type) && (
             <Box p={2}>
               <GymProgramForm
                 program={program}
+                programType={type}
                 onUpdateProgram={onUpdateProgram}
                 onCreateProgram={onCreateProgram}
                 handleClose={handleClose}
@@ -56,7 +58,7 @@ export default function EditProgramMobile({
             </Box>
           )}
 
-          {(!type || type === 1) && (
+          {isRunningProgram(type) && (
             <Box p={2}>
               <RunningProgramForm
                 program={program}

@@ -8,14 +8,13 @@ import Badge from '@mui/material/Badge';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
-import Chip from '@mui/material/Chip';
 import ListItemText from '@mui/material/ListItemText';
 import Stack from '@mui/material/Stack';
 import { useTheme } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Unstable_Grid2';
 import dynamic from 'next/dynamic';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { CommentsDialog } from 'src/components/comments';
 import { IntensityBadges } from 'src/components/feedback/IntensityBadges';
@@ -28,7 +27,6 @@ import { useComments, useGetComments } from 'src/hooks/use-commnts';
 import useFeedback from 'src/hooks/use-feedback';
 import { useCreateFeedback } from 'src/hooks/use-finished';
 import { useResponsive } from 'src/hooks/use-responsive';
-import useWorkout from 'src/hooks/use-workout';
 import {
   convertMetersToKilometersFormat,
   convertPaceToSpeed,
@@ -61,7 +59,7 @@ export default function HistoryItem({ historyItem, workoutInfo, refreshList, cus
 
   const lastComment = historyComments[historyComments.length - 1];
 
-  const { createFeedback } = useCreateFeedback();
+  const { createFeedback, isCreatingFeedback } = useCreateFeedback();
   const hasUnreadComments = historyComments.some(
     (comment) => !comment.isAdmin === true && comment.read === false,
   );
@@ -69,7 +67,6 @@ export default function HistoryItem({ historyItem, workoutInfo, refreshList, cus
     historyItem.trainingname ?? historyItem?.workout?.name ?? historyItem?.workout?.title;
   const workoutSubtitle = historyItem.trainingsubtitle ?? historyItem?.workout?.subtitle;
 
-  const [loading, setLoading] = useState(false);
   const opacityCard = () => {
     return 1;
   };
@@ -461,7 +458,12 @@ export default function HistoryItem({ historyItem, workoutInfo, refreshList, cus
                       />
                     </Box>
                     <Stack alignItems="flex-end" sx={{ mt: 3 }} spacing={2}>
-                      <LoadingButton type="submit" variant="contained" fullWidth loading={loading}>
+                      <LoadingButton
+                        type="submit"
+                        variant="contained"
+                        fullWidth
+                        loading={isCreatingFeedback}
+                      >
                         Salvar
                       </LoadingButton>
                       <Button
@@ -469,7 +471,7 @@ export default function HistoryItem({ historyItem, workoutInfo, refreshList, cus
                         variant="outlined"
                         color="warning"
                         onClick={feedBackForm.onFalse}
-                        disabled={loading}
+                        disabled={isCreatingFeedback}
                       >
                         Cancelar
                       </Button>
