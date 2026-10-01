@@ -12,7 +12,6 @@ import Typography from '@mui/material/Typography';
 import { enqueueSnackbar } from 'notistack';
 import { forwardRef, useCallback, useEffect, useState } from 'react';
 import { ConfirmDialog } from 'src/components/confirm-dialog';
-import CustomPopover, { usePopover } from 'src/components/custom-popover';
 import LoadingProgress from 'src/components/loading-progress';
 import ProgramInfo from 'src/components/program-info/program-info';
 import TrainingVolume from 'src/components/training-volume/trainingVolume';
@@ -46,7 +45,6 @@ export default function TrainingListMobile({
   const createApp = useBoolean();
   const programInfo = useBoolean();
   const notification = useBoolean();
-  const popover = usePopover();
 
   const confirm = useBoolean();
   const { onSendTraining } = useWorkout();
@@ -197,7 +195,6 @@ export default function TrainingListMobile({
               <TrainingListAction
                 type={type}
                 volume={volume}
-                popover={popover}
                 programInfo={programInfo}
                 handleOpenCreateTraining={handleOpenCreateTraining}
                 handleClose={handleClose}

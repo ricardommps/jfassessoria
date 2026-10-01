@@ -34,6 +34,7 @@ import { _tags } from 'src/utils/tags';
 import { trainingModules } from 'src/utils/training-modules';
 import * as Yup from 'yup';
 
+import { isGymProgram, isRunningProgram } from '../../programs/program-type';
 import WorkoutView from './workout/workout-view';
 
 const stretchTags = ['Alongamento ativo', 'Alongamento passivo', 'Alongamentos'];
@@ -49,6 +50,8 @@ export default function TrainingForm({
   onClose,
 }) {
   const { id, type } = program;
+  const isGym = isGymProgram(type);
+  const isRunning = isRunningProgram(type);
   const tablePv = useTablePvContext();
   const listMedias = useBoolean();
   const isStretches = useBoolean();
@@ -98,7 +101,7 @@ export default function TrainingForm({
   );
 
   const methods = useForm({
-    resolver: yupResolver(type === 2 ? NewTraininGymSchema : NewTrainingRunnerSchema),
+    resolver: yupResolver(isGym ? NewTraininGymSchema : NewTrainingRunnerSchema),
     defaultValues,
   });
 
@@ -139,7 +142,7 @@ export default function TrainingForm({
             workout: newData,
             medias: uniqueMedias,
           };
-          if (!type || type === 1) {
+          if (isRunning) {
             payload.workout.running = true;
           }
           await onCreateTraining(payload);
@@ -547,10 +550,10 @@ export default function TrainingForm({
   }, [values.datePublished]);
 
   useEffect(() => {
-    if (type === 2) {
-      setValue('name', 'FORCA');
+    if (isGym) {
+      setValue('name', type === 3 ? 'COMPLEMENTARES' : 'FORCA');
     }
-  }, [type]);
+  }, [isGym, setValue, type]);
 
   return (
     <>
@@ -566,7 +569,7 @@ export default function TrainingForm({
             .
           </Typography>
         </Stack>
-        {(!type || type === 1) && (
+        {isRunning && (
           <Stack>
             <Button variant="outlined" sx={{ width: 'fit-content' }} onClick={tablePv.onToggle}>
               {!tablePv.open ? 'Exibir tabela Pv' : 'Ocultas tabela Pv'}
@@ -585,8 +588,8 @@ export default function TrainingForm({
             <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
               <>
                 <Box rowGap={3} columnGap={2} display="grid" pt={2}>
-                  {type === 2 ? (
-                    <Typography>Força</Typography>
+                  {isGym ? (
+                    <Typography>{type === 3 ? 'Complementares' : 'Força'}</Typography>
                   ) : (
                     <RHFSelect name="name" label="Módulo *" variant="standard">
                       {trainingModules.map((option) => (
@@ -596,7 +599,7 @@ export default function TrainingForm({
                       ))}
                     </RHFSelect>
                   )}
-                  {type === 2 && (
+                  {isGym && (
                     <Stack>
                       <RHFTextField
                         name="displayOrder"
@@ -609,8 +612,8 @@ export default function TrainingForm({
                   <Stack>
                     <RHFTextField name="subtitle" label="Subtítulo" />
                   </Stack>
-                  {type === 2 && <>{renderTags}</>}
-                  {(!type || type === 1) && (
+                  {isGym && <>{renderTags}</>}
+                  {isRunning && (
                     <Stack mt={1}>
                       <Controller
                         name="datePublished"
@@ -667,7 +670,7 @@ export default function TrainingForm({
                   )}
                   <Box>
                     <RHFTextField name="heating" label="Aquecimento" multiline rows={3} />
-                    {type === 2 && (
+                    {isGym && (
                       <Accordion
                         aria-controls="heating-medias-content"
                         id="heating-medias-header"
@@ -721,7 +724,7 @@ export default function TrainingForm({
                       </Accordion>
                     )}
                   </Box>
-                  {(!type || type === 1) && (
+                  {isRunning && (
                     <Accordion
                       aria-controls="stretches-medias-content"
                       id="stretches-medias-header"
@@ -777,7 +780,7 @@ export default function TrainingForm({
                   )}
 
                   <RHFTextField name="description" label="Parte principal" multiline rows={6} />
-                  {type === 2 && (
+                  {isGym && (
                     <Accordion
                       aria-controls="stretches-medias-content"
                       id="stretches-medias-header"

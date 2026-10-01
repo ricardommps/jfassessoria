@@ -25,14 +25,23 @@ export default function TrimpStackedBarChart({ data }) {
     return d;
   };
 
+  const parseExecutionDay = (value) =>
+    new Date(value.includes('T') ? value : value.replace(' ', 'T'));
+
   // --- Semana inicia no DOMINGO ---
   const startOfWeekSunday = (date) => {
     const d = new Date(date);
     const day = d.getDay(); // 0 = domingo
-    return addDays(d, -day);
+    const start = addDays(d, -day);
+    start.setHours(0, 0, 0, 0);
+    return start;
   };
 
-  const endOfWeekSunday = (date) => addDays(startOfWeekSunday(date), 6);
+  const endOfWeekSunday = (date) => {
+    const end = addDays(startOfWeekSunday(date), 6);
+    end.setHours(23, 59, 59, 999);
+    return end;
+  };
 
   const isBetween = (date, start, end) => date >= start && date <= end;
 
@@ -56,7 +65,7 @@ export default function TrimpStackedBarChart({ data }) {
   // ==========================================
 
   const filteredData = data.filter((item) =>
-    isBetween(new Date(item.executionDay), weekStart, weekEnd),
+    isBetween(parseExecutionDay(item.executionDay), weekStart, weekEnd),
   );
 
   // ==========================================
@@ -74,14 +83,19 @@ export default function TrimpStackedBarChart({ data }) {
 
   const grouped = {};
   weekDays.forEach((day) => {
-    grouped[day] = { running: 0, nonRunning: 0 };
+    grouped[day] = { running: 0, nonRunning: 0, complementary: 0 };
   });
 
   filteredData.forEach((item) => {
-    const day = item.executionDay.split(' ')[0];
+    const day = toYMD(parseExecutionDay(item.executionDay));
     if (grouped[day]) {
-      if (item.running) grouped[day].running += item.trimp;
-      else grouped[day].nonRunning += item.trimp;
+      if (item.programType === 3 || item.type === 'complementar') {
+        grouped[day].complementary += item.trimp;
+      } else if (item.programType === 1 || item.type === 'corrida' || item.running) {
+        grouped[day].running += item.trimp;
+      } else {
+        grouped[day].nonRunning += item.trimp;
+      }
     }
   });
 
@@ -94,9 +108,15 @@ export default function TrimpStackedBarChart({ data }) {
     label: formatDate(day),
     Corrida: grouped[day].running,
     Força: grouped[day].nonRunning,
+    Complementar: grouped[day].complementary,
   }));
 
-  const dailyTrimpValues = chartData.map((d) => d.Corrida + d.Força);
+  const dailyTrimpValues = chartData.map((d) => d.Corrida + d.Força + d.Complementar);
+  const maxGroupedTrimp = Math.max(
+    ...chartData.flatMap((item) => [item.Corrida, item.Força, item.Complementar]),
+    0,
+  );
+  const yMax = Math.max(100, Math.ceil(maxGroupedTrimp / 100) * 100);
 
   // ==========================================
   // Navegação
@@ -105,7 +125,7 @@ export default function TrimpStackedBarChart({ data }) {
   const hasPrevWeek = useMemo(() => {
     const prevStart = addDays(weekStart, -7);
     const prevEnd = addDays(weekEnd, -7);
-    return data.some((d) => isBetween(new Date(d.executionDay), prevStart, prevEnd));
+    return data.some((d) => isBetween(parseExecutionDay(d.executionDay), prevStart, prevEnd));
   }, [weekOffset]);
 
   const hasNextWeek = useMemo(() => {
@@ -159,18 +179,20 @@ export default function TrimpStackedBarChart({ data }) {
         </Box>
 
         {/* Gráfico */}
-        <ResponsiveContainer width="100%" height={350}>
+        <ResponsiveContainer width="100%" height={260}>
           <BarChart
             data={chartData}
             margin={{ top: 10, right: 5, left: -10, bottom: 5 }}
-            barSize={45}
+            barGap={2}
+            barCategoryGap="22%"
           >
             <CartesianGrid strokeDasharray="3 3" stroke="#333" />
             <XAxis dataKey="label" stroke="#999" style={{ fontSize: 12 }} />
-            <YAxis stroke="#999" style={{ fontSize: 12 }} />
+            <YAxis domain={[0, yMax]} stroke="#999" style={{ fontSize: 12 }} tickCount={5} />
             <Legend wrapperStyle={{ paddingTop: 20 }} iconType="square" />
-            <Bar dataKey="Força" stackId="a" fill="#f55858" />
-            <Bar dataKey="Corrida" stackId="a" fill="#fc1c1c" />
+            <Bar dataKey="Corrida" fill="#fc1c1c" />
+            <Bar dataKey="Força" fill="#f55858" />
+            <Bar dataKey="Complementar" fill="#8e8e93" />
           </BarChart>
         </ResponsiveContainer>
       </Paper>

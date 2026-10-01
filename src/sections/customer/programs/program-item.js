@@ -25,8 +25,10 @@ import { useBoolean } from 'src/hooks/use-boolean';
 import useProgram from 'src/hooks/use-program';
 import { useResponsive } from 'src/hooks/use-responsive';
 import PreviewPdf from 'src/sections/program/preview-pdf';
+
 // components
 // utils
+import { getProgramTypeLabel, isGymProgram, isRunningProgram } from './program-type';
 
 export default function ProgramItem({
   program,
@@ -99,8 +101,8 @@ export default function ProgramItem({
             sx={{ mb: 2 }}
             spacing={3}
           >
-            <Label variant="soft" color={(program.type === 2 && 'info') || 'primary'}>
-              {program.type === 2 ? 'Treino de força' : 'Treino de corrida'}
+            <Label variant="soft" color={(isGymProgram(program.type) && 'info') || 'primary'}>
+              {getProgramTypeLabel(program.type)}
             </Label>
             <Box component="span" sx={{ typography: 'caption', color: 'text.disabled' }}>
               {program?.referenceMonth ? renderreferenceMonth(program.referenceMonth) : '-'}
@@ -125,7 +127,7 @@ export default function ProgramItem({
             >
               <Iconify icon="eva:more-horizontal-fill" />
             </IconButton>
-            {(!program?.type || program.type === 1) && (
+            {isRunningProgram(program?.type) && (
               <Stack
                 spacing={1.5}
                 flexGrow={1}
@@ -165,7 +167,7 @@ export default function ProgramItem({
           <EditIcon sx={{ fontSize: '22px', width: '22px', height: '30px' }} />
           Editar programa
         </MenuItem>
-        {program.type === 2 && (
+        {isGymProgram(program.type) && (
           <MenuItem
             onClick={() => {
               viewPdf.onTrue();

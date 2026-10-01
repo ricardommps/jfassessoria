@@ -5,7 +5,6 @@ import { enqueueSnackbar } from 'notistack';
 import { useCallback, useState } from 'react';
 import DialogProvider from 'src/app/context/dialog-provider';
 import { ConfirmDialog } from 'src/components/confirm-dialog';
-import { usePopover } from 'src/components/custom-popover';
 import LoadingProgress from 'src/components/loading-progress';
 import ProgramInfo from 'src/components/program-info/program-info';
 import TrainingVolume from 'src/components/training-volume/trainingVolume';
@@ -18,17 +17,6 @@ import SendTraining from './send-training/send-training';
 import CreateTrainingApp from './training-form/app/create-training-app';
 import CreateTraining from './training-form/create-training';
 import TrainingItem from './training-item';
-
-export const NEW_OPTIONS = [
-  {
-    value: 1,
-    label: 'Versão 1',
-  },
-  {
-    value: 2,
-    label: 'Versão app',
-  },
-];
 
 export default function TrainingList({
   loading,
@@ -46,8 +34,6 @@ export default function TrainingList({
   const volume = useBoolean();
   const notification = useBoolean();
   const { onSendTraining } = useWorkout();
-
-  const popover = usePopover();
 
   const [openSend, setOpenSend] = useState({
     open: false,
@@ -173,7 +159,6 @@ export default function TrainingList({
                 <TrainingListAction
                   type={type}
                   volume={volume}
-                  popover={popover}
                   programInfo={programInfo}
                   handleOpenCreateTraining={handleOpenCreateTraining}
                   handleClose={handleClose}

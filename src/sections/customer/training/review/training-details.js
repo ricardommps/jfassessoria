@@ -20,10 +20,12 @@ import {
 } from 'src/utils/convertValues';
 import { getModuleName } from 'src/utils/training-modules';
 
+import { isRunningProgram } from '../../programs/program-type';
 import FinishedForm from './finished-form';
 import MediasList from './media-list';
 export default function TrainingDetails({ training, finished, program }) {
   const theme = useTheme();
+  const isRunning = isRunningProgram(program?.type);
   const [editForm, showEditForm] = useState(false);
 
   const handleEditForm = useCallback(() => {
@@ -143,7 +145,7 @@ export default function TrainingDetails({ training, finished, program }) {
         <>
           <Divider sx={{ borderStyle: 'dashed' }} />
           <Typography align="center" fontWeight={'bold'} variant="h5">
-            {!program.type || program.type === 1 ? 'Descrição' : 'Parte principal'}
+            {isRunning ? 'Descrição' : 'Parte principal'}
           </Typography>
 
           {training?.description && (
@@ -182,7 +184,7 @@ export default function TrainingDetails({ training, finished, program }) {
           )}
         </>
       )}
-      {(!program?.type || program?.type === 1) && (
+      {isRunning && (
         <Stack direction="row" alignItems="center" sx={{ mb: 1 }}>
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
             Informações do aluno
