@@ -84,19 +84,17 @@ export function formatLessonPackageWhatsappMessage(lessonPackage) {
   const totalLessons = Number(lessonPackage?.totalLessons ?? classes.length);
   const barterCount = classes.filter((lessonClass) => lessonClass.type === 'barter').length;
   const lessonLines = classes.map((lessonClass, index) => {
-    const lessonLine = `${index + 1}- ${formatLessonDate(lessonClass.scheduledDate)}${formatLessonStatus(
-      lessonClass,
-    )}${lessonClass.status === 'finished' ? ' ✅' : ''}`;
+    const lessonLine = `${index + 1}- ${formatLessonDate(
+      lessonClass.scheduledDate,
+    )}${formatLessonStatus(lessonClass)}${lessonClass.status === 'finished' ? ' ✅' : ''}`;
     const notes = String(lessonClass.notes || '').trim();
 
     return notes ? `${lessonLine}\n${notes}` : lessonLine;
   });
-  const header = [lessonPackage?.title, lessonPackage?.description]
-    .filter(Boolean)
-    .join('\n');
-  const totalLabel = `${totalLessons} aula${totalLessons === 1 ? '' : 's'}, sendo ${barterCount} permuta${
-    barterCount === 1 ? '' : 's'
-  }`;
+  const header = [lessonPackage?.title, lessonPackage?.description].filter(Boolean).join('\n');
+  const totalLabel = `${totalLessons} aula${
+    totalLessons === 1 ? '' : 's'
+  }, sendo ${barterCount} permuta${barterCount === 1 ? '' : 's'}`;
   const sections = [
     header || 'Cronograma de aulas',
     lessonLines.join('\n'),
