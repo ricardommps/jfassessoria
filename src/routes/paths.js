@@ -32,6 +32,8 @@ export const paths = {
       create: (type, id) => `${ROOTS.DASHBOARD}/customer/create/${type}/${id}`,
       edit: (id) => `${ROOTS.DASHBOARD}/customer/edit/${id}`,
       program: (id) => `${ROOTS.DASHBOARD}/customer/program/${id}`,
+      lessonPackages: (id) => `${ROOTS.DASHBOARD}/customer/lesson-packages/${id}`,
+      lessonPackagesNew: (id) => `${ROOTS.DASHBOARD}/customer/lesson-packages/${id}/new`,
     },
     metrics: {
       root: (id) => `${ROOTS.DASHBOARD}/metrics/${id}`,

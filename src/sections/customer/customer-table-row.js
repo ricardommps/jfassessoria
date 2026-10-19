@@ -1,6 +1,7 @@
 // @mui
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import BarChartIcon from '@mui/icons-material/BarChart';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import Avatar from '@mui/material/Avatar';
 import Chip from '@mui/material/Chip';
 import IconButton from '@mui/material/IconButton';
@@ -15,6 +16,8 @@ import Iconify from 'src/components/iconify';
 import SvgColor from 'src/components/svg-color/svg-color';
 import { useRouter } from 'src/routes/hook';
 import { paths } from 'src/routes/paths';
+
+import { PROGRAM_TYPES } from './programs/program-type';
 
 export default function CustomerTableRow({ row, selected, setCustomerSelected }) {
   const popover = usePopover();
@@ -32,45 +35,25 @@ export default function CustomerTableRow({ row, selected, setCustomerSelected })
   const RendetExchangeDate = () => {
     const programs = Array.isArray(row?.programs) ? row.programs : [];
 
-    // Encontrar por tipo
-    const corrida = programs.find((p) => p?.type === 1);
-    const forca = programs.find((p) => p?.type === 2);
+    const exchangeDates = [
+      { type: PROGRAM_TYPES.GYM, label: 'Força' },
+      { type: PROGRAM_TYPES.RUNNING, label: 'Corrida' },
+      { type: PROGRAM_TYPES.COMPLEMENTARY, label: 'Complementares' },
+    ].flatMap(({ type, label }) => {
+      const program = programs.find((item) => item?.type === type);
+      return program ? [{ type, label, date: getProgramDate(program) || '—' }] : [];
+    });
 
-    // Sem programas: não renderiza nada
-    if (!corrida && !forca) return null;
-
-    // Monta nós de UI
-    const primaryNode = forca ? (
-      <Stack>
-        <Typography sx={{ color: 'text.primary' }}>
-          Força: {getProgramDate(forca) || '—'}
-        </Typography>
-      </Stack>
-    ) : corrida ? (
-      // Se só tem corrida, ela vai no primary
-      <Stack>
-        <Typography sx={{ color: 'text.primary' }}>
-          Corrida: {getProgramDate(corrida) || '—'}
-        </Typography>
-      </Stack>
-    ) : null;
-
-    const secondaryNode =
-      forca && corrida ? (
-        <Stack>
-          <Typography sx={{ color: 'text.primary' }}>
-            Corrida: {getProgramDate(corrida) || '—'}
-          </Typography>
-        </Stack>
-      ) : undefined; // sem secondary quando só existe um tipo
+    if (!exchangeDates.length) return null;
 
     return (
-      <ListItemText
-        primary={primaryNode}
-        secondary={secondaryNode}
-        primaryTypographyProps={{ typography: 'body2' }}
-        secondaryTypographyProps={{ component: 'span', color: 'text.disabled' }}
-      />
+      <Stack>
+        {exchangeDates.map(({ type, label, date }) => (
+          <Typography key={type} sx={{ color: 'text.primary' }}>
+            {label}: {date}
+          </Typography>
+        ))}
+      </Stack>
     );
   };
 
@@ -131,6 +114,15 @@ export default function CustomerTableRow({ row, selected, setCustomerSelected })
 
         {row.active && (
           <>
+            <MenuItem
+              onClick={() => {
+                popover.onClose();
+                router.push(paths.dashboard.customer.lessonPackages(row.id));
+              }}
+            >
+              <CalendarMonthIcon sx={{ mr: 1 }} />
+              Pacotes de aulas
+            </MenuItem>
             <MenuItem
               onClick={() => {
                 popover.onClose();

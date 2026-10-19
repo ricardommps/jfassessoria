@@ -13,9 +13,9 @@ import useCustomer from 'src/hooks/use-customer';
 
 import Birthday from '../birthday';
 import ExpiredPrograms from '../ExpiredPrograms';
+import ExpiringLessonPackages from '../expiring-lesson-packages';
 import ListUsers from '../list-users/list-users';
 import OverdueInvoices from '../OverdueInvoices';
-import RegisteredPrograms from '../registeredPrograms/registered-programs';
 import UsersActive from '../users-active';
 
 const CUSTOMER_TABLE_HEAD = [
@@ -82,11 +82,14 @@ export default function DashboardView() {
           )}
         </Grid>
 
-        <Grid xs={12} md={6}>
+        <Grid xs={12} md={4}>
           <OverdueInvoices />
         </Grid>
-        <Grid xs={12} md={6}>
+        <Grid xs={12} md={4}>
           <ExpiredPrograms />
+        </Grid>
+        <Grid xs={12} md={4}>
+          <ExpiringLessonPackages />
         </Grid>
         <Grid xs={12} md={12}>
           <ListUsers title="Alunos" tableData={customers} tableLabels={CUSTOMER_TABLE_HEAD} />
