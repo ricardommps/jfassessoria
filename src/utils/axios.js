@@ -60,6 +60,7 @@ export const JF_APP_ENDPOINTS = {
   program: '/api/v2/program',
   comments: '/api/v2/comments',
   media: '/api/v2/media',
+  lessonPackages: '/api/v2/customer-lesson-packages',
 };
 
 export const API_ENDPOINTS = {

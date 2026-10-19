@@ -37,7 +37,7 @@ export default function InvoiceItem({
   const onDelete = useBoolean();
 
   const [messageInvoice, setMessageInvoice] = useState(
-    'Seu comprovante de pagamento já está disponivel',
+    'Seu comprovante de pagamento já está disponível',
   );
   const handleDelete = useCallback(async () => {
     try {

@@ -13,7 +13,7 @@ import useNotifications from 'src/hooks/use-notifications';
 import InvoiceForm from '../forms/invoice-form';
 import InvoiceItem from './invoice-item';
 
-const PAYMENT_NOTIFICATION_MESSAGE = 'Seu comprovante de pagamento já está disponivel';
+const PAYMENT_NOTIFICATION_MESSAGE = 'Seu comprovante de pagamento já está disponível';
 
 function buildInvoiceNotificationPayload(
   customerId,
