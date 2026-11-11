@@ -22,6 +22,22 @@ export function fDate(date, newFormat) {
   return format(parsedDate, fm, { locale: ptBR });
 }
 
+// executionDay is a calendar date, not a UTC timestamp. Parsing YYYY-MM-DD
+// with new Date shifts it to the previous day in Brazilian time zones.
+export function fDateOnly(date, newFormat) {
+  const fm = newFormat || 'dd MMM yyyy';
+
+  if (!date) return '';
+
+  const value = String(date);
+  const match = value.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  const parsedDate = match
+    ? new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]))
+    : new Date(date);
+
+  return format(parsedDate, fm, { locale: ptBR });
+}
+
 export function fDateMetrics(date, newFormat) {
   const fm = newFormat || 'yyyy-MM-dd';
 

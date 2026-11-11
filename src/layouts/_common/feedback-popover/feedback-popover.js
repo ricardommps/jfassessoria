@@ -77,6 +77,12 @@ export default function FeedbackPopover() {
     refetchRunningFinishedAllNotifications();
   };
 
+  const handleOpenDrawer = () => {
+    drawer.onTrue();
+    initialize();
+    refetchRunningFinishedAllNotifications();
+  };
+
   const renderList = (
     <Scrollbar>
       {hasNewComments && (
@@ -159,7 +165,7 @@ export default function FeedbackPopover() {
         whileHover="hover"
         variants={varHover(1.05)}
         color={drawer.value ? 'primary' : 'default'}
-        onClick={drawer.onTrue}
+        onClick={handleOpenDrawer}
       >
         <Badge badgeContent={totalNotifications} color="error" showZero>
           <Iconify icon="solar:bell-bing-bold-duotone" width={24} />
