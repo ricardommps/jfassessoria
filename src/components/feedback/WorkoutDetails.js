@@ -22,7 +22,7 @@ import {
   convertSecondsToHourMinuteFormat,
 } from 'src/utils/convertValues';
 import { extractUrl } from 'src/utils/extract-url';
-import { fDate } from 'src/utils/format-time';
+import { fDateOnly } from 'src/utils/format-time';
 import { getModuleName } from 'src/utils/training-modules';
 
 import { CommentsDialog } from '../comments';
@@ -128,7 +128,7 @@ export function WorkoutDetails({
                 <span>{itemFeedback?.workout.subtitle}</span>
               </Stack>
               <Typography variant="subtitle2" color={theme.palette.info.main}>
-                {fDate(itemFeedback.executionDay, 'EEEE, dd/MM/yyyy')}
+                {fDateOnly(itemFeedback.executionDay, 'EEEE, dd/MM/yyyy')}
               </Typography>
               {commentsCount === 0 ? (
                 <Typography variant="caption">O aluno não deixou comentário</Typography>
